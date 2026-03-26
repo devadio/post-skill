@@ -19,10 +19,12 @@ Whether you're a developer, a marketer using automation tools like n8n/Zapier, o
 ### 1. 🌍 Multichannel Reach
 Post to over **10+ major platforms** simultaneously:
 - **TikTok & Instagram:** Full support for Reels and vertical video.
-- **Facebook & LinkedIn:** Professional updates, groups, and video.
+- **Facebook Pages:** Share updates, high-res images, and videos with your followers.
+- **LinkedIn:** Professional updates for your personal Profile or company Page.
 - **YouTube:** Push Shorts or long-form videos with full titles and descriptions.
-- **Pinterest & Telegram:** Beautiful pins and instant channel broadcasts.
-- **Twitter/X & Google Business:** Keep your feed active and your local SEO peaking.
+- **Pinterest & Tumblr:** Perfect for visual storytelling and creative blogs.
+- **Twitter/X & Telegram:** Fast-paced text updates and instant broadcasts.
+- **Google Business:** Keep your local SEO peaking with regular business updates.
 
 ### 2. 🎥 Any Aspect Ratio, Any Time
 Worried about your video size? Our internal media engine handles horizontal, square, and vertical videos. We even support large high-definition uploads up to **500MB** for video and **50MB** for images.

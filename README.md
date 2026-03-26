@@ -21,14 +21,14 @@ Reach your audience wherever they are. We support all major platforms:
 
 1.  **TikTok** (Full support for any aspect ratio & large video files via internal proxy)
 2.  **Instagram** (Reels, Stories, and Carousel posts)
-3.  **Facebook** (Pages & Groups - Text, Image, Video, Carousel)
+3.  **Facebook** (Pages Only - Text, Image, Video, Carousel)
 4.  **LinkedIn** (Page & Profile - Professional updates and Video)
 5.  **YouTube** (Videos & Shorts with full metadata control)
 6.  **Twitter / X** (Fast-paced text and media updates)
 7.  **Pinterest** (High-traffic Pins and Video Pins)
 8.  **Telegram** (Broadcast to Channels and Groups)
-9.  **Google Business Profile** (Local SEO posts with images)
-10. **Tumblr** (Creative blogs and media)
+9.  **Tumblr** (Creative blogs and media)
+10. **Google Business Profile** (Local SEO posts with images)
 
 ---
 

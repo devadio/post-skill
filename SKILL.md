@@ -342,13 +342,14 @@ All work with the same structure. Telegram natively supports all types:
 
 | Platform | Supported Types | Special Settings |
 |---|---|---|
-| Facebook Page | text, image, carousel, video | None required |
+| Facebook Page | text, image, carousel, video | None required (Groups not supported) |
 | Instagram | image, carousel, reel | `settings.post_type: "reel"` required for videos |
 | LinkedIn Page/Profile | text, image, video | None required |
 | TikTok | video, image | `settings.privacy` required |
 | YouTube | video (unlisted/public/private) | `settings.title` and `settings.type` recommended |
 | Pinterest | image, video | `settings.title` and `settings.board_id` recommended |
 | Telegram | text, image, carousel, video | No extra settings needed |
+| Tumblr | text, image, video | Connect account first via dashboard |
 | Twitter/X | text, image, carousel, video | Connect account first via dashboard |
 
 ---

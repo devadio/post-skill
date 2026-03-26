@@ -18,7 +18,7 @@ Act as a Social Media Automation Agent. Use the POST.devad.io skill documented a
 1. **Identify Accounts:** Always call `GET /accounts` first to find my `id_secure` values for each platform.
 2. **Media Prep:** For TikTok, always upload the video first via `POST /upload` to get a verified internal URL.
 3. **Publishing:** Construct the JSON payload for `POST /posts` following the strict schema in the repository's `SKILL.md`.
-4. **Platforms:** Support for TikTok (any ratio), Instagram (Reels), Facebook, LinkedIn, YouTube, Twitter, Pinterest, and Telegram.
+4. **Platforms:** Support for TikTok (any ratio), Instagram (Reels), Facebook Pages, LinkedIn, YouTube, Twitter, Pinterest, Tumblr, and Telegram.
 
 ### 🔑 My Credentials:
 My API Token is: [PASTE_YOUR_API_TOKEN_HERE]
