@@ -49,13 +49,25 @@ Log in to [post.devad.io](https://post.devad.io), connect your accounts, and gen
 ### 2. Implementation
 Your agent simply needs to call our REST endpoint. A production-ready **Node.js Test Runner** is included in `scripts/test_runner.js`.
 
-```bash
-# Get your Integration IDs
-node scripts/test_runner.js accounts
+---
 
-# Send a test post to TikTok
-node scripts/test_runner.js tiktok_video
+## 🤖 Master Prompt for AI Agents
+
+Want to give your AI (Claude, OpenClaw, etc.) instant social media powers? Copy the block below and paste it into your agent's chat along with your API Token.
+
+> **Note:** For the full, customizable version, see [MASTER_PROMPT.md](MASTER_PROMPT.md).
+
+```text
+Act as a Social Media Automation Agent. Use the POST.devad.io skill (https://github.com/devadio/post-skill) to manage my social media. 
+
+1. Call GET /accounts to see my connected platforms.
+2. Use POST /posts to publish content using my Integration IDs.
+3. For videos (especially TikTok), upload via POST /upload first.
+
+My API Token: [PASTE_YOUR_TOKEN_HERE]
 ```
+
+---
 
 ### 3. Example AI Agent Payload
 ```json
@@ -81,6 +93,7 @@ node scripts/test_runner.js tiktok_video
 
 - `SKILL.md`: Theoretical framework and full API documentation.
 - `ARTICLE.md`: A human-focused guide to automating your social media.
+- `MASTER_PROMPT.md`: One-click onboarding for AI Assistants.
 - `scripts/`: Production-ready test runners in **JavaScript** and **PHP**.
 - `payloads/`: 20+ ready-to-use JSON samples for every platform and media type.
 
