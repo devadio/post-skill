@@ -1,0 +1,19 @@
+{
+  "_comment": "TEST: Instagram — Video / Reel post",
+  "_instructions": "Upload your video via /upload first, then paste the returned path as the video URL here.",
+  "posts": [
+    {
+      "integration": { "id": "INSTAGRAM_ACCOUNT_ID_SECURE" },
+      "value": [
+        {
+          "content": "✅ POST API Test — Instagram video/reel. #devadio #test",
+          "video": ["https://YOUR_CDN_OR_S3_VIDEO_URL.mp4"]
+        }
+      ],
+      "settings": {
+        "post_type": "reel"
+      }
+    }
+  ],
+  "type": "now"
+}

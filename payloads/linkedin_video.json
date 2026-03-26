@@ -1,0 +1,16 @@
+{
+  "_comment": "TEST: LinkedIn — Video post",
+  "_instructions": "Upload video via /upload first. LinkedIn requires the video to be uploaded to a publicly accessible URL.",
+  "posts": [
+    {
+      "integration": { "id": "LINKEDIN_ACCOUNT_ID_SECURE" },
+      "value": [
+        {
+          "content": "✅ POST API Test — LinkedIn video post. #devadio #test",
+          "video": ["https://YOUR_CDN_OR_S3_VIDEO_URL.mp4"]
+        }
+      ]
+    }
+  ],
+  "type": "now"
+}

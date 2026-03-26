@@ -1,0 +1,15 @@
+{
+  "_comment": "TEST: Telegram — Single image message",
+  "posts": [
+    {
+      "integration": { "id": "TELEGRAM_ACCOUNT_ID_SECURE" },
+      "value": [
+        {
+          "content": "✅ POST API Test — Telegram image. #devadio",
+          "image": ["https://via.placeholder.com/1080x1080.jpg"]
+        }
+      ]
+    }
+  ],
+  "type": "now"
+}

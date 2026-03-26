@@ -1,0 +1,15 @@
+{
+  "_comment": "TEST: LinkedIn — Single image post",
+  "posts": [
+    {
+      "integration": { "id": "LINKEDIN_ACCOUNT_ID_SECURE" },
+      "value": [
+        {
+          "content": "✅ POST API Test — LinkedIn image post. #devadio #test",
+          "image": ["https://via.placeholder.com/1200x627.jpg"]
+        }
+      ]
+    }
+  ],
+  "type": "now"
+}

@@ -1,0 +1,16 @@
+{
+  "_comment": "TEST: Facebook — Video post",
+  "_instructions": "Replace ACCOUNT_ID_SECURE and VIDEO_URL. Upload video first via /upload endpoint then use returned path here.",
+  "posts": [
+    {
+      "integration": { "id": "FACEBOOK_ACCOUNT_ID_SECURE" },
+      "value": [
+        {
+          "content": "✅ POST API Test — Facebook video. #devadio #test",
+          "video": ["https://YOUR_CDN_OR_S3_VIDEO_URL.mp4"]
+        }
+      ]
+    }
+  ],
+  "type": "now"
+}

@@ -1,0 +1,19 @@
+{
+  "_comment": "TEST: Telegram — Carousel (media group with multiple images)",
+  "posts": [
+    {
+      "integration": { "id": "TELEGRAM_ACCOUNT_ID_SECURE" },
+      "value": [
+        {
+          "content": "✅ POST API Test — Telegram image album. #devadio",
+          "image": [
+            "https://via.placeholder.com/1080x1080/FF0000.jpg",
+            "https://via.placeholder.com/1080x1080/00FF00.jpg",
+            "https://via.placeholder.com/1080x1080/0000FF.jpg"
+          ]
+        }
+      ]
+    }
+  ],
+  "type": "now"
+}

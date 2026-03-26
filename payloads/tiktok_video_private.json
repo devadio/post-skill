@@ -1,0 +1,27 @@
+{
+  "_comment": "TEST: TikTok — Video post. During TESTING phase: privacy is SELF_ONLY (private). In production: change to PUBLIC_TO_EVERYONE or MUTUAL_CAN_VIEW.",
+  "_testing_note": "Keep privacy=SELF_ONLY until TikTok Dev app approval. After approval, change to PUBLIC_TO_EVERYONE for normal user posting.",
+  "_all_privacy_options": ["SELF_ONLY", "MUTUAL_CAN_VIEW", "FOLLOWER_OF_CREATOR", "PUBLIC_TO_EVERYONE"],
+  "posts": [
+    {
+      "integration": { "id": "TIKTOK_ACCOUNT_ID_SECURE" },
+      "value": [
+        {
+          "content": "✅ POST API Test — TikTok video (private during test). #devadio",
+          "video": ["https://YOUR_CDN_OR_S3_VIDEO_URL.mp4"]
+        }
+      ],
+      "settings": {
+        "privacy": "SELF_ONLY",
+        "duet": false,
+        "stitch": false,
+        "comment": false,
+        "brand_content_toggle": false,
+        "brand_organic_toggle": false,
+        "disable_likes": false,
+        "disable_download": true
+      }
+    }
+  ],
+  "type": "now"
+}

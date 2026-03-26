@@ -1,0 +1,15 @@
+{
+  "_comment": "TEST: Telegram — Video message",
+  "posts": [
+    {
+      "integration": { "id": "TELEGRAM_ACCOUNT_ID_SECURE" },
+      "value": [
+        {
+          "content": "✅ POST API Test — Telegram video. #devadio",
+          "video": ["https://YOUR_CDN_OR_S3_VIDEO_URL.mp4"]
+        }
+      ]
+    }
+  ],
+  "type": "now"
+}

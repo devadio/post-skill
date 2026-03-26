@@ -1,0 +1,19 @@
+{
+  "_comment": "TEST: Instagram — Carousel (3 images). 2+ images auto-triggers carousel.",
+  "posts": [
+    {
+      "integration": { "id": "INSTAGRAM_ACCOUNT_ID_SECURE" },
+      "value": [
+        {
+          "content": "✅ POST API Test — Instagram carousel. Swipe → #devadio #test",
+          "image": [
+            "https://via.placeholder.com/1080x1080/FF0000.jpg",
+            "https://via.placeholder.com/1080x1080/00FF00.jpg",
+            "https://via.placeholder.com/1080x1080/0000FF.jpg"
+          ]
+        }
+      ]
+    }
+  ],
+  "type": "now"
+}

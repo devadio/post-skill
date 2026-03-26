@@ -1,0 +1,12 @@
+{
+  "_comment": "TEST: Telegram — Text message",
+  "posts": [
+    {
+      "integration": { "id": "TELEGRAM_ACCOUNT_ID_SECURE" },
+      "value": [
+        { "content": "✅ POST API Test — Telegram text message.\n\nTesting publishing pipeline via devad.io POST API. #devadio" }
+      ]
+    }
+  ],
+  "type": "now"
+}

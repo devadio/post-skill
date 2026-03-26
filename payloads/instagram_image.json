@@ -1,0 +1,15 @@
+{
+  "_comment": "TEST: Instagram — Single image post",
+  "posts": [
+    {
+      "integration": { "id": "INSTAGRAM_ACCOUNT_ID_SECURE" },
+      "value": [
+        {
+          "content": "✅ POST API Test — Instagram image. #devadio #test",
+          "image": ["https://via.placeholder.com/1080x1080.jpg"]
+        }
+      ]
+    }
+  ],
+  "type": "now"
+}

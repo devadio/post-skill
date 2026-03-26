@@ -1,0 +1,16 @@
+{
+  "_comment": "TEST: Facebook — Single image post",
+  "_instructions": "Replace ACCOUNT_ID_SECURE and MEDIA_URL with actual values",
+  "posts": [
+    {
+      "integration": { "id": "FACEBOOK_ACCOUNT_ID_SECURE" },
+      "value": [
+        {
+          "content": "✅ POST API Test — Facebook image post. #devadio #test",
+          "image": ["https://via.placeholder.com/1080x1080.jpg"]
+        }
+      ]
+    }
+  ],
+  "type": "now"
+}

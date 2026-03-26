@@ -1,0 +1,20 @@
+{
+  "_comment": "TEST: Facebook — Carousel (multiple images)",
+  "_instructions": "Replace ACCOUNT_ID_SECURE with the Facebook Page id_secure from /accounts. 2+ images = carousel auto-detected.",
+  "posts": [
+    {
+      "integration": { "id": "FACEBOOK_ACCOUNT_ID_SECURE" },
+      "value": [
+        {
+          "content": "✅ POST API Test — Facebook carousel. #devadio #test",
+          "image": [
+            "https://via.placeholder.com/1080x1080/FF0000.jpg",
+            "https://via.placeholder.com/1080x1080/00FF00.jpg",
+            "https://via.placeholder.com/1080x1080/0000FF.jpg"
+          ]
+        }
+      ]
+    }
+  ],
+  "type": "now"
+}

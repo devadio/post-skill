@@ -1,0 +1,12 @@
+{
+  "_comment": "TEST: Twitter/X — Text-only tweet",
+  "posts": [
+    {
+      "integration": { "id": "TWITTER_ACCOUNT_ID_SECURE" },
+      "value": [
+        { "content": "✅ POST API Test — Twitter/X text post. #devadio #test" }
+      ]
+    }
+  ],
+  "type": "now"
+}

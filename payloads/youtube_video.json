@@ -1,0 +1,20 @@
+{
+  "_comment": "TEST: YouTube — Video post (requires title in settings)",
+  "_instructions": "Upload video via /upload first. YouTube REQUIRES title in settings.",
+  "posts": [
+    {
+      "integration": { "id": "YOUTUBE_ACCOUNT_ID_SECURE" },
+      "value": [
+        {
+          "content": "POST API Test — YouTube video description. Checking the publishing pipeline via devad.io. #devadio #test",
+          "video": ["https://YOUR_CDN_OR_S3_VIDEO_URL.mp4"]
+        }
+      ],
+      "settings": {
+        "title": "POST API Test Video",
+        "type": "unlisted"
+      }
+    }
+  ],
+  "type": "now"
+}

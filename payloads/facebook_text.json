@@ -1,0 +1,13 @@
+{
+  "_comment": "TEST: Facebook — Text-only post",
+  "_instructions": "Replace ACCOUNT_ID_SECURE with the Facebook Page id_secure from /accounts",
+  "posts": [
+    {
+      "integration": { "id": "FACEBOOK_ACCOUNT_ID_SECURE" },
+      "value": [
+        { "content": "✅ POST API Test — Facebook text post. Checking publishing pipeline. #devadio #test" }
+      ]
+    }
+  ],
+  "type": "now"
+}

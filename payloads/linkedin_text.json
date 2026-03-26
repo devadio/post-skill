@@ -1,0 +1,12 @@
+{
+  "_comment": "TEST: LinkedIn — Personal text post",
+  "posts": [
+    {
+      "integration": { "id": "LINKEDIN_ACCOUNT_ID_SECURE" },
+      "value": [
+        { "content": "✅ POST API Test — LinkedIn text post.\n\nChecking publishing pipeline via devad.io POST API. #devadio #test" }
+      ]
+    }
+  ],
+  "type": "now"
+}

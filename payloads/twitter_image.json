@@ -1,0 +1,15 @@
+{
+  "_comment": "TEST: Twitter/X — Single image tweet",
+  "posts": [
+    {
+      "integration": { "id": "TWITTER_ACCOUNT_ID_SECURE" },
+      "value": [
+        {
+          "content": "✅ POST API Test — Twitter/X image tweet. #devadio #test",
+          "image": ["https://via.placeholder.com/1080x1080.jpg"]
+        }
+      ]
+    }
+  ],
+  "type": "now"
+}

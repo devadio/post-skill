@@ -1,0 +1,19 @@
+{
+  "_comment": "TEST: Pinterest — Single image pin",
+  "_instructions": "Replace BOARD_ID with the target Pinterest board ID if required by the SaaS module.",
+  "posts": [
+    {
+      "integration": { "id": "PINTEREST_ACCOUNT_ID_SECURE" },
+      "value": [
+        {
+          "content": "✅ POST API Test — Pinterest pin. #devadio #test",
+          "image": ["https://via.placeholder.com/1000x1500.jpg"]
+        }
+      ],
+      "settings": {
+        "title": "POST API Test Pin"
+      }
+    }
+  ],
+  "type": "now"
+}
