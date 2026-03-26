@@ -56,7 +56,7 @@ curl -H "Authorization: Bearer TOKEN" \
 ```
 
 ### POST /upload (Optional, Required for TikTok)
-Upload an image or video to the internal Devad.io S3 bucket.
+Upload an image or video to the internal Devad.io storage.
 > **When to use this:**
 > 1. **TikTok**: TikTok rejects external URLs (like Wikipedia or Imgur) with `url_ownership_unverified`. You **MUST** upload your media file here first. Once uploaded to `media.devad.io`, TikTok accepts **any aspect ratio** (9:16, horizontal, square) and any duration, just like the manual dashboard.
 > 2. **LinkedIn**: LinkedIn's downloader gets a `403 Forbidden` from heavily protected sites like Wikipedia. Uploading the image here first bypasses that protection.
@@ -233,7 +233,7 @@ You can post to **up to 10 accounts in one request** by adding multiple objects 
   }]
 }
 ```
-> **Important:** Video URLs are passed directly to the platform (not proxied through S3). Use a stable, publicly accessible HTTPS video URL.
+> **Important:** Video URLs are passed directly to the platform (not proxied through internal storage). Use a stable, publicly accessible HTTPS video URL.
 
 ### Instagram — Reel (video with forced reel type)
 ```json

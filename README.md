@@ -8,7 +8,7 @@ Supercharge your AI assistants (Claude, OpenClaw, AutoGPT, and custom LLM agents
 
 ## ✨ Why Choose POST.devad.io?
 
-*   **🤑 Lowest Cost for AI Agents:** At just **$5/mo**, this is significantly more affordable than traditional CLI or MCP-based tools that charge per action or per platform.
+*   **🤑 Lowest Cost for AI Agents:** Starting at just **$5/mo**, this is significantly more affordable than traditional CLI or MCP-based tools that charge per action or per platform.
 *   **🤖 AI-Optimized:** Designed specifically for LLMs. No complex OAuth flows for your agent—just a simple Integration ID and a clean REST API.
 *   **🎥 Multi-Format Power:** Full support for AI-generated **Text, High-Res Images, and HD Video** (including 9:16 Reels/TikToks and Large 18MB+ uploads).
 *   **🚀 100% Automated:** From the moment your agent dispatches the payload, our backend handles the platform queuing, media proxying, and reliable publishing.
@@ -19,7 +19,7 @@ Supercharge your AI assistants (Claude, OpenClaw, AutoGPT, and custom LLM agents
 
 Reach your audience wherever they are. We support all major platforms:
 
-1.  **TikTok** (Full support for any aspect ratio & large video files via S3 proxy)
+1.  **TikTok** (Full support for any aspect ratio & large video files via internal proxy)
 2.  **Instagram** (Reels, Stories, and Carousel posts)
 3.  **Facebook** (Pages & Groups - Text, Image, Video, Carousel)
 4.  **LinkedIn** (Page & Profile - Professional updates and Video)
@@ -36,8 +36,8 @@ Reach your audience wherever they are. We support all major platforms:
 
 All-inclusive access to all platforms and features. No hidden costs.
 
-*   **Monthly Plan:** $5 / mo
-*   **Annual Plan:** $59 / year *(Best Value - 12 months for the price of 10)*
+*   **Monthly Plan:** $10 / mo
+*   **Annual Plan:** $60 / year ($5 / mo)
 
 ---
 
@@ -80,10 +80,11 @@ node scripts/test_runner.js tiktok_video
 ## 🛠️ Repository Structure
 
 - `SKILL.md`: Theoretical framework and full API documentation.
+- `ARTICLE.md`: A human-focused guide to automating your social media.
 - `scripts/`: Production-ready test runners in **JavaScript** and **PHP**.
 - `payloads/`: 20+ ready-to-use JSON samples for every platform and media type.
 
 ---
 
 ## 🤝 Support
-Join our community or check out the full documentation at [post.devad.io/docs](https://post.devad.io).
+Join our community or check out the full documentation at [devad.io/guides/topics/post-devad-io-docs/](https://devad.io/guides/topics/post-devad-io-docs/).
