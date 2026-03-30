@@ -50,7 +50,17 @@ With POST.devad.io, you get **ALL features unlocked** for a fraction of the cost
 Log in to [post.devad.io](https://post.devad.io), connect your accounts, and generate your API Token in **Account Settings → POST API**.
 
 ### 2. Implementation
-Your agent simply needs to call our REST endpoint. A production-ready **Node.js Test Runner** is included in `scripts/test_runner.js`.
+Your agent simply needs to call our REST endpoint. Production-ready test runners are included in `scripts/test_runner.js` and `scripts/test_runner.py`.
+
+Quick validation commands:
+
+```bash
+node scripts/test_runner.js health
+node scripts/test_runner.js facebook_carousel --dry-run --print-payload
+python scripts/test_runner.py instagram_video --dry-run --print-payload
+```
+
+The runners are designed to catch the common mistakes we hit during the Google Sheet project before a developer sends a live publish request.
 
 ---
 
@@ -110,7 +120,7 @@ My API Token: [PASTE_YOUR_TOKEN_HERE]
 - `SKILL.md`: Theoretical framework and full API documentation.
 - `ARTICLE.md`: A human-focused guide to automating your social media.
 - `MASTER_PROMPT.md`: One-click onboarding for AI Assistants.
-- `scripts/`: Production-ready test runners in **JavaScript** and **PHP**.
+- `scripts/`: Production-ready test runners in **JavaScript** and **Python**.
 - `payloads/`: 20+ ready-to-use JSON samples for every platform and media type.
 - `google-sheet/`: Google Sheets automation guide and documentation.
 - `google-sheet/apps-script/`: Full Apps Script reference bundle for the live sheet workflow.

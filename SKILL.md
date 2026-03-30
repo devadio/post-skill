@@ -235,18 +235,21 @@ You can post to **up to 10 accounts in one request** by adding multiple objects 
 ```
 > **Important:** Video URLs are passed directly to the platform (not proxied through internal storage). Use a stable, publicly accessible HTTPS video URL.
 
-### Instagram — Reel (video with forced reel type)
+### Instagram — Video / Reels
 ```json
 {
   "type": "now",
   "posts": [{
     "integration": { "id": "INSTAGRAM_INTEGRATION_ID" },
     "value": [{ "content": "Behind the scenes! 🎬", "video": ["https://example.com/reel.mp4"] }],
-    "settings": { "post_type": "reel" }
+    "settings": {
+      "post_type": "video",
+      "ig_type": "reels"
+    }
   }]
 }
 ```
-> **Required:** Instagram videos MUST include `"settings": { "post_type": "reel" }` to be published as a Reel.
+> **Recommended:** For Instagram videos, use `"post_type": "video"` with `"ig_type": "reels"` instead of the older `post_type=reel` shape. This matches the safer payload normalization used by the latest test runners and Google Sheet script.
 
 ### TikTok — Video (with privacy & music consent)
 ```json
@@ -343,7 +346,7 @@ All work with the same structure. Telegram natively supports all types:
 | Platform | Supported Types | Special Settings |
 |---|---|---|
 | Facebook Page | text, image, carousel, video | None required (Groups not supported) |
-| Instagram | image, carousel, reel | `settings.post_type: "reel"` required for videos |
+| Instagram | image, carousel, video | Use `settings.post_type: "video"` with `settings.ig_type: "reels"` for videos |
 | LinkedIn Page/Profile | text, image, video | None required |
 | TikTok | video, image | `settings.privacy` required |
 | YouTube | video (unlisted/public/private) | `settings.title` and `settings.type` recommended |
@@ -371,17 +374,19 @@ All work with the same structure. Telegram natively supports all types:
 
 ## Test Runner
 
-A ready-to-use Node.js test script is included in `scripts/test_runner.js`.
+Ready-to-use test runners are included in:
+
+- `scripts/test_runner.js`
+- `scripts/test_runner.py`
 
 ```bash
 # Check all connected accounts (run first!)
-node test_runner.js accounts
+node scripts/test_runner.js accounts
+python scripts/test_runner.py accounts
 
 # Test specific platform/type combinations
-node test_runner.js facebook_image
-node test_runner.js instagram_carousel
-node test_runner.js instagram_video
-node test_runner.js tiktok_video
-node test_runner.js youtube_video
-node test_runner.js telegram_text
+node scripts/test_runner.js facebook_image --dry-run --print-payload
+python scripts/test_runner.py instagram_video --dry-run --print-payload
+node scripts/test_runner.js tiktok_video
+python scripts/test_runner.py youtube_video
 ```
