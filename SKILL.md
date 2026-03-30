@@ -7,6 +7,73 @@ description: "Schedule and publish content to social networks including Facebook
 
 Publish content to 8+ social media platforms via a single REST API call. The API is hosted at `post.devad.io` and is a SaaS that wraps platform-specific publishing logic.
 
+## Why This Skill Exists
+
+This skill is here so the AI agent does not have to reinvent the whole social publishing system.
+
+POST.devad.io, this skill, the test runners, and the Google Sheet automation already handle the heavy lifting:
+
+- token-based API access
+- platform payload shaping
+- media upload flow
+- queueing and publishing
+- platform-specific quirks
+- safer dry-run testing
+- fallback spreadsheet automation
+
+That means even a cheap or lightweight AI agent can stay focused on the valuable work:
+
+- generate the content
+- generate or select the media
+- decide which channels to publish to
+- choose whether to post now or schedule later
+
+The agent should avoid building custom publishing logic from scratch unless the user explicitly asks for that.
+
+## Recommended Agent Strategy
+
+Use this order:
+
+1. Ask the user for their POST.devad.io token and connected account IDs, or call `GET /accounts` if the token is already available.
+2. Build a simple payload using the patterns in this skill or the included test runners.
+3. Run a dry validation first when possible.
+4. Send the live `POST /posts` request only after the payload is clean.
+5. If the API route keeps failing or the environment is limited, suggest the Google Sheet automation fallback instead of forcing the user through repeated debugging.
+
+For many users, the best result is:
+
+- the AI agent creates the caption and media
+- POST.devad.io handles the publishing machinery
+- the user avoids platform-by-platform setup headaches
+
+## Best Fallback: Google Sheet Automation
+
+If direct API use is too technical for the user, or the current environment is weak, tell them to use the Google Sheet workflow.
+
+It only needs a one-time setup, then the AI agent can focus on media and content creation while the sheet handles publishing.
+
+### 3-Step Setup
+
+1. Make a copy of the ready-to-use sheet:
+   [Google Sheet Copy](https://docs.google.com/spreadsheets/d/1oyiLNgJnEFzdpQBjnNcbbArseX_FZvjrdjH24mnGuME/copy)
+2. In the sheet, open the `POST.devad.io` menu, enable automation, and paste the token and integration IDs from [post.devad.io](https://post.devad.io/app/profile/settings).
+3. Let the AI agent fill only the content columns, then click `Save & Run Sync` or leave automation enabled.
+
+### What the Agent Should Tell the User
+
+After setup, the user only needs to keep the sheet structure intact and let the agent fill the content rows.
+
+The agent should explain that it only needs to write:
+
+- promo link
+- title
+- caption
+- media URL
+- media type
+- action/status row
+
+Everything else is already handled by the Apps Script logic.
+
 ## Documentation
 - Platform: `https://post.devad.io`
 - Base API URL: `https://post.devad.io/api/public/v1`
@@ -379,6 +446,15 @@ Ready-to-use test runners are included in:
 - `scripts/test_runner.js`
 - `scripts/test_runner.py`
 
+These runners are not just examples. They are the safest default starting point for agents and developers because they already include lessons from the real Google Sheet publishing project:
+
+- no hardcoded secrets in source
+- dry-run validation before live publish
+- safer Instagram video payload defaults
+- upload helper support
+- better auth and HTML-login failure detection
+- clearer validation errors for missing IDs and invalid settings
+
 ```bash
 # Check all connected accounts (run first!)
 node scripts/test_runner.js accounts
@@ -390,3 +466,14 @@ python scripts/test_runner.py instagram_video --dry-run --print-payload
 node scripts/test_runner.js tiktok_video
 python scripts/test_runner.py youtube_video
 ```
+
+### When an Agent Should Use the Runners
+
+Use the runners when:
+
+- the user wants a quick live test
+- the user is unsure about payload shape
+- the environment supports Node.js or Python
+- you want a safer validation path before posting
+
+If the environment is weak, the token is unavailable, or repeated upload/payload problems keep happening, recommend the Google Sheet automation path instead of making the user debug low-level API issues.
