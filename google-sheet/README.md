@@ -42,6 +42,20 @@ The sheet is row-driven:
 
 The script reads one queued row at a time, prepares the payload per platform, uploads the media when needed, and then writes the result back into the sheet.
 
+### Best-Practice Input Rules
+
+Based on our real testing, the safest row inputs are:
+
+- `C Title`: keep it around `75-110 characters`
+- `D Social media summary (caption)`: keep it under `1,000 characters`
+- `E Creative link` for `image_manual`: use one direct public image link, ideally a Google Drive file with view access
+- `E Creative link` for `video_manual`: use one stable public video link, ideally `mp4`
+- `E Creative link` for `carousel_manual`: use a Google Drive folder link, not a single file
+- Google Drive files and folders should be viewable by anyone with the link
+- avoid firewall-protected, anti-bot, or login-only media links
+
+If you want the detailed column rules and media guidance, see `google-sheet/apps-script/README.md`.
+
 ## Why This Folder Is Useful For AI Agents
 
 This repository is not only a working Google Sheets setup. It is also a reusable blueprint.

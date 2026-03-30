@@ -144,6 +144,116 @@ Important safety rule:
 
 - row 1 headers are read-only and cannot be edited through the web-app API
 
+## Recommended Content Rules From Real Testing
+
+These rules come from the issues we actually hit while building and testing this workflow.
+
+### General Rules
+
+- Keep the tab name exactly `post`
+- Do not rename the headers in row 1
+- Do not move the working columns unless you also update the Apps Script
+- Prefer clean public URLs
+- Avoid links protected by firewall, anti-bot pages, login walls, or short-lived signed URLs
+- Google Drive links work best when the file or folder is shared as viewable by anyone with the link
+
+### Column-By-Column Guidance
+
+- `A Reference`
+  - Best use: your internal ID, content ID, or campaign reference
+  - Recommended: short stable text
+  - Good example: `POST-2026-041`
+
+- `B Promotional link`
+  - Best use: landing page, article, product page, or CTA URL
+  - Recommended: full `https://` URL
+  - This can be appended to captions on channels where `+ LINK` is enabled
+
+- `C Title`
+  - Best use: short content title or headline
+  - Recommended length: `75-110 characters`
+  - Keep it clear and readable
+  - Avoid stuffing hashtags here
+  - Good for YouTube title, Pinterest title, or internal organization
+
+- `D Social media summary (caption)`
+  - Best use: the actual post caption/body
+  - Recommended length for this sheet workflow: maximum `1,000 characters`
+  - Shorter is usually safer and performs better across platforms
+  - Put the main message first
+  - Keep heavy hashtag blocks limited
+  - If using a promo link in caption, the script can append it per channel
+
+- `E Creative link`
+  - Best use: direct media URL or Google Drive link
+  - This is one of the most important columns to get right
+
+- `F Creative type`
+  - Use the supported values only:
+  - `image_manual`
+  - `video_manual`
+  - `carousel_manual`
+
+- `G Action?`
+  - Use this to control queue state
+  - Safe values:
+  - `To do`
+  - `🟢 Done`
+  - `🔴 Bug`
+  - The script also still recognizes old `Not yet` rows for compatibility
+
+- `H Check`
+  - Best treated as helper/read-only unless you have a specific internal workflow
+
+- `I log`
+  - Best treated as output/read-only
+  - The script writes success, skip, and failure details here
+
+### Creative Link Rules By Media Type
+
+- `image_manual`
+  - Best input: one direct image URL
+  - Best formats: `jpg`, `jpeg`, `png`, `webp`
+  - Preferred source: Google Drive file link with public view access, or a direct CDN/media URL
+  - Avoid pages that look like image URLs but actually return HTML
+  - Avoid websites with anti-bot protection or blocked hotlinking
+
+- `video_manual`
+  - Best input: one direct video URL
+  - Best format: `mp4`
+  - Preferred source: stable public HTTPS URL or a Google Drive file link with public view access
+  - Do not use playlist pages, preview pages, or expiring video URLs
+
+- `carousel_manual`
+  - Best input: a Google Drive folder link
+  - Put only the intended carousel files inside that folder
+  - Best formats inside the folder: `jpg`, `jpeg`, `png`, `webp`
+  - Keep the folder shared as viewable by anyone with the link
+  - Avoid mixing unsupported files, documents, shortcuts, or nested folders inside the carousel folder
+  - Based on our testing, treating carousel as a Drive folder is the safest workflow
+
+### Google Drive Sharing Rules
+
+- For single image or video:
+  - use a Google Drive file link
+  - make sure it is viewable by anyone with the link
+
+- For carousel:
+  - use a Google Drive folder link
+  - make sure the folder is viewable by anyone with the link
+  - make sure the files inside are valid image files
+
+If Drive access is wrong, the script can fail before publish even when the sheet row looks correct.
+
+### Practical Advice For AI Agents
+
+- Write only the working row fields, not the headers
+- Prefer one clean media URL over clever URL transformations
+- For carousel, create or use a dedicated Drive folder per post
+- Keep captions concise
+- Keep titles tighter than a blog headline
+- When unsure, test first with one `image_manual` row before trying `video_manual` or `carousel_manual`
+
 ## Why This Code Is Useful As A Reference
 
 This bundle is not just for Google Sheets.
