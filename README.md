@@ -1,68 +1,180 @@
-# 🤖 POST.devad.io Agent Skill
+# Post-Skill: The Ultimate AI and Human Social Media Scheduler
 
-POST.devad.io is the heavy-lifting layer. The skill, scripts, and publishing service handle queueing, payload shaping, uploads, retries, and logging so the AI agent can stay focused on generating the content and media.
+Welcome to **Post-Skill**, a simple, low-cost, open-source way to schedule and publish social media content with much less hassle.
 
-Instead of reinventing the automation plumbing, the agent only needs to decide what to post, which media to use, and when to publish it.
+This project is built for both humans and AI agents. Instead of wasting time on bloated dashboards, fragile custom API calls, and repetitive prompt instructions, Post-Skill gives you a clean system for:
 
-It also now includes a Google Sheets Apps Script Web App API pattern, so an AI agent can read rows as JSON and make tightly restricted updates through a lightweight token-protected sheet endpoint when that workflow fits better than direct API posting.
+- creating content
+- attaching media
+- choosing channels
+- scheduling or publishing faster
 
----
-
-## ✨ Why You'll Love It (The Benefits)
-
-*   **🌍 Massive Reach on Autopilot:** Send **one prompt** and push your content directly to TikTok, Instagram, LinkedIn, YouTube, Facebook, Pinterest, Google Business, Telegram, Tumblr, and X.
-*   **🔌 Plug-and-Play AI Integration:** Seamlessly connect your custom GPTs, Claude, OpenClaw, or n8n workflows. Just hand your AI the API key and let it take over.
-*   **🎥 Heavy-Duty Media Support:** Don't worry about compressing files. We handle high-def uploads up to **500MB** for video and **50MB** for images.
-*   **🚀 100% Automated:** From the moment your agent dispatches the payload, our backend handles platform queuing and reliable publishing.
+Just add your content and media, and get ready to grow your social media and reach your audience faster than ever.
 
 ---
 
-## 🌐 Supported Channels (10+)
+## Top Things That Make It Different
 
-Reach your audience wherever they are. We support all major platforms:
+### 1. The Cheapest Practical Social Media Tool
 
-1.  **TikTok** (Full support for any aspect ratio & large video files via internal proxy)
-2.  **Instagram** (Reels, Stories, and Carousel posts)
-3.  **Facebook** (Pages Only - Text, Image, Video, Carousel)
-4.  **LinkedIn** (Page & Profile - Professional updates and Video)
-5.  **YouTube** (Videos & Shorts with full metadata control)
-6.  **Twitter / X** (Fast-paced text and media updates)
-7.  **Pinterest** (High-traffic Pins and Video Pins)
-8.  **Telegram** (Broadcast to Channels and Groups)
-9.  **Tumblr** (Creative blogs and media)
-10. **Google Business Profile** (Local SEO posts with images)
+Many social media schedulers charge high monthly fees just to let you publish posts.
+
+Post-Skill is different because it focuses on simple, practical automation:
+
+- low-friction workflows
+- lightweight setup
+- lower operating cost than typical dashboard-first tools
+- useful for creators, agencies, founders, and growing teams
+
+### 2. Open-Source, Clean, and Fast for AI Agents
+
+Most posting APIs are too complex for lightweight agents. That creates extra prompt bloat, more token use, more failures, and more hallucinated payloads.
+
+Post-Skill solves that with:
+
+- open-source scripts
+- product-ready examples
+- simple test runners
+- a clear `SKILL.md`
+- Google Sheet workflows that are easy to understand
+
+This helps AI agents work faster with less guesswork and less token usage.
+
+### 3. A Powerful Google Sheet Engine for Humans and AI
+
+The Google Sheet workflow is one of the strongest parts of this repo.
+
+For humans:
+
+- bulk planning is easy
+- content is visible in one place
+- there is almost no learning curve
+
+For AI agents:
+
+- the sheet becomes a structured database
+- rows are easy to read and update
+- media links are easy to process
+- remote posting becomes faster and safer
 
 ---
 
-## 🥊 The Reality Check (Why overpay?)
+## What It Helps You Do
 
-Look, tools like **Postiz** and **Blotaot** are great, but why are you paying **$29/month** just to schedule your posts? 
+Post-Skill helps you simplify social media scheduling with less hassle by giving you ready-made workflows for:
 
-We are on a mission to build *AI Tools & Services Every Business Needs to Grow*, which means giving you enterprise-level power without the enterprise price tag.
+- multi-channel posting
+- media upload handling
+- Google Sheet queue-based scheduling
+- direct API posting
+- AI-agent friendly automation
+- lightweight remote content operations
 
-With POST.devad.io, you get **ALL features unlocked** for a fraction of the cost:
-*   **💸 Monthly Freedom:** Only $10/mo (Cancel anytime)
-*   **🔥 Annual Power:** Just $5/mo ($60 billed annually)
+The human or agent focuses on the content. The scripts and workflows handle the heavy lifting.
 
 ---
 
-## 🚀 Getting Started
+## Supported Formats and Safe Post Types
+
+Post-Skill supports the most useful social post types safely when you use stable media links and the recommended formats.
+
+### Text
+
+- useful for Facebook, LinkedIn, X, Telegram, Tumblr, and Google Business text-style posts
+- safest for short updates, CTA posts, and announcements
+
+### Single Image
+
+- safest formats: `jpg`, `jpeg`, `png`, `webp`
+- best source: one direct public image URL
+- preferred source: Google Drive file with public view access or a stable CDN/media URL
+
+### Carousel
+
+- safest workflow: a Google Drive folder link
+- put only the intended carousel images inside the folder
+- avoid nested folders, shortcuts, and unsupported files
+
+### Video / Reels / Shorts
+
+- safest format: `mp4`
+- use one stable public video URL
+- avoid preview pages, login walls, and expiring links
+
+### Safe Google Sheet Creative Types
+
+For the current Google Sheet workflow, the safest supported values are:
+
+- `image_manual`
+- `video_manual`
+- `carousel_manual`
+
+---
+
+## Supported Channels
+
+Post-Skill can support posting workflows for:
+
+1. TikTok
+2. Instagram
+3. Facebook
+4. LinkedIn
+5. YouTube
+6. X / Twitter
+7. Pinterest
+8. Telegram
+9. Tumblr
+10. Google Business Profile
+
+Platform behavior still depends on account setup, media type, and the workflow you choose.
+
+---
+
+## Why It Saves Hassle and Tokens
+
+Without a structured tool, an AI agent often has to:
+
+- guess payload formats
+- rebuild posting logic
+- retry uploads manually
+- learn platform quirks each time
+- spend extra tokens on trial and error
+
+Post-Skill reduces that waste by giving the agent:
+
+- clear scripts
+- ready-made workflows
+- tested payload patterns
+- Google Sheet automation
+- simpler control surfaces
+
+That means less hassle for humans and less wasted token usage for AI agents.
+
+---
+
+## Getting Started
 
 ### 1. Get Your API Key
-Log in to [post.devad.io](https://post.devad.io), connect your accounts, and generate your API Token in **Account Settings → POST API**.
 
-### 2. Implementation
-Your agent simply needs to call our REST endpoint. Production-ready test runners are included in `scripts/test_runner.js` and `scripts/test_runner.py`.
+Log in to [post.devad.io](https://post.devad.io), connect your accounts, and generate your API Token in **Account Settings -> POST API**.
 
-Quick validation commands:
+### 2. Choose Your Workflow
+
+You can use Post-Skill in three practical ways:
+
+- direct API usage
+- local test runners in `scripts/test_runner.js` and `scripts/test_runner.py`
+- Google Sheet automation in [`google-sheet/`](google-sheet/README.md)
+
+### 3. Validate First
+
+The included runners help catch common mistakes before live publishing.
 
 ```bash
 node scripts/test_runner.js health
 node scripts/test_runner.js facebook_carousel --dry-run --print-payload
 python scripts/test_runner.py instagram_video --dry-run --print-payload
 ```
-
-The runners are designed to catch the common mistakes we hit during the Google Sheet project before a developer sends a live publish request.
 
 ---
 
@@ -73,66 +185,34 @@ If you want the spreadsheet-based workflow, start here:
 - [Google Sheet Guide](google-sheet/README.md)
 - [Apps Script Bundle](google-sheet/apps-script/README.md)
 
-The Apps Script folder is a full working reference for turning a Google Sheet into a publishing queue. It shows how the row data is read, how media is detected, how each platform gets its own payload, how results are written back into the sheet, and how to expose a small web-app API for lightweight AI agents.
+The Apps Script folder is a full working reference for:
 
-Because it is a complete implementation, an AI agent can also use it as a blueprint to customize the same workflow in other environments or programming languages.
+- turning a Google Sheet into a publishing queue
+- reading row data safely
+- detecting media type
+- building platform-specific payloads
+- writing results back into the sheet
+- exposing a lightweight sheet API for AI agents
 
----
-
-## 🤖 Master Prompt for AI Agents
-
-Want to give your AI (Claude, OpenClaw, etc.) instant social media powers? Copy the block below and paste it into your agent's chat along with your API Token.
-
-> **Note:** For the full, customizable version, see [MASTER_PROMPT.md](MASTER_PROMPT.md).
-
-```text
-Act as a Social Media Automation Agent. Use the POST.devad.io skill (https://github.com/devadio/post-skill) to manage my social media. 
-
-1. Call GET /accounts to see my connected platforms.
-2. Use POST /posts to publish content using my Integration IDs.
-3. For videos (especially TikTok), upload via POST /upload first.
-
-My API Token: [PASTE_YOUR_TOKEN_HERE]
-```
+Because it is a complete implementation, an AI agent can also use it as a blueprint for other languages or environments.
 
 ---
 
-### 3. Example AI Agent Payload
-```json
-{
-  "posts": [{
-    "integration": { "id": "TIKTOK_ID" },
-    "value": [{
-      "content": "AI-generated content is here! 🚀",
-      "video": ["https://your-ai-cdn.com/video.mp4"]
-    }],
-    "settings": {
-      "privacy": "PUBLIC_TO_EVERYONE",
-      "music_usage_confirmed": true
-    }
-  }],
-  "type": "now"
-}
-```
+## Repository Structure
+
+- `SKILL.md`: the main skill and technical documentation
+- `ARTICLE.md`: a shorter human-focused overview
+- `MASTER_PROMPT.md`: a quick onboarding prompt for AI assistants
+- `scripts/`: production-ready test runners in JavaScript and Python
+- `payloads/`: ready-to-use JSON examples for platforms and media types
+- `google-sheet/`: Google Sheets automation guide
+- `google-sheet/apps-script/`: full Apps Script reference bundle
 
 ---
 
-## 🛠️ Repository Structure
+## Support
 
-- `SKILL.md`: Theoretical framework and full API documentation.
-- `ARTICLE.md`: A human-focused guide to automating your social media.
-- `MASTER_PROMPT.md`: One-click onboarding for AI Assistants.
-- `scripts/`: Production-ready test runners in **JavaScript** and **Python**.
-- `payloads/`: 20+ ready-to-use JSON samples for every platform and media type.
-- `google-sheet/`: Google Sheets automation guide and documentation.
-- `google-sheet/apps-script/`: Full Apps Script reference bundle for the live sheet workflow.
-
----
-
-## 🤝 Support
-Join our community or check out the full guide at [devad.io/guides/topics/post-devad-io-docs/](https://devad.io/guides/topics/post-devad-io-docs/).
-
-🔗 **Start posting everywhere today:** [post.devad.io](https://post.devad.io)  
-📖 **Read the full launch guide:** [ARTICLE.md](ARTICLE.md)
-
-#AIAutomation #SaaS #BuildInPublic #n8n #SocialMediaMarketing #Developers #POSTdevad
+- **Start posting everywhere today:** [post.devad.io](https://post.devad.io)
+- **Read the main documentation:** [SKILL.md](SKILL.md)
+- **Google Sheet workflow:** [google-sheet/README.md](google-sheet/README.md)
+- **Support:** [devad.io/guides/topics/post-devad-io-docs/](https://devad.io/guides/topics/post-devad-io-docs/)

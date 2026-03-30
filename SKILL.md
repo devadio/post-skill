@@ -7,6 +7,79 @@ description: "Schedule and publish content to social networks including Facebook
 
 Publish content to 8+ social media platforms via a single REST API call. The API is hosted at `post.devad.io` and is a SaaS that wraps platform-specific publishing logic.
 
+## Human-First Summary
+
+Post-Skill helps a human or an AI agent schedule and publish social media content with less hassle.
+
+The main idea is simple:
+
+- you do not need to rebuild posting logic from scratch
+- you do not need to fight every platform API manually
+- you can use ready-made scripts, tested payloads, and Google Sheet workflows
+- the AI agent can spend fewer tokens because the process is already structured
+
+This makes it easier to go from:
+
+- content idea
+- media asset
+- target channel
+
+to:
+
+- published post
+
+with less friction and fewer failures.
+
+## Top Differentiators
+
+### 1. Low-cost and practical
+
+This is designed to be one of the cheapest practical ways to automate social media posting across multiple channels.
+
+### 2. Product-ready for AI agents
+
+The scripts and examples are open, clean, and ready to use. A lightweight AI agent can understand them much faster than a large undocumented API workflow.
+
+### 3. Powerful Google Sheet workflow
+
+The Google Sheet setup is useful for both humans and AI agents:
+
+- humans can plan and manage content in a familiar spreadsheet
+- AI agents can read rows, update fields, and use the sheet as a lightweight remote workflow
+
+## Safe Formats and Post Types
+
+The safest supported content types in this project are:
+
+- text posts
+- single image posts
+- carousel posts
+- video posts
+
+When using direct media links, prefer:
+
+- images: `jpg`, `jpeg`, `png`, `webp`
+- video: `mp4`
+
+When using the Google Sheet workflow, the safest `Creative type` values are:
+
+- `image_manual`
+- `video_manual`
+- `carousel_manual`
+
+Safer input patterns:
+
+- single image: one direct public image URL
+- video: one stable public `mp4` URL
+- carousel: one Google Drive folder link containing the intended carousel images
+
+Avoid:
+
+- login-only links
+- firewall-protected media
+- anti-bot pages
+- preview pages that return HTML instead of real media
+
 ## Why This Skill Exists
 
 This skill is here so the AI agent does not have to reinvent the whole social publishing system.
