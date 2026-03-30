@@ -4,11 +4,18 @@ POST.devad.io handles the heavy lifting here: the sheet logic, Apps Script, and 
 
 This folder is the landing page for the Google Sheets workflow behind POST.devad.io, and it is also a clear reference for AI agents or developers who want to understand the workflow before customizing it elsewhere.
 
+It now also covers the lightweight Apps Script Web App API pattern, which lets an AI agent read sheet rows as JSON and update only approved columns through a token-protected endpoint.
+
 ## What You Will Find Here
 
 - `google-sheet/apps-script/` - the full Apps Script bundle mirrored from the live Sheet project
 - `google-sheet/README.md` - this guide
 - `google-sheet/apps-script/README.md` - setup and reference notes for the script bundle
+
+That means this area now covers both:
+
+- the publishing queue workflow
+- the sheet-as-API workflow for lightweight agents
 
 ## Quick Start
 
