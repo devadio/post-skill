@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <base target="_top">
+  <style>
+    body { font-family: Arial, sans-serif; color: #202124; margin: 16px; line-height: 1.45; font-size: 13px; }
+    h2 { margin: 0 0 10px 0; font-size: 18px; color: #1a73e8; }
+    p { margin: 0 0 10px 0; }
+    code, textarea { font-family: Consolas, monospace; }
+    textarea { width: 100%; box-sizing: border-box; min-height: 78px; border: 1px solid #dadce0; border-radius: 6px; padding: 10px; resize: vertical; }
+    .meta { background: #f8f9fa; border: 1px solid #dadce0; border-radius: 6px; padding: 10px; margin: 12px 0; }
+    .buttons { display: flex; gap: 8px; margin: 12px 0; }
+    button { border: none; border-radius: 6px; padding: 10px 12px; cursor: pointer; font-size: 12px; font-weight: 600; }
+    .primary { background: #1a73e8; color: white; }
+    .danger { background: #d93025; color: white; }
+    .ghost { background: #f1f3f4; color: #202124; }
+    ul { margin: 0 0 0 18px; padding: 0; }
+    li { margin-bottom: 7px; }
+    .status { margin-top: 10px; font-size: 12px; color: #188038; display: none; }
+  </style>
+</head>
+<body>
+  <h2>AI Agent Token</h2>
+  <p>Use this token for the Google Sheet web-app API. Read access is open. Write access needs this token.</p>
+  <textarea id="tokenBox" readonly placeholder="Loading token..."></textarea>
+  <div class="buttons">
+    <button class="primary" onclick="generateToken()">Generate Token</button>
+    <button class="danger" onclick="resetToken()">Reset Token</button>
+    <button class="ghost" onclick="copyToken()">Copy</button>
+  </div>
+  <div class="meta">
+    <p><strong>Short Tips</strong></p>
+    <ul>
+      <li>Use this token only for AI-agent write requests.</li>
+      <li>The API is limited to the <code>post</code> tab and range <code>A:I</code>.</li>
+      <li>Row 1 headers are protected and cannot be changed.</li>
+      <li>If a token is exposed, use <strong>Reset Token</strong> immediately.</li>
+      <li>The AI agent should mainly write content fields and avoid overwriting helper or output fields unless intended.</li>
+    </ul>
+  </div>
+  <div class="meta">
+    <p><strong>Current Scope</strong></p>
+    <p>Tab: <code id="sheetName">post</code></p>
+    <p>Range: <code id="sheetRange">A:I</code></p>
+  </div>
+  <div id="status" class="status">Token updated.</div>
+  <script>
+    function init() {
+      google.script.run.withSuccessHandler(renderInfo).getAiAgentTokenInfo();
+    }
+    function renderInfo(info) {
+      document.getElementById('tokenBox').value = info.token || '';
+      document.getElementById('sheetName').textContent = info.sheetName || 'post';
+      document.getElementById('sheetRange').textContent = info.range || 'A:I';
+    }
+    function generateToken() {
+      google.script.run.withSuccessHandler(function(info) {
+        renderInfo(info);
+        showStatus('New token generated.');
+      }).generateAiAgentToken();
+    }
+    function resetToken() {
+      if (!confirm('Reset the current AI Agent Token? Old token will stop working.')) return;
+      google.script.run.withSuccessHandler(function(info) {
+        renderInfo(info);
+        showStatus('Token reset successfully.');
+      }).resetAiAgentToken();
+    }
+    function copyToken() {
+      const box = document.getElementById('tokenBox');
+      box.select();
+      document.execCommand('copy');
+      showStatus('Token copied.');
+    }
+    function showStatus(message) {
+      const el = document.getElementById('status');
+      el.textContent = message;
+      el.style.display = 'block';
+    }
+    init();
+  </script>
+</body>
+</html>

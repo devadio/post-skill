@@ -6,7 +6,7 @@
  * Write access is limited to specific columns and protected by a shared token.
  */
 
-const WEBAPP_SECRET_TOKEN = "your-custom-secure-token-123";
+const WEBAPP_TOKEN_PROPERTY = "AI_AGENT_TOKEN";
 const WEBAPP_TARGET_SHEET_NAME = "post";
 const WEBAPP_ALLOWED_COLUMN_NAMES = [
   "Reference",
@@ -52,7 +52,7 @@ function doPost(e) {
     }
 
     const body = JSON.parse(e.postData.contents);
-    if (body.token !== WEBAPP_SECRET_TOKEN) {
+    if (body.token !== getAiAgentToken_()) {
       return createJsonOutput_({ success: false, error: "Unauthorized: Invalid or missing token." });
     }
 
@@ -114,6 +114,34 @@ function createJsonOutput_(payload) {
     .setMimeType(ContentService.MimeType.JSON);
 }
 
+function showAiAgentTokenDialog() {
+  const html = HtmlService.createTemplateFromFile("AiAgentTokenDialog")
+    .evaluate()
+    .setTitle("AI Agent Token")
+    .setWidth(420)
+    .setHeight(360);
+  SpreadsheetApp.getUi().showModalDialog(html, "AI Agent Token");
+}
+
+function getAiAgentTokenInfo() {
+  return {
+    token: getAiAgentToken_(),
+    sheetName: WEBAPP_TARGET_SHEET_NAME,
+    range: WEBAPP_ALLOWED_RANGE_A1,
+    editableColumns: WEBAPP_ALLOWED_COLUMN_NAMES
+  };
+}
+
+function generateAiAgentToken() {
+  const token = "agt_" + Utilities.getUuid().replace(/-/g, "");
+  PropertiesService.getScriptProperties().setProperty(WEBAPP_TOKEN_PROPERTY, token);
+  return getAiAgentTokenInfo();
+}
+
+function resetAiAgentToken() {
+  return generateAiAgentToken();
+}
+
 function testWebAppApiRead_() {
   const response = doGet({ parameter: { sheet: WEBAPP_TARGET_SHEET_NAME } });
   return response.getContent();
@@ -123,7 +151,7 @@ function testWebAppApiWrite_() {
   const response = doPost({
     postData: {
       contents: JSON.stringify({
-        token: WEBAPP_SECRET_TOKEN,
+        token: getAiAgentToken_(),
         sheet: WEBAPP_TARGET_SHEET_NAME,
         rowNumber: 3,
         column: "log",
@@ -136,4 +164,14 @@ function testWebAppApiWrite_() {
 
 function normalizeColumnName_(value) {
   return String(value || "").trim();
+}
+
+function getAiAgentToken_() {
+  const scriptProps = PropertiesService.getScriptProperties();
+  let token = scriptProps.getProperty(WEBAPP_TOKEN_PROPERTY);
+  if (!token) {
+    token = "agt_" + Utilities.getUuid().replace(/-/g, "");
+    scriptProps.setProperty(WEBAPP_TOKEN_PROPERTY, token);
+  }
+  return token;
 }
