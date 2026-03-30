@@ -6,6 +6,8 @@
 const POST_SHEET_NAME = "post";
 const AUTOMATION_OPTIONS = {
   minute_1: { label: "Every 1 Minute", type: "minutes", value: 1 },
+  minute_15: { label: "Every 15 Minutes", type: "minutes", value: 15 },
+  minute_30: { label: "Every 30 Minutes", type: "minutes", value: 30 },
   hour_1: { label: "Every 1 Hour", type: "hours", value: 1 },
   hour_6: { label: "Every 6 Hours", type: "hours", value: 6 },
   hour_12: { label: "Every 12 Hours", type: "hours", value: 12 },
