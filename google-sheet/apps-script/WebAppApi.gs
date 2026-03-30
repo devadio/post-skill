@@ -7,13 +7,24 @@
  */
 
 const WEBAPP_SECRET_TOKEN = "your-custom-secure-token-123";
-const WEBAPP_ALLOWED_COLUMNS_FOR_EDIT = ["Status", "Notes"];
-const WEBAPP_DEFAULT_SHEET_NAME = "agent_api_demo";
+const WEBAPP_TARGET_SHEET_NAME = "post";
+const WEBAPP_ALLOWED_COLUMN_NAMES = [
+  "Reference",
+  "Promotional link",
+  "Title",
+  "Social media summary (caption)",
+  "Creative link",
+  "Creative type",
+  "Action?",
+  "Check",
+  "log"
+];
+const WEBAPP_ALLOWED_RANGE_A1 = "A:I";
 
 function doGet(e) {
   try {
     const sheet = getWebAppTargetSheet_(e);
-    const data = sheet.getDataRange().getValues();
+    const data = sheet.getRange(WEBAPP_ALLOWED_RANGE_A1).getValues();
     if (!data.length || !data[0].length) {
       return createJsonOutput_({ message: "Sheet is empty" });
     }
@@ -46,21 +57,24 @@ function doPost(e) {
     }
 
     const rowNumber = Number(body.rowNumber);
-    const columnName = String(body.column || "").trim();
+    const columnName = normalizeColumnName_(body.column);
     const newValue = body.value;
 
-    if (!WEBAPP_ALLOWED_COLUMNS_FOR_EDIT.includes(columnName)) {
+    if (!WEBAPP_ALLOWED_COLUMN_NAMES.includes(columnName)) {
       return createJsonOutput_({ success: false, error: "Forbidden: Editing the '" + columnName + "' column is not allowed." });
     }
     if (!Number.isInteger(rowNumber) || rowNumber < 2) {
-      return createJsonOutput_({ success: false, error: "Invalid rowNumber." });
+      return createJsonOutput_({ success: false, error: "Invalid rowNumber. Header row cannot be edited." });
     }
 
     const sheet = getWebAppTargetSheet_({ parameter: body });
-    const headers = sheet.getRange(1, 1, 1, sheet.getLastColumn()).getValues()[0];
+    const headers = sheet.getRange(1, 1, 1, 9).getValues()[0].map(normalizeColumnName_);
     const colIndex = headers.indexOf(columnName) + 1;
     if (colIndex === 0) {
       return createJsonOutput_({ success: false, error: "Column not found." });
+    }
+    if (colIndex < 1 || colIndex > 9) {
+      return createJsonOutput_({ success: false, error: "Column outside allowed range A:I." });
     }
     if (rowNumber > sheet.getLastRow()) {
       return createJsonOutput_({ success: false, error: "Row not found." });
@@ -82,18 +96,16 @@ function getWebAppTargetSheet_(e) {
     ? String(e.parameter.sheet).trim()
     : "";
 
-  const preferredName = requestedName || WEBAPP_DEFAULT_SHEET_NAME;
-  const namedSheet = ss.getSheetByName(preferredName);
-  if (namedSheet) {
-    return namedSheet;
+  if (requestedName && requestedName !== WEBAPP_TARGET_SHEET_NAME) {
+    throw new Error("Only the '" + WEBAPP_TARGET_SHEET_NAME + "' tab is supported.");
   }
 
-  const postSheet = ss.getSheetByName(POST_SHEET_NAME);
-  if (postSheet && !requestedName) {
+  const postSheet = ss.getSheetByName(WEBAPP_TARGET_SHEET_NAME);
+  if (postSheet) {
     return postSheet;
   }
 
-  throw new Error("Sheet not found: " + preferredName);
+  throw new Error("Sheet not found: " + WEBAPP_TARGET_SHEET_NAME);
 }
 
 function createJsonOutput_(payload) {
@@ -103,7 +115,7 @@ function createJsonOutput_(payload) {
 }
 
 function testWebAppApiRead_() {
-  const response = doGet({ parameter: { sheet: WEBAPP_DEFAULT_SHEET_NAME } });
+  const response = doGet({ parameter: { sheet: WEBAPP_TARGET_SHEET_NAME } });
   return response.getContent();
 }
 
@@ -112,12 +124,16 @@ function testWebAppApiWrite_() {
     postData: {
       contents: JSON.stringify({
         token: WEBAPP_SECRET_TOKEN,
-        sheet: WEBAPP_DEFAULT_SHEET_NAME,
+        sheet: WEBAPP_TARGET_SHEET_NAME,
         rowNumber: 3,
-        column: "Notes",
+        column: "log",
         value: "Updated by Apps Script API test helper"
       })
     }
   });
   return response.getContent();
+}
+
+function normalizeColumnName_(value) {
+  return String(value || "").trim();
 }

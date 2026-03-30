@@ -2,7 +2,7 @@
 
 This bundle does the heavy lifting: it reads the Sheet, detects media, builds per-platform payloads, uploads files, and writes results back to the log. That leaves the AI agent free to focus on generating the content and media instead of rebuilding the posting engine.
 
-It also includes a lightweight Apps Script Web App API pattern for AI agents that need to read rows as JSON and make tightly restricted updates without a full Google Cloud Console setup.
+It also includes a lightweight Apps Script Web App API pattern for AI agents that need to read rows as JSON and update only the working cells in the `post` tab without a full Google Cloud Console setup.
 
 This folder contains the Apps Script project files used by the Google Sheet automation workflow. It is intended to be copied into a Google Sheets bound Apps Script project, or used as a reference when building the same automation in another stack.
 
@@ -46,12 +46,13 @@ The current example is designed for:
 
 - open read access
 - token-protected write access
-- edit permissions limited to `Status` and `Notes`
-- a safe demo sheet tab named `agent_api_demo`
+- reads and writes limited to the `post` tab only
+- edits limited to non-header cells inside range `A:I`
+- row 1 headers protected from edits
 
 Example behavior:
 
-- `GET <WEB_APP_URL>?sheet=agent_api_demo` returns all rows as JSON with `__rowNumber`
+- `GET <WEB_APP_URL>?sheet=post` returns the working rows as JSON with `__rowNumber`
 - `POST <WEB_APP_URL>` with `token`, `rowNumber`, `column`, `value`, and optional `sheet` updates one allowed cell
 
 ### Deploy And Test This Web App Feature
@@ -60,19 +61,19 @@ Example behavior:
 2. Deploy the script as a Web App with anonymous access if your Google account or workspace policy allows it.
 3. Test the endpoint with:
    - `GET` to read all rows
-   - `POST` with the token to update only `Status` or `Notes`
+   - `POST` with the token to update only non-header cells in `post!A:I`
 
 Example test URLs and payload shape:
 
-- `GET <WEB_APP_URL>?sheet=agent_api_demo`
+- `GET <WEB_APP_URL>?sheet=post`
 - `POST <WEB_APP_URL>` with JSON:
 
 ```json
 {
   "token": "your-custom-secure-token-123",
-  "sheet": "agent_api_demo",
+  "sheet": "post",
   "rowNumber": 3,
-  "column": "Notes",
+  "column": "log",
   "value": "Updated by API"
 }
 ```
@@ -113,15 +114,35 @@ clasp push -f
 
 The current sheet logic expects a tab named `post` and these working columns:
 
-- `B` Promo link
+- `A` Reference
+- `B` Promotional link
 - `C` Title
-- `D` Caption
-- `E` Media URL
-- `F` Media Type
-- `G` Action / status
-- `I` Log
+- `D` Social media summary (caption)
+- `E` Creative link
+- `F` Creative type
+- `G` Action?
+- `H` Check
+- `I` log
 
 The script is written to work with rows that are queued as `Not yet` or `To do`.
+
+## Column Permissions For AI Agents
+
+The web-app API reads all working columns in `post!A:I`, but the safest editing guidance is:
+
+- `A Reference`: usually editable if your workflow uses an external ID or reference
+- `B Promotional link`: editable
+- `C Title`: editable
+- `D Social media summary (caption)`: editable
+- `E Creative link`: editable
+- `F Creative type`: editable, but should use your supported values such as `image_manual`, `video_manual`, or `carousel_manual`
+- `G Action?`: editable, used to queue or mark work
+- `H Check`: read-only in normal use; better treated as an operations/helper field
+- `I log`: usually read-only for humans because the script writes status here, but the API technically allows updates inside `A:I`
+
+Important safety rule:
+
+- row 1 headers are read-only and cannot be edited through the web-app API
 
 ## Why This Code Is Useful As A Reference
 
