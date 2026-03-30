@@ -1,0 +1,288 @@
+<!-- SettingsSidebar.html -->
+<!DOCTYPE html>
+<html>
+<head>
+  <base target="_top">
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --primary: #1a73e8;
+      --primary-hover: #1664c1;
+      --bg-gray: #f8f9fa;
+      --border-gray: #dadce0;
+      --text-main: #202124;
+      --text-gray: #5f6368;
+      --success: #1e8e3e;
+      --error: #d93025;
+      --chip-bg: #e8f0fe;
+    }
+
+    body {
+      padding: 0; margin: 0; font-family: 'Roboto', sans-serif;
+      background-color: var(--bg-gray); color: var(--text-main); font-size: 13px;
+    }
+
+    .header {
+      background-color: white; padding: 12px 15px; border-bottom: 2px solid var(--primary);
+      display: flex; align-items: center; justify-content: space-between;
+      position: sticky; top: 0; z-index: 100; box-shadow: 0 1px 4px rgba(0,0,0,0.1);
+    }
+    .header h2 { margin: 0; font-size: 14px; color: var(--primary); text-transform: uppercase; letter-spacing: 0.5px; }
+
+    .container { padding: 12px; padding-bottom: 110px; }
+
+    .section-title {
+      font-size: 10px; font-weight: 700; text-transform: uppercase; color: var(--text-gray);
+      margin: 15px 0 8px 0; letter-spacing: 0.8px; border-bottom: 1px solid var(--border-gray); padding-bottom: 4px;
+    }
+
+    .card { background: white; border-radius: 6px; margin-bottom: 8px; padding: 10px; border: 1px solid var(--border-gray); box-shadow: 0 1px 2px rgba(0,0,0,0.05); }
+
+    .token-hint { font-size: 10px; color: var(--text-gray); margin-bottom: 8px; line-height: 1.4; }
+    .token-hint a { color: var(--primary); text-decoration: none; font-weight: 500; }
+
+    input[type="text"], input[type="password"] {
+      width: 100%; box-sizing: border-box; padding: 6px 10px; border: 1px solid var(--border-gray); border-radius: 4px; font-size: 12px;
+    }
+
+    .card-row { display: flex; align-items: center; justify-content: space-between; margin-bottom: 8px; }
+    .info-group { display: flex; align-items: center; gap: 6px; }
+    .help-icon {
+      color: #9aa0a6; cursor: help; font-size: 12px; font-weight: bold; border: 1px solid #9aa0a6; width: 14px; height: 14px;
+      border-radius: 50%; display: flex; align-items: center; justify-content: center;
+    }
+    .platform-name { font-size: 11px; font-weight: 500; color: #3c4043; }
+
+    .id-field-group { display: flex; align-items: center; gap: 5px; margin-top: 5px; }
+    .id-label { font-size: 10px; color: var(--text-gray); width: 45px; }
+    .id-input { flex: 1; }
+
+    .story-chip {
+      padding: 2px 8px; border-radius: 12px; background: #f1f3f4; color: var(--text-gray); 
+      font-size: 8px; font-weight: 700; cursor: pointer; border: 1px solid transparent; transition: all 0.2s;
+    }
+    .story-chip.active { background: var(--chip-bg); color: var(--primary); border-color: var(--primary); }
+
+    .switch { position: relative; display: inline-block; width: 32px; height: 18px; }
+    .switch input { opacity: 0; width: 0; height: 0; }
+    .slider { position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; background-color: #ccc; transition: .4s; border-radius: 18px; }
+    .slider:before { position: absolute; content: ""; height: 14px; width: 14px; left: 2px; bottom: 2px; background-color: white; transition: .4s; border-radius: 50%; }
+    input:checked + .slider { background-color: var(--primary); }
+    input:checked + .slider:before { transform: translateX(14px); }
+
+    .automation-row { display: flex; align-items: center; justify-content: space-between; margin-bottom: 10px; }
+    .freq-select { padding: 4px; font-size: 11px; border-radius: 4px; border: 1px solid var(--border-gray); width: 120px; }
+
+    .footer { position: fixed; bottom: 0; left: 0; right: 0; padding: 12px; background: white; border-top: 1px solid var(--border-gray); z-index: 1000; display: flex; flex-direction: column; gap: 8px; }
+    .main-btn { width: 100%; border: none; padding: 12px; border-radius: 6px; font-size: 13px; font-weight: 500; cursor: pointer; background-color: var(--primary); color: white; text-transform: uppercase; letter-spacing: 0.5px; transition: all 0.1s; }
+    .main-btn:active:not(:disabled) { transform: scale(0.98); }
+    .main-btn:disabled { background-color: #ccc; cursor: not-allowed; opacity: 0.7; }
+    
+    .secondary-btn { border: none; padding: 8px; border-radius: 4px; font-size: 11px; font-weight: 500; cursor: pointer; transition: all 0.1s; }
+    .secondary-btn:active:not(:disabled) { transform: scale(0.96); }
+    .secondary-btn:disabled { opacity: 0.5; cursor: not-allowed; }
+    
+    .reset-btn { width: 100%; border: 1px solid var(--border-gray); background: white; color: var(--error); padding: 8px; font-size: 11px; border-radius: 4px; cursor: pointer; transition: all 0.1s; }
+    .reset-btn:active:not(:disabled) { transform: scale(0.98); background: #fff5f5; }
+
+    #status { font-size: 10px; text-align: center; padding: 4px; border-radius: 4px; display: none; margin-bottom: 8px; min-height: 14px; }
+    .status-success { background-color: #e6f4ea; color: var(--success); display: block !important; }
+    .status-error { background-color: #fce8e6; color: var(--error); display: block !important; border: 1px solid var(--error); }
+
+    .tooltip { position: relative; }
+    .tooltip .tooltiptext {
+      visibility: hidden; width: 140px; background-color: #333; color: #fff; text-align: left; border-radius: 4px; padding: 6px;
+      position: absolute; z-index: 1000; bottom: 125%; left: 0; opacity: 0; transition: opacity 0.3s; font-size: 10px; line-height: 1.3;
+    }
+    .tooltip:hover .tooltiptext { visibility: visible; opacity: 1; }
+  </style>
+</head>
+<body>
+  <div class="header">
+    <h2>POST.devad.io</h2>
+  </div>
+
+  <div class="container">
+    <div id="status"></div>
+
+    <div class="section-title">🔑 Credentials</div>
+    <div class="card">
+      <div class="token-hint">Generate your token & IDs at: <a href="https://post.devad.io/app/profile/settings" target="_blank">post.devad.io</a></div>
+      <input type="password" id="apiToken" placeholder="Paste API Token here...">
+    </div>
+
+    <div class="section-title">Sheet Setup</div>
+    <div class="card">
+      <div class="token-hint">
+        Use a sheet tab named <strong>post</strong>.<br>
+        Row 1 must contain headers.<br>
+        Column G must be <strong>Not yet</strong> or <strong>To do</strong> to queue a post.<br>
+        Promo Link: B, Title: C, Caption: D, Media URL: E, Media Type: F, Log: I.
+      </div>
+    </div>
+
+
+    <div class="section-title">📱 Social Accounts</div>
+    <div id="platformList"></div>
+
+    <div class="section-title">⏲️ Automation</div>
+    <div class="card">
+      <div class="automation-row">
+        <span>Freq:</span>
+        <select id="triggerFreq" class="freq-select">
+          <option value="minute_1">Every 1 Minute</option>
+          <option value="hour_1" selected>Every 1 Hour</option>
+          <option value="hour_6">Every 6 Hours</option>
+          <option value="hour_12">Every 12 Hours</option>
+          <option value="day_1">Every 24 Hours</option>
+        </select>
+      </div>
+      <div style="display:flex; gap: 8px;">
+        <button id="btnStart" class="secondary-btn" style="flex:1; background:#e6f4ea; color:var(--success);" onclick="startAutomation()">Enable</button>
+        <button id="btnStop" class="secondary-btn" style="flex:1; background:#fce8e6; color:var(--error);" onclick="stopAutomation()">🛑 Stop</button>
+      </div>
+      <div id="nextRunDisplay" style="font-size:11px; color:#5f6368; text-align:center; margin-top:5px;">Status: Unknown</div>
+    </div>
+  </div>
+
+  <div class="footer">
+    <button id="btnMainSync" class="main-btn" onclick="saveAndRun()">SAVE & RUN SYNC</button>
+    <button id="btnReset" class="reset-btn" onclick="wipeAndReset()">🧹 CLEAN ALL / RESET IDs</button>
+  </div>
+
+  <script>
+    function init() {
+      google.script.run.withSuccessHandler(renderData).withFailureHandler(showError).getUnifiedData();
+    }
+
+    function renderData(data) {
+      document.getElementById('apiToken').value = data.token;
+      document.getElementById('triggerFreq').value = data.selectedSchedule || 'hour_1';
+      const container = document.getElementById('platformList');
+      container.innerHTML = '';
+
+      if (data.platforms.length === 0) {
+        container.innerHTML = '<div style="font-size:11px; color:#5f6368; padding:10px; text-align:center;">No platforms detected. Check Registry in ConfigService.</div>';
+      }
+
+      data.platforms.forEach(p => {
+        const isPinterest = p.handle.includes('pinterest');
+        const supportsStory = p.handle.includes('fb') || p.handle.includes('ig');
+
+        const card = document.createElement('div');
+        card.className = 'card platform-card';
+        card.setAttribute('data-handle', p.handle);
+        card.innerHTML = `
+          <div class="card-row">
+            <div class="info-group">
+              <div class="tooltip"><span class="help-icon">?</span><span class="tooltiptext">${p.help}</span></div>
+              <div class="platform-name">${p.name}</div>
+            </div>
+            <div style="display:flex; align-items:center; gap:8px;">
+              <div class="story-chip ${p.includeLinkInCaption ? 'active' : ''}" data-chip="link" onclick="this.classList.toggle('active')">+ LINK</div>
+              ${supportsStory ? `<div class="story-chip ${p.plusStory ? 'active' : ''}" onclick="this.classList.toggle('active')">+ STORY</div>` : ''}
+              <label class="switch">
+                <input type="checkbox" class="p-toggle" ${p.enabled ? 'checked' : ''}>
+                <span class="slider"></span>
+              </label>
+            </div>
+          </div>
+          <div class="id-field-group">
+            <span class="id-label">ID:</span>
+            <input type="text" class="p-id id-input" value="${p.id}" placeholder="Integration ID here...">
+          </div>
+          ${isPinterest ? `
+          <div class="id-field-group">
+            <span class="id-label">BOARD:</span>
+            <input type="text" class="p-board id-input" value="${p.boardId || ''}" placeholder="Board ID here...">
+          </div>` : ''}
+        `;
+        container.appendChild(card);
+      });
+      document.getElementById('nextRunDisplay').innerText = "Status: " + data.triggerStatus;
+      setLoading(false);
+    }
+
+    function saveAndRun() {
+      const payload = {
+        token: document.getElementById('apiToken').value.trim(),
+        platforms: []
+      };
+
+      document.querySelectorAll('.platform-card').forEach(card => {
+        const handle = card.getAttribute('data-handle');
+        const enabled = card.querySelector('.p-toggle').checked;
+        const id = card.querySelector('.p-id').value.trim();
+        const boardInput = card.querySelector('.p-board');
+        const includeLinkChip = card.querySelector('[data-chip="link"]');
+        const plusStoryChip = Array.from(card.querySelectorAll('.story-chip')).filter(chip => chip.getAttribute('data-chip') !== 'link')[0];
+
+        payload.platforms.push({
+          handle: handle,
+          id: id,
+          boardId: boardInput ? boardInput.value.trim() : null,
+          enabled: enabled,
+          includeLinkInCaption: includeLinkChip ? includeLinkChip.classList.contains('active') : false,
+          plusStory: plusStoryChip ? plusStoryChip.classList.contains('active') : false
+        });
+      });
+
+      setLoading(true, "⏳ Saving & Starting...");
+      google.script.run
+        .withSuccessHandler(() => { showSuccess("All Settled! Starting Sync..."); init(); })
+        .withFailureHandler(err => { showError(err); setLoading(false); })
+        .saveAndSync(payload);
+    }
+
+    function wipeAndReset() {
+      if (confirm("🧹 CAUTION: This will wipe your Token and all configured IDs. Continue?")) {
+        setLoading(true, "🧹 Cleaning Everything...");
+        google.script.run
+          .withSuccessHandler(() => { showSuccess("System Cleaned!"); init(); })
+          .withFailureHandler(err => { showError(err); setLoading(false); })
+          .wipeAllData();
+      }
+    }
+
+    function startAutomation() {
+      const freq = document.getElementById('triggerFreq').value;
+      setLoading(true, "⏳ Activating Automation...");
+      google.script.run
+        .withSuccessHandler(() => { showSuccess("Automation Running!"); init(); })
+        .withFailureHandler(err => { showError(err); setLoading(false); })
+        .setAutomationTrigger(freq);
+    }
+
+    function stopAutomation() {
+      setLoading(true, "🛑 Stopping Automation...");
+      google.script.run
+        .withSuccessHandler(() => { showSuccess("Automation Stopped"); init(); })
+        .withFailureHandler(err => { showError(err); setLoading(false); })
+        .stopAllTriggers();
+    }
+
+    function setLoading(isLoading, msg) {
+      const buttons = document.querySelectorAll('button, input, select');
+      buttons.forEach(b => b.disabled = isLoading);
+      const mainBtn = document.getElementById('btnMainSync');
+      if (isLoading) {
+        showProcessing(msg || "Processing...");
+        mainBtn.innerText = "⏳ Processing...";
+      } else {
+        mainBtn.innerText = "SAVE & RUN SYNC";
+      }
+    }
+
+    function showProcessing(msg) { const sn = document.getElementById('status'); sn.innerText = msg; sn.className = 'status-success'; sn.style.background = '#e8f0fe'; sn.style.color = '#1a73e8'; }
+    function showSuccess(msg) { const sn = document.getElementById('status'); sn.innerText = msg; sn.className = 'status-success'; sn.style.background = ''; sn.style.color = ''; setTimeout(() => sn.style.display = 'none', 5000); }
+    function showError(err) {
+      const message = (err && err.message) ? err.message : String(err || 'Unknown error');
+      const sn = document.getElementById('status');
+      sn.innerText = "Error: " + message;
+      sn.className = 'status-error';
+    }
+
+    window.onload = init;
+  </script>
+</body>
+</html>

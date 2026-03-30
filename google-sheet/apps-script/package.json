@@ -1,0 +1,28 @@
+{
+  "name": "appsscript_postapi",
+  "version": "1.0.0",
+  "description": "Apps Script source for POST.devad.io Google Sheets automation",
+  "main": "index.js",
+  "scripts": {
+    "clasp:login": "clasp login",
+    "clasp:status": "clasp status",
+    "clasp:push": "clasp push -f",
+    "clasp:pull": "clasp pull",
+    "clasp:open": "clasp open"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/devadio/Sheet-Claw-skill.git"
+  },
+  "keywords": [],
+  "author": "devadio",
+  "license": "UNLICENSED",
+  "type": "commonjs",
+  "bugs": {
+    "url": "https://github.com/devadio/Sheet-Claw-skill/issues"
+  },
+  "homepage": "https://github.com/devadio/Sheet-Claw-skill#readme",
+  "devDependencies": {
+    "@google/clasp": "^3.3.0"
+  }
+}

@@ -56,6 +56,19 @@ Your agent simply needs to call our REST endpoint. A production-ready **Node.js 
 
 ---
 
+## Google Sheet Automation
+
+If you want the spreadsheet-based workflow, start here:
+
+- [Google Sheet Guide](google-sheet/README.md)
+- [Apps Script Bundle](google-sheet/apps-script/README.md)
+
+The Apps Script folder is a full working reference for turning a Google Sheet into a publishing queue. It shows how the row data is read, how media is detected, how each platform gets its own payload, and how results are written back into the sheet.
+
+Because it is a complete implementation, an AI agent can also use it as a blueprint to customize the same workflow in other environments or programming languages.
+
+---
+
 ## 🤖 Master Prompt for AI Agents
 
 Want to give your AI (Claude, OpenClaw, etc.) instant social media powers? Copy the block below and paste it into your agent's chat along with your API Token.
@@ -101,6 +114,8 @@ My API Token: [PASTE_YOUR_TOKEN_HERE]
 - `MASTER_PROMPT.md`: One-click onboarding for AI Assistants.
 - `scripts/`: Production-ready test runners in **JavaScript** and **PHP**.
 - `payloads/`: 20+ ready-to-use JSON samples for every platform and media type.
+- `google-sheet/`: Google Sheets automation guide and documentation.
+- `google-sheet/apps-script/`: Full Apps Script reference bundle for the live sheet workflow.
 
 ---
 
