@@ -2,6 +2,8 @@
 
 This bundle does the heavy lifting: it reads the Sheet, detects media, builds per-platform payloads, uploads files, and writes results back to the log. That leaves the AI agent free to focus on generating the content and media instead of rebuilding the posting engine.
 
+It also includes a lightweight Apps Script Web App API pattern for AI agents that need to read rows as JSON and make tightly restricted updates without a full Google Cloud Console setup.
+
 This folder contains the Apps Script project files used by the Google Sheet automation workflow. It is intended to be copied into a Google Sheets bound Apps Script project, or used as a reference when building the same automation in another stack.
 
 ## What This Bundle Is
@@ -23,10 +25,59 @@ At a high level it does this:
 - `DriveService.gs` - Google Drive file and folder handling
 - `PostService.gs` - upload and publish API calls
 - `SheetUI.gs` - sheet trigger, queue, logging, and UI logic
+- `WebAppApi.gs` - lightweight JSON API for AI agents
 - `SettingsSidebar.html` - publication manager sidebar
 - `HelpDialog.html` - quick help dialog
 - `USAGE_GUIDE.md` - beginner-friendly usage guide
 - `package.json` and `package-lock.json` - local clasp/dev helper files
+
+## AI Agent Web App Feature
+
+This feature turns the same Google Sheet into a small JSON API.
+
+Why this matters:
+
+- the AI agent can read the sheet with a simple `GET`
+- the AI agent can update only approved columns with a token-protected `POST`
+- no separate Google Cloud Console API project is required for this pattern
+- it is easy to deploy and easy for lightweight agents to understand
+
+The current example is designed for:
+
+- open read access
+- token-protected write access
+- edit permissions limited to `Status` and `Notes`
+- a safe demo sheet tab named `agent_api_demo`
+
+Example behavior:
+
+- `GET <WEB_APP_URL>?sheet=agent_api_demo` returns all rows as JSON with `__rowNumber`
+- `POST <WEB_APP_URL>` with `token`, `rowNumber`, `column`, `value`, and optional `sheet` updates one allowed cell
+
+### Deploy And Test This Web App Feature
+
+1. Push the Apps Script files to the bound script project.
+2. Deploy the script as a Web App with anonymous access if your Google account or workspace policy allows it.
+3. Test the endpoint with:
+   - `GET` to read all rows
+   - `POST` with the token to update only `Status` or `Notes`
+
+Example test URLs and payload shape:
+
+- `GET <WEB_APP_URL>?sheet=agent_api_demo`
+- `POST <WEB_APP_URL>` with JSON:
+
+```json
+{
+  "token": "your-custom-secure-token-123",
+  "sheet": "agent_api_demo",
+  "rowNumber": 3,
+  "column": "Notes",
+  "value": "Updated by API"
+}
+```
+
+If Google still blocks anonymous access on a specific account or workspace, the code is still valid. In that case, finish the deployment from the Apps Script editor and use the generated Web App URL there.
 
 ## How To Add This To A Google Sheet
 

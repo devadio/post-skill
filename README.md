@@ -4,6 +4,8 @@ POST.devad.io is the heavy-lifting layer. The skill, scripts, and publishing ser
 
 Instead of reinventing the automation plumbing, the agent only needs to decide what to post, which media to use, and when to publish it.
 
+It also now includes a Google Sheets Apps Script Web App API pattern, so an AI agent can read rows as JSON and make tightly restricted updates through a lightweight token-protected sheet endpoint when that workflow fits better than direct API posting.
+
 ---
 
 ## ✨ Why You'll Love It (The Benefits)
@@ -71,7 +73,7 @@ If you want the spreadsheet-based workflow, start here:
 - [Google Sheet Guide](google-sheet/README.md)
 - [Apps Script Bundle](google-sheet/apps-script/README.md)
 
-The Apps Script folder is a full working reference for turning a Google Sheet into a publishing queue. It shows how the row data is read, how media is detected, how each platform gets its own payload, and how results are written back into the sheet.
+The Apps Script folder is a full working reference for turning a Google Sheet into a publishing queue. It shows how the row data is read, how media is detected, how each platform gets its own payload, how results are written back into the sheet, and how to expose a small web-app API for lightweight AI agents.
 
 Because it is a complete implementation, an AI agent can also use it as a blueprint to customize the same workflow in other environments or programming languages.
 
