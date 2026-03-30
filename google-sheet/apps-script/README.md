@@ -1,7 +1,8 @@
 # POST.devad.io Google Sheets Apps Script Bundle
 
-This folder contains the Apps Script project files used by the Google Sheet automation workflow.
-It is intended to be copied into a Google Sheets bound Apps Script project, or used as a reference when building the same automation in another stack.
+This bundle does the heavy lifting: it reads the Sheet, detects media, builds per-platform payloads, uploads files, and writes results back to the log. That leaves the AI agent free to focus on generating the content and media instead of rebuilding the posting engine.
+
+This folder contains the Apps Script project files used by the Google Sheet automation workflow. It is intended to be copied into a Google Sheets bound Apps Script project, or used as a reference when building the same automation in another stack.
 
 ## What This Bundle Is
 

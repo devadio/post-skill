@@ -1,7 +1,8 @@
 # Google Sheet Automation
 
-This folder is the landing page for the Google Sheets workflow behind POST.devad.io.
-It is meant for people who want to run the sheet-based automation, and also for AI agents or developers who want a clear reference for how the workflow is structured.
+POST.devad.io handles the heavy lifting here: the sheet logic, Apps Script, and publication manager take care of queueing, uploads, platform rules, retries, and logging. The AI agent stays focused on writing the caption, choosing the media, and filling the right row.
+
+This folder is the landing page for the Google Sheets workflow behind POST.devad.io, and it is also a clear reference for AI agents or developers who want to understand the workflow before customizing it elsewhere.
 
 ## What You Will Find Here
 

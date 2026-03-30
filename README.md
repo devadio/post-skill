@@ -1,10 +1,8 @@
 # 🤖 POST.devad.io Agent Skill
 
-> **🔥 Imagine writing one prompt and watching your content instantly publish across 10+ social networks.**
+POST.devad.io is the heavy-lifting layer. The skill, scripts, and publishing service handle queueing, payload shaping, uploads, retries, and logging so the AI agent can stay focused on generating the content and media.
 
-No more jumping between tabs. No more downloading and re-uploading. No more manual scheduling. Just pure, 100% automated growth. 🚀
-
-Meet **POST.devad.io** — the ultimate engine to automate your social media like a pro.
+Instead of reinventing the automation plumbing, the agent only needs to decide what to post, which media to use, and when to publish it.
 
 ---
 
