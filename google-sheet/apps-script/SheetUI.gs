@@ -23,7 +23,7 @@ function onOpen() {
   const ui = SpreadsheetApp.getUi();
   ui.createMenu("🚀 POST.devad.io")
     .addItem("📱 Publication Manager", "showSidebar")
-    .addItem("AI Agent Token", "showAiAgentTokenDialog")
+    .addItem("🤖 AI Agent Token", "showAiAgentTokenDialog")
     .addSeparator()
     .addItem("❓ Help / Support", "showHelpDialog")
     .addToUi();

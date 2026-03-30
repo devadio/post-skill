@@ -2,48 +2,151 @@
 <html>
 <head>
   <base target="_top">
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
   <style>
-    body { font-family: Arial, sans-serif; color: #202124; margin: 16px; line-height: 1.45; font-size: 13px; }
-    h2 { margin: 0 0 10px 0; font-size: 18px; color: #1a73e8; }
-    p { margin: 0 0 10px 0; }
-    code, textarea { font-family: Consolas, monospace; }
-    textarea { width: 100%; box-sizing: border-box; min-height: 78px; border: 1px solid #dadce0; border-radius: 6px; padding: 10px; resize: vertical; }
-    .meta { background: #f8f9fa; border: 1px solid #dadce0; border-radius: 6px; padding: 10px; margin: 12px 0; }
-    .buttons { display: flex; gap: 8px; margin: 12px 0; }
-    button { border: none; border-radius: 6px; padding: 10px 12px; cursor: pointer; font-size: 12px; font-weight: 600; }
-    .primary { background: #1a73e8; color: white; }
-    .danger { background: #d93025; color: white; }
-    .ghost { background: #f1f3f4; color: #202124; }
+    :root {
+      --primary: #1a73e8;
+      --bg-gray: #f8f9fa;
+      --border-gray: #dadce0;
+      --text-main: #202124;
+      --text-gray: #5f6368;
+      --success: #1e8e3e;
+      --error: #d93025;
+    }
+    body {
+      padding: 0;
+      margin: 0;
+      font-family: 'Roboto', sans-serif;
+      background-color: var(--bg-gray);
+      color: var(--text-main);
+      font-size: 13px;
+    }
+    .header {
+      background-color: white;
+      padding: 12px 15px;
+      border-bottom: 2px solid var(--primary);
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      box-shadow: 0 1px 4px rgba(0,0,0,0.1);
+    }
+    .header h2 {
+      margin: 0;
+      font-size: 14px;
+      color: var(--primary);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+    .container {
+      padding: 12px;
+      padding-bottom: 24px;
+    }
+    .card {
+      background: white;
+      border-radius: 6px;
+      margin-bottom: 10px;
+      padding: 10px;
+      border: 1px solid var(--border-gray);
+      box-shadow: 0 1px 2px rgba(0,0,0,0.05);
+    }
+    .section-title {
+      font-size: 10px;
+      font-weight: 700;
+      text-transform: uppercase;
+      color: var(--text-gray);
+      margin: 15px 0 8px 0;
+      letter-spacing: 0.8px;
+      border-bottom: 1px solid var(--border-gray);
+      padding-bottom: 4px;
+    }
+    .hint {
+      font-size: 11px;
+      color: var(--text-gray);
+      line-height: 1.5;
+      margin: 0 0 8px 0;
+    }
+    textarea {
+      width: 100%;
+      box-sizing: border-box;
+      min-height: 82px;
+      border: 1px solid var(--border-gray);
+      border-radius: 4px;
+      padding: 8px 10px;
+      resize: vertical;
+      font-family: Consolas, monospace;
+      font-size: 12px;
+    }
+    .buttons {
+      display: flex;
+      gap: 8px;
+      margin-top: 10px;
+    }
+    button {
+      border: none;
+      padding: 10px;
+      border-radius: 6px;
+      font-size: 12px;
+      font-weight: 500;
+      cursor: pointer;
+      flex: 1;
+    }
+    .primary { background: var(--primary); color: white; }
+    .danger { background: #fce8e6; color: var(--error); }
+    .ghost { background: #f1f3f4; color: var(--text-main); }
+    .status {
+      display: none;
+      margin-top: 10px;
+      font-size: 11px;
+      padding: 6px 8px;
+      border-radius: 4px;
+      background: #e6f4ea;
+      color: var(--success);
+    }
+    p { margin: 0 0 8px 0; }
     ul { margin: 0 0 0 18px; padding: 0; }
     li { margin-bottom: 7px; }
-    .status { margin-top: 10px; font-size: 12px; color: #188038; display: none; }
+    code {
+      font-family: Consolas, monospace;
+      background: #f1f3f4;
+      padding: 1px 4px;
+      border-radius: 4px;
+    }
   </style>
 </head>
 <body>
-  <h2>AI Agent Token</h2>
-  <p>Use this token for the Google Sheet web-app API. Read access is open. Write access needs this token.</p>
-  <textarea id="tokenBox" readonly placeholder="Loading token..."></textarea>
-  <div class="buttons">
-    <button class="primary" onclick="generateToken()">Generate Token</button>
-    <button class="danger" onclick="resetToken()">Reset Token</button>
-    <button class="ghost" onclick="copyToken()">Copy</button>
+  <div class="header">
+    <h2>AI Agent Token</h2>
   </div>
-  <div class="meta">
-    <p><strong>Short Tips</strong></p>
-    <ul>
-      <li>Use this token only for AI-agent write requests.</li>
-      <li>The API is limited to the <code>post</code> tab and range <code>A:I</code>.</li>
-      <li>Row 1 headers are protected and cannot be changed.</li>
-      <li>If a token is exposed, use <strong>Reset Token</strong> immediately.</li>
-      <li>The AI agent should mainly write content fields and avoid overwriting helper or output fields unless intended.</li>
-    </ul>
+  <div class="container">
+    <div class="card">
+      <p class="hint">Use this token for Google Sheet web-app write requests. Read access is open. Write access requires this token.</p>
+      <textarea id="tokenBox" readonly placeholder="Loading token..."></textarea>
+      <div class="buttons">
+        <button class="primary" onclick="generateToken()">Generate</button>
+        <button class="danger" onclick="resetToken()">Reset</button>
+        <button class="ghost" onclick="copyToken()">Copy</button>
+      </div>
+      <div id="status" class="status">Token updated.</div>
+    </div>
+
+    <div class="section-title">Short Tips</div>
+    <div class="card">
+      <ul>
+        <li>Use this token only for AI-agent write requests.</li>
+        <li>The API is limited to the <code>post</code> tab and range <code>A:I</code>.</li>
+        <li>Row 1 headers are protected and cannot be changed.</li>
+        <li>If a token is exposed, use <strong>Reset</strong> immediately.</li>
+        <li>The AI agent should mainly write content fields and avoid helper or output fields unless intended.</li>
+      </ul>
+    </div>
+
+    <div class="section-title">Current Scope</div>
+    <div class="card">
+      <p>Tab: <code id="sheetName">post</code></p>
+      <p>Range: <code id="sheetRange">A:I</code></p>
+    </div>
   </div>
-  <div class="meta">
-    <p><strong>Current Scope</strong></p>
-    <p>Tab: <code id="sheetName">post</code></p>
-    <p>Range: <code id="sheetRange">A:I</code></p>
-  </div>
-  <div id="status" class="status">Token updated.</div>
+
   <script>
     function init() {
       google.script.run.withSuccessHandler(renderInfo).getAiAgentTokenInfo();

@@ -118,9 +118,8 @@ function showAiAgentTokenDialog() {
   const html = HtmlService.createTemplateFromFile("AiAgentTokenDialog")
     .evaluate()
     .setTitle("AI Agent Token")
-    .setWidth(420)
-    .setHeight(360);
-  SpreadsheetApp.getUi().showModalDialog(html, "AI Agent Token");
+    .setWidth(450);
+  SpreadsheetApp.getUi().showSidebar(html);
 }
 
 function getAiAgentTokenInfo() {
