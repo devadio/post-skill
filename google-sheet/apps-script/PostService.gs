@@ -198,6 +198,7 @@ function shouldAddStoryDuplicate_(platform, mediaSpec) {
  */
 function sendPost(rowData, config, mediaUrls, mediaSpec) {
   const posts = [];
+  const storyPosts = [];
   const skippedPlatforms = [];
 
   config.platforms.forEach(p => {
@@ -219,27 +220,52 @@ function sendPost(rowData, config, mediaUrls, mediaSpec) {
       storyEntry.settings.post_type = "story";
       if (handle === "fb_page") storyEntry.settings.fb_type = "stories";
       if (handle === "ig_profile") storyEntry.settings.ig_type = "stories";
-      posts.push(storyEntry);
+      storyPosts.push(storyEntry);
     }
   });
 
   if (posts.length === 0) throw new Error("No compatible platforms found for this row's media type.");
 
+  let finalServerResponse = "";
+  let finalCode = 200;
+
+  // Dispatch Feed Posts
   const url = "https://post.devad.io/api/public/v1/posts?api_token=" + config.token;
-  const options = {
+  const feedResponse = UrlFetchApp.fetch(url, {
     method: "post",
     contentType: "application/json",
     payload: JSON.stringify({ posts: posts }),
     muteHttpExceptions: true
-  };
+  });
+  
+  finalCode = feedResponse.getResponseCode();
+  finalServerResponse = feedResponse.getContentText();
+  let json = parseJsonResponse_(finalServerResponse);
 
-  const response = UrlFetchApp.fetch(url, options);
-  const jsonText = response.getContentText();
-  const json = parseJsonResponse_(jsonText);
-
-  if (response.getResponseCode() !== 201 && response.getResponseCode() !== 202) {
-    throw createResponseAwareError_("Post Failed (" + response.getResponseCode() + "): " + (json.message || jsonText), response.getResponseCode(), jsonText);
+  if (finalCode !== 201 && finalCode !== 202 && finalCode !== 200) {
+    throw createResponseAwareError_("Feed Post Failed (" + finalCode + "): " + (json.message || finalServerResponse), finalCode, finalServerResponse);
   }
 
-  return { skippedPlatforms: skippedPlatforms, responseCode: response.getResponseCode(), serverResponse: jsonText };
+  // Dispatch Story Posts in a second request to prevent backend overwriting same integration IDs
+  if (storyPosts.length > 0) {
+    Utilities.sleep(1500); // Slight delay for safety
+    const storyResponse = UrlFetchApp.fetch(url, {
+      method: "post",
+      contentType: "application/json",
+      payload: JSON.stringify({ posts: storyPosts }),
+      muteHttpExceptions: true
+    });
+    
+    const storyCode = storyResponse.getResponseCode();
+    const storyText = storyResponse.getContentText();
+    const storyJson = parseJsonResponse_(storyText);
+    
+    if (storyCode !== 201 && storyCode !== 202 && storyCode !== 200) {
+      throw createResponseAwareError_("Story Post Failed (" + storyCode + "): " + (storyJson.message || storyText), storyCode, storyText);
+    }
+    
+    finalServerResponse += " | Story Response: " + storyText;
+  }
+
+  return { skippedPlatforms: skippedPlatforms, responseCode: finalCode, serverResponse: finalServerResponse };
 }
