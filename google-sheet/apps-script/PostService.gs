@@ -98,8 +98,10 @@ function getPromoLinkMode_(platform) {
  */
 function composeCaption_(rowData, platform) {
   const caption = String(rowData.caption || "").trim();
-  let safeLink = isValidHttpUrl_(rowData.promoLink) ? String(rowData.promoLink).trim() : "";
-  if (safeLink && !/^https?:\/\//i.test(safeLink)) safeLink = "https://" + safeLink;
+  let safeLink = String(rowData.promoLink || "").trim();
+  if (safeLink && isValidHttpUrl_(safeLink) && !/^https?:\/\//i.test(safeLink)) {
+    safeLink = "https://" + safeLink;
+  }
   
   const mode = getPromoLinkMode_(platform);
   if (mode !== "caption" || !safeLink) return caption;
@@ -116,8 +118,11 @@ function buildPlatformSettings_(platform, rowData, mediaSpec) {
   const detectedType = mediaSpec.type;
   const settings = {};
   const safeTitle = String(rowData.title || "").trim();
-  let safeLink = isValidHttpUrl_(rowData.promoLink) ? String(rowData.promoLink).trim() : "";
-  if (safeLink && !/^https?:\/\//i.test(safeLink)) safeLink = "https://" + safeLink;
+  
+  let safeLink = String(rowData.promoLink || "").trim();
+  if (safeLink && isValidHttpUrl_(safeLink) && !/^https?:\/\//i.test(safeLink)) {
+    safeLink = "https://" + safeLink;
+  }
   const promoLinkMode = getPromoLinkMode_(platform);
 
   if (handle === "fb_page") {

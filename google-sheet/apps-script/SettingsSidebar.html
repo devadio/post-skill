@@ -82,7 +82,7 @@
       <div class="token-hint">
         Tab: <strong>post</strong> · Row 1 = headers · Col G = <strong>Not yet</strong> or <strong>To do</strong> to queue.<br>
         B=Promo Link, C=Title, D=Caption, E=Media URL, F=Media Type, I=Log.<br>
-        <strong>+ CAPTION</strong> → appends promo link to caption.<br>
+        <strong>+ LINK</strong> → appends promo link to caption.<br>
         <strong>💬 COMMENT</strong> → posts promo link as 1st comment (FB &amp; IG only). These are mutually exclusive.
       </div>
     </div>
@@ -171,7 +171,7 @@
           <div style="display:flex; align-items:center; gap:6px; flex-wrap:wrap; margin-bottom:6px; margin-left:22px;">
             <div class="link-chip ${captionActive ? 'caption-active' : ''}"
                  data-chip="link-caption"
-                 onclick="togglePromoLink(this, 'caption')">+ CAPTION</div>
+                 onclick="togglePromoLink(this, 'caption')">+ LINK</div>
             ${isFbOrIg ? `
             <div class="link-chip ${commentActive ? 'comment-active' : ''}"
                  data-chip="link-comment"
