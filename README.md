@@ -28,11 +28,13 @@ Apps Script Engine: The [google-sheet/apps-script/](https://www.google.com/searc
 
 ✅ **Supported Formats & Safe Post Types**
 Post-Skill safely supports the most useful social post types when using stable media links:
-Text: Safest for short updates, CTAs, and announcements. Useful for Facebook, LinkedIn, X, Telegram, Tumblr, and Google Business.
-Single Image: Safest formats are jpg, jpeg, png, and webp. Use one direct public image URL or a Google Drive file with public view access (or stable CDN).
-Carousel: Safest workflow is a Google Drive folder link containing only the intended images. Avoid nested folders, shortcuts, and unsupported files.
-Video / Reels / Shorts: Safest format is mp4. Use one stable public video URL and avoid preview pages, login walls, and expiring links.
-Safe Google Sheet Creative Types: Use image_manual, video_manual, or carousel_manual for the current workflow.
+* **Text**: Safest for short updates, CTAs, and announcements. Useful for Facebook, LinkedIn, X, Telegram, Tumblr, and Google Business.
+* **Single Image**: Safest formats are jpg, jpeg, png, and webp. Use one direct public image URL or a Google Drive file with public view access (or stable CDN).
+* **Carousel**: Safest workflow is a Google Drive folder link containing only the intended images. Avoid nested folders, shortcuts, and unsupported files.
+* **Video / Reels / Shorts**: Safest format is mp4. Use one stable public video URL and avoid preview pages, login walls, and expiring links.
+* **Stories**: Safest format is 9:16 jpg/mp4. Use one public URL. Supported natively for Facebook and Instagram. Use the `+ STORY` button in Google Sheets to auto-duplicate feed posts to your story!
+* **First Comment**: Post promotional links or discussion-starters as the first comment automatically (Supported on Facebook and Instagram). Use the `💬 COMMENT` button in the UI.
+* Safe Google Sheet Creative Types: Use `image_manual`, `video_manual`, or `carousel_manual` for the current workflow.
 
 🌍 **Supported Channels**
 Automate workflows for 10 platforms (behavior depends on account setup and media type):
