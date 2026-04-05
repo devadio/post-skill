@@ -231,6 +231,13 @@ function sendPost(rowData, config, mediaUrls, mediaSpec) {
 
   if (posts.length === 0) throw new Error("No compatible platforms found for this row's media type.");
 
+  // Debug payload string
+  let payloadStr = "";
+  try {
+     payloadStr = JSON.stringify(posts[0].settings);
+  } catch(e) {}
+
+
   let finalServerResponse = "";
   let finalCode = 200;
 
@@ -246,6 +253,8 @@ function sendPost(rowData, config, mediaUrls, mediaSpec) {
   finalCode = feedResponse.getResponseCode();
   finalServerResponse = feedResponse.getContentText();
   let json = parseJsonResponse_(finalServerResponse);
+  
+  finalServerResponse = "Payload Settings: " + payloadStr + " | API Resp: " + finalServerResponse;
 
   if (finalCode !== 201 && finalCode !== 202 && finalCode !== 200) {
     throw createResponseAwareError_("Feed Post Failed (" + finalCode + "): " + (json.message || finalServerResponse), finalCode, finalServerResponse);
