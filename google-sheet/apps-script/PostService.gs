@@ -77,7 +77,9 @@ function normalizeMediaType_(mediaType) {
 
 function isValidHttpUrl_(value) {
   if (!value) return false;
-  return /^https?:\/\/\S+$/i.test(String(value).trim());
+  const str = String(value).trim();
+  // Simple check: does it have a dot and no spaces?
+  return /^[^\s]+\.[^\s]+$/i.test(str);
 }
 
 /**
@@ -96,7 +98,9 @@ function getPromoLinkMode_(platform) {
  */
 function composeCaption_(rowData, platform) {
   const caption = String(rowData.caption || "").trim();
-  const safeLink = isValidHttpUrl_(rowData.promoLink) ? String(rowData.promoLink).trim() : "";
+  let safeLink = isValidHttpUrl_(rowData.promoLink) ? String(rowData.promoLink).trim() : "";
+  if (safeLink && !/^https?:\/\//i.test(safeLink)) safeLink = "https://" + safeLink;
+  
   const mode = getPromoLinkMode_(platform);
   if (mode !== "caption" || !safeLink) return caption;
   return caption ? caption + "\n\n" + safeLink : safeLink;
@@ -112,7 +116,8 @@ function buildPlatformSettings_(platform, rowData, mediaSpec) {
   const detectedType = mediaSpec.type;
   const settings = {};
   const safeTitle = String(rowData.title || "").trim();
-  const safeLink = isValidHttpUrl_(rowData.promoLink) ? String(rowData.promoLink).trim() : "";
+  let safeLink = isValidHttpUrl_(rowData.promoLink) ? String(rowData.promoLink).trim() : "";
+  if (safeLink && !/^https?:\/\//i.test(safeLink)) safeLink = "https://" + safeLink;
   const promoLinkMode = getPromoLinkMode_(platform);
 
   if (handle === "fb_page") {
