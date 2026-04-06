@@ -32,7 +32,7 @@ If you only need the setup steps for the sheet itself, continue with the Apps Sc
 
 The sheet is row-driven:
 
-- Column `B` stores the promo link
+- Column `B` stores the promo link (or the first comment text)
 - Column `C` stores the title
 - Column `D` stores the caption
 - Column `E` stores the media URL
@@ -41,6 +41,12 @@ The sheet is row-driven:
 - Column `I` stores the log output
 
 The script reads one queued row at a time, prepares the payload per platform, uploads the media when needed, and then writes the result back into the sheet.
+
+### The Settings Sidebar & UI Features
+When you run the *Publication Manager* from the Google Sheets menu, you get a clean interface tailored per platform to control advanced publishing behaviors:
+- **`+ LINK`**: Automatically targets your text/link from Column B and securely attaches it to the end of the post's caption (`D`).
+- **`💬 COMMENT`**: Extracts your text/link from Column B and injects it strictly as the **first comment**. Works beautifully for textual discussion starters or promotional URLs without muddying up the main Facebook/Instagram caption. *(Mutually exclusive with + LINK).*
+- **`+ STORY`**: If your media is a standard Image or Video (`image_manual` or `video_manual`), it safely sends an exact clone of your media dynamically formatted as a Facebook or Instagram Story (meaning you post once to your Feed + once to your Story automatically).
 
 ### Best-Practice Input Rules
 
