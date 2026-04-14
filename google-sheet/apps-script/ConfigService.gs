@@ -21,6 +21,14 @@ const SUPPORTED_PLATFORMS = [
   { handle: "yt_channel",  name: "YouTube Channel",   help: "Video Only." }
 ];
 
+function readJsonProperty_(rawValue, fallbackValue) {
+  try {
+    return rawValue ? JSON.parse(rawValue) : fallbackValue;
+  } catch (e) {
+    return fallbackValue;
+  }
+}
+
 /**
  * Loads the core configuration for publishing.
  * Strictly ignores the 'access' sheet tab.
@@ -30,7 +38,7 @@ const SUPPORTED_PLATFORMS = [
 function loadAccessConfig(throwOnError = true) {
   const scriptProps = PropertiesService.getScriptProperties();
   const token = scriptProps.getProperty("POST_API_TOKEN") || "";
-  const savedSettings = JSON.parse(scriptProps.getProperty("PLATFORM_SETTINGS") || "{}");
+  const savedSettings = readJsonProperty_(scriptProps.getProperty("PLATFORM_SETTINGS"), {});
 
   const config = {
     token: token,
@@ -39,7 +47,7 @@ function loadAccessConfig(throwOnError = true) {
 
   // 🔄 Merge the Registry with User's Saved IDs & Toggles
   SUPPORTED_PLATFORMS.forEach(p => {
-    const setting = savedSettings[p.handle] || { enabled: false, id: "", boardId: "", plusStory: false };
+    const setting = savedSettings[p.handle] || { enabled: false, id: "", boardId: "", plusStory: false, includeLinkInCaption: false };
     
     // Only add to 'active' list if it's explicitly enabled AND has an ID
     if (setting.id && setting.enabled) {
@@ -49,7 +57,6 @@ function loadAccessConfig(throwOnError = true) {
         name: p.name,
         boardId: setting.boardId || "",
         plusStory: setting.plusStory || false,
-        promoLinkMode: setting.promoLinkMode || 'none',
         includeLinkInCaption: setting.includeLinkInCaption || false
       });
     }

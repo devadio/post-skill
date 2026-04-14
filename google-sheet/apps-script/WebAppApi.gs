@@ -122,6 +122,14 @@ function showAiAgentTokenDialog() {
   SpreadsheetApp.getUi().showSidebar(html);
 }
 
+/**
+ * Backward-compatible alias for older menu items or stale deployments.
+ * Keep this wrapper even if the primary function name changes again.
+ */
+function showAiAgentTokenDialogDetails() {
+  return showAiAgentTokenDialog();
+}
+
 function getAiAgentTokenInfo() {
   return {
     token: getAiAgentToken_(),
