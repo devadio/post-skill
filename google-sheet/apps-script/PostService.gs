@@ -98,16 +98,25 @@ function normalizeMediaType_(mediaType) {
 
 function isValidHttpUrl_(value) {
   if (!value) return false;
-  return /^https?:\/\/\S+$/i.test(String(value).trim());
+  const str = String(value).trim();
+  return /^[^\s]+\.[^\s]+$/i.test(str);
 }
 
 function composeCaption_(rowData, platform) {
   const caption = String(rowData.caption || "").trim();
-  const safeLink = isValidHttpUrl_(rowData.promoLink) ? String(rowData.promoLink).trim() : "";
-  if (!platform.includeLinkInCaption || !safeLink) {
-    return caption;
+  let safeLink = String(rowData.promoLink || "").trim();
+  if (safeLink && isValidHttpUrl_(safeLink) && !/^https?:\/\//i.test(safeLink)) {
+    safeLink = "https://" + safeLink;
   }
+  const mode = getPromoLinkMode_(platform);
+  if (mode !== "caption" || !safeLink) return caption;
   return caption ? caption + "\n\n" + safeLink : safeLink;
+}
+
+function getPromoLinkMode_(platform) {
+  if (platform.promoLinkMode) return platform.promoLinkMode;
+  if (platform.includeLinkInCaption) return "caption";
+  return "none";
 }
 
 function buildPlatformSettings_(platform, rowData, mediaSpec) {
@@ -115,12 +124,17 @@ function buildPlatformSettings_(platform, rowData, mediaSpec) {
   const detectedType = mediaSpec.type;
   const settings = {};
   const safeTitle = String(rowData.title || "").trim();
-  const safeLink = isValidHttpUrl_(rowData.promoLink) ? String(rowData.promoLink).trim() : "";
+  let safeLink = String(rowData.promoLink || "").trim();
+  if (safeLink && isValidHttpUrl_(safeLink) && !/^https?:\/\//i.test(safeLink)) {
+    safeLink = "https://" + safeLink;
+  }
+  const promoLinkMode = getPromoLinkMode_(platform);
 
   if (handle === "fb_page") {
     settings.post_type = detectedType;
     if (detectedType === "video") settings.fb_type = "reels";
     if (detectedType === "image" || detectedType === "text" || detectedType === "carousel") settings.fb_type = "feed";
+    if (promoLinkMode === "comment" && safeLink) settings.fb_comment = safeLink;
     return settings;
   }
 
@@ -131,6 +145,7 @@ function buildPlatformSettings_(platform, rowData, mediaSpec) {
     settings.post_type = detectedType;
     if (detectedType === "video") settings.ig_type = "reels";
     if (detectedType === "image") settings.ig_type = "feed";
+    if (promoLinkMode === "comment" && safeLink) settings.ig_comment = safeLink;
     return settings;
   }
 
@@ -216,6 +231,7 @@ function shouldAddStoryDuplicate_(platform, mediaSpec) {
  */
 function sendPost(rowData, config, mediaUrls, mediaSpec) {
   const posts = [];
+  const storyPosts = [];
   const skippedPlatforms = [];
 
   config.platforms.forEach(p => {
@@ -242,12 +258,12 @@ function sendPost(rowData, config, mediaUrls, mediaSpec) {
       const storyEntry = JSON.parse(JSON.stringify(baseEntry));
       storyEntry.settings.post_type = "story";
       if (handle === "fb_page") {
-        storyEntry.settings.fb_type = "story";
+        storyEntry.settings.fb_type = "stories";
       }
       if (handle === "ig_profile") {
-        storyEntry.settings.ig_type = "story";
+        storyEntry.settings.ig_type = "stories";
       }
-      posts.push(storyEntry);
+      storyPosts.push(storyEntry);
     }
   });
 
@@ -274,7 +290,7 @@ function sendPost(rowData, config, mediaUrls, mediaSpec) {
   const json = parseJsonResponse_(jsonText);
 
   // The /posts endpoint returns 201 (Created) or 202 (Accepted) for multi-channel success
-  if (response.getResponseCode() !== 201 && response.getResponseCode() !== 202) {
+  if (response.getResponseCode() !== 201 && response.getResponseCode() !== 202 && response.getResponseCode() !== 200) {
     throw createResponseAwareError_(
       "Post Failed (" + response.getResponseCode() + "): " + (json.message || jsonText),
       response.getResponseCode(),
@@ -282,9 +298,34 @@ function sendPost(rowData, config, mediaUrls, mediaSpec) {
     );
   }
 
+  let finalServerResponse = jsonText;
+
+  if (storyPosts.length > 0) {
+    Utilities.sleep(1500);
+    const storyResponse = UrlFetchApp.fetch(url, {
+      method: "post",
+      contentType: "application/json",
+      payload: JSON.stringify({ posts: storyPosts }),
+      muteHttpExceptions: true
+    });
+    const storyCode = storyResponse.getResponseCode();
+    const storyText = storyResponse.getContentText();
+    const storyJson = parseJsonResponse_(storyText);
+
+    if (storyCode !== 201 && storyCode !== 202 && storyCode !== 200) {
+      throw createResponseAwareError_(
+        "Story Post Failed (" + storyCode + "): " + (storyJson.message || storyText),
+        storyCode,
+        storyText
+      );
+    }
+
+    finalServerResponse += " | Story Response: " + storyText;
+  }
+
   return {
     skippedPlatforms: skippedPlatforms,
     responseCode: response.getResponseCode(),
-    serverResponse: jsonText
+    serverResponse: finalServerResponse
   };
 }

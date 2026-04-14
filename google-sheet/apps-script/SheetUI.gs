@@ -85,13 +85,15 @@ function saveUnifiedData(payload) {
 
   const platformSettings = {};
   payload.platforms.forEach(p => {
-    // Store Toggle, ID, plusStory, and BoardID using Registry Handle
+    const promoLinkMode = p.promoLinkMode || (p.includeLinkInCaption ? "caption" : "none");
+
     platformSettings[p.handle] = {
       id: p.id || "",
       enabled: p.enabled,
       plusStory: p.plusStory,
       boardId: p.boardId || null,
-      includeLinkInCaption: p.includeLinkInCaption || false
+      promoLinkMode: promoLinkMode,
+      includeLinkInCaption: promoLinkMode === "caption"
     };
   });
 
@@ -143,7 +145,16 @@ function getPlatformSettings() {
   
   // SUPPORTED_PLATFORMS is defined in ConfigService.gs
   return SUPPORTED_PLATFORMS.map(p => {
-    const saved = savedSettings[p.handle] || { enabled: false, id: "", plusStory: false, boardId: null, includeLinkInCaption: false };
+    const saved = savedSettings[p.handle] || {
+      enabled: false,
+      id: "",
+      plusStory: false,
+      boardId: null,
+      promoLinkMode: "none",
+      includeLinkInCaption: false
+    };
+    const promoLinkMode = saved.promoLinkMode || (saved.includeLinkInCaption ? "caption" : "none");
+
     return {
       handle: p.handle,
       name: p.name,
@@ -152,7 +163,8 @@ function getPlatformSettings() {
       enabled: saved.enabled || false,
       plusStory: saved.plusStory || false,
       boardId: saved.boardId || null,
-      includeLinkInCaption: saved.includeLinkInCaption || false
+      promoLinkMode: promoLinkMode,
+      includeLinkInCaption: promoLinkMode === "caption"
     };
   });
 }

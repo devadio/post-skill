@@ -47,17 +47,26 @@ function loadAccessConfig(throwOnError = true) {
 
   // 🔄 Merge the Registry with User's Saved IDs & Toggles
   SUPPORTED_PLATFORMS.forEach(p => {
-    const setting = savedSettings[p.handle] || { enabled: false, id: "", boardId: "", plusStory: false, includeLinkInCaption: false };
+    const setting = savedSettings[p.handle] || {
+      enabled: false,
+      id: "",
+      boardId: "",
+      plusStory: false,
+      promoLinkMode: "none",
+      includeLinkInCaption: false
+    };
     
     // Only add to 'active' list if it's explicitly enabled AND has an ID
     if (setting.id && setting.enabled) {
+      const promoLinkMode = setting.promoLinkMode || (setting.includeLinkInCaption ? "caption" : "none");
       config.platforms.push({
         handle: p.handle,
         id: setting.id,  // The numeric Integration ID
         name: p.name,
         boardId: setting.boardId || "",
         plusStory: setting.plusStory || false,
-        includeLinkInCaption: setting.includeLinkInCaption || false
+        promoLinkMode: promoLinkMode,
+        includeLinkInCaption: promoLinkMode === "caption"
       });
     }
   });
