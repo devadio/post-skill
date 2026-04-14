@@ -371,7 +371,8 @@
         Tab: <strong>post</strong> · Row 1 = headers · Col G = <strong>Not yet</strong> or <strong>To do</strong> to queue.<br>
         B=Promo Link, C=Title, D=Caption, E=Media URL, F=Media Type, I=Log.<br>
         <strong>+ LINK</strong> → appends promo link to caption.<br>
-        <strong>COMMENT</strong> → posts promo link as 1st comment (FB and IG only). These are mutually exclusive.
+        <strong>COMMENT</strong> → posts promo link as 1st comment (FB and IG only). These are mutually exclusive.<br>
+        <strong>+ STORY</strong> → sends one normal feed/reel post and one extra story post (FB and IG only).
       </div>
     </div>
 
@@ -458,7 +459,7 @@
             <div class="link-chip ${captionActive ? 'caption-active' : ''}" data-chip="link-caption" onclick="togglePromoLink(this, 'caption')">+ LINK</div>
             ${isFbOrIg ? `
               <div class="link-chip ${commentActive ? 'comment-active' : ''}" data-chip="link-comment" onclick="togglePromoLink(this, 'comment')">COMMENT</div>
-              <div class="story-chip ${p.plusStory ? 'active' : ''}" data-chip="story" onclick="this.classList.toggle('active')">+ STORY</div>
+              <div class="story-chip ${p.plusStory ? 'active' : ''}" data-chip="story" title="Adds a second publish to Story. The normal feed or reel post still publishes." onclick="this.classList.toggle('active')">+ STORY</div>
             ` : ''}
           </div>
           <div class="id-field-group">
