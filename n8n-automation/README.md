@@ -6,6 +6,7 @@ This folder contains the working n8n template for `CODEX - POST.devad.io - Sheet
 
 - Reads queued rows directly from a Google Sheet
 - Resolves media from direct links, Google Drive files, and Google Drive folders
+- Uploads resolved media to POST.devad.io first, then uses the returned media URLs for publishing
 - Detects `text`, `image`, `video`, and `carousel`
 - Sends one POST.devad.io feed request per selected row
 - Optionally sends a second FB/IG story request when story mode is enabled
@@ -98,6 +99,10 @@ This is the main setup node. Most users only need to edit this node and relink G
   - Converts one Drive file ID into a direct download URL.
 - `Build Media From Direct Links`
   - Uses one or more direct media URLs already present in the row.
+- `Upload Media To POST.devad.io`
+  - Downloads each resolved media asset and uploads it to POST.devad.io `/upload`.
+  - This matches the working Google Sheets Apps Script behavior.
+  - It is especially important for video and carousel reliability.
 
 ### Payload building and optional fan-out
 

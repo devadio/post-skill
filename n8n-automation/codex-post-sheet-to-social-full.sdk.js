@@ -297,6 +297,82 @@ const row=$input.first().json; const mediaUrls=Array.isArray(row.directMediaUrls
   output: [{ rowNumber: 2, mediaUrls: ['https://cdn.example.com/example-image.jpg'], postType: 'image' }],
 });
 
+const uploadResolvedMediaNode = node({
+  type: 'n8n-nodes-base.code',
+  version: 2,
+  config: {
+    name: 'Upload Media To POST.devad.io',
+    position: [1200, 40],
+    parameters: {
+      mode: 'runOnceForAllItems',
+      language: 'javaScript',
+      jsCode: `const row=$input.first().json;
+const cfg=$('add-HERE-your-token-and-ids').item.json;
+const urls=Array.isArray(row.mediaUrls)?row.mediaUrls.filter(Boolean):[];
+if (!urls.length || row.postType==='text') {
+  return [{json:{...row,uploadedMediaUrls:[]}}];
+}
+
+function inferFileName(url, contentType, index){
+  let fileName = '';
+  try {
+    const parsed = new URL(String(url));
+    fileName = String(parsed.pathname.split('/').pop() || '').trim();
+  } catch (e) {}
+  if (fileName && /\\.[a-z0-9]+$/i.test(fileName)) {
+    return fileName;
+  }
+  const type = String(contentType || '').toLowerCase();
+  if (type.includes('video/mp4')) return 'upload-' + (index + 1) + '.mp4';
+  if (type.includes('image/png')) return 'upload-' + (index + 1) + '.png';
+  if (type.includes('image/webp')) return 'upload-' + (index + 1) + '.webp';
+  if (type.includes('image/jpeg') || type.includes('image/jpg')) return 'upload-' + (index + 1) + '.jpg';
+  return 'upload-' + (index + 1) + '.bin';
+}
+
+async function uploadOne(url, index){
+  const sourceResp = await fetch(url, { redirect: 'follow' });
+  if (!sourceResp.ok) {
+    throw new Error('Media fetch failed (' + sourceResp.status + '): ' + url);
+  }
+  const bytes = await sourceResp.arrayBuffer();
+  const contentType = String(sourceResp.headers.get('content-type') || '').toLowerCase();
+  const fileName = inferFileName(url, contentType, index);
+  const form = new FormData();
+  const blob = new Blob([bytes], { type: contentType || 'application/octet-stream' });
+  form.append('file', blob, fileName);
+
+  const uploadUrl = String(cfg.base_url || '').replace(/\\/$/, '') + '/upload?api_token=' + encodeURIComponent(cfg.post_devad_io_token);
+  const uploadResp = await fetch(uploadUrl, {
+    method: 'POST',
+    headers: {
+      Accept: 'application/json',
+      Authorization: 'Bearer ' + cfg.post_devad_io_token,
+      'X-Api-Token': cfg.post_devad_io_token,
+    },
+    body: form,
+    redirect: 'follow',
+  });
+  const uploadText = await uploadResp.text();
+  let uploadJson = {};
+  try { uploadJson = JSON.parse(uploadText); } catch (e) {}
+  if (!((uploadResp.status === 200 || uploadResp.status === 201) && uploadJson.url)) {
+    throw new Error('Upload failed (' + uploadResp.status + '): ' + (uploadJson.message || uploadText || url));
+  }
+  return uploadJson.url;
+}
+
+const uploadedMediaUrls = [];
+for (let i = 0; i < urls.length; i++) {
+  uploadedMediaUrls.push(await uploadOne(urls[i], i));
+}
+
+return [{json:{...row,uploadedMediaUrls}}];`,
+    },
+  },
+  output: [{ rowNumber: 2, uploadedMediaUrls: ['https://post.devad.io/uploads/example.jpg'], postType: 'image' }],
+});
+
 const buildPayloadNode = node({
   type: 'n8n-nodes-base.code',
   version: 2,
@@ -336,7 +412,7 @@ function settingsFor(target,row,type,link,title,content,cfg){const l=String(link
 }
 function addStory(key,type,cfg){if(type!=='image'&&type!=='video') return false; if(key==='facebook') return yes(cfg.facebook_plus_story,false); if(key==='instagram') return yes(cfg.instagram_plus_story,false); return false;}
 const cfg=$('add-HERE-your-token-and-ids').item.json; const raw=$('Fetch PostApi Accounts').item.json||{}; const accounts=Array.isArray(raw.data)?raw.data:(Array.isArray(raw.body?.data)?raw.body.data:[]); const accountMap=new Map(accounts.map(a=>[a.id,a]));
-const row=$input.first().json; const src=row.sourceRow||{}; const mediaUrls=Array.isArray(row.mediaUrls)?row.mediaUrls.filter(Boolean):[]; const type=row.postType||row.postTypeHint||(mediaUrls.length?'image':'text'); const title=row.title||rv(src,['title']); const promo=row.promoLink||rv(src,['promotional link','link']); const base=row.captionBase||rv(src,['social media summary (caption)','caption','summary']);
+const row=$input.first().json; const src=row.sourceRow||{}; const mediaUrls=Array.isArray(row.uploadedMediaUrls)?row.uploadedMediaUrls.filter(Boolean):(Array.isArray(row.mediaUrls)?row.mediaUrls.filter(Boolean):[]); const type=row.postType||row.postTypeHint||(mediaUrls.length?'image':'text'); const title=row.title||rv(src,['title']); const promo=row.promoLink||rv(src,['promotional link','link']); const base=row.captionBase||rv(src,['social media summary (caption)','caption','summary']);
 const targets=choose(src,cfg,type,accountMap,accounts); const feedPosts=[]; const storyPosts=[]; const selectedTargets=[];
 for(const target of targets){const content=caption(base,promo,promoMode(target.key,src,cfg)); const settings=settingsFor(target,src,type,promo,title,content,cfg); if(!settings) continue; const post={integration:{id:target.integrationId},value:[{content}],media:mediaUrls,settings}; feedPosts.push(post); selectedTargets.push({key:target.key,id:target.integrationId,provider:target.account.provider,category:target.account.category}); if(addStory(target.key,type,cfg)){const story=JSON.parse(JSON.stringify(post)); story.settings.post_type='story'; if(target.key==='facebook') story.settings.fb_type='story'; if(target.key==='instagram') story.settings.ig_type='story'; storyPosts.push(story);}}
 if(!feedPosts.length) return [];
@@ -508,9 +584,9 @@ const afterWebhookChain = webhookRouteNode
   .onCase(0, sendWebhookNode.to(afterFeedChain))
   .onCase(1, afterFeedChain);
 
-const folderChain = folderSearchNode.to(buildFolderMediaNode.to(buildPayloadNode.to(afterWebhookChain)));
-const fileChain = buildFileMediaNode.to(buildPayloadNode.to(afterWebhookChain));
-const directChain = buildDirectMediaNode.to(buildPayloadNode.to(afterWebhookChain));
+const folderChain = folderSearchNode.to(buildFolderMediaNode.to(uploadResolvedMediaNode.to(buildPayloadNode.to(afterWebhookChain))));
+const fileChain = buildFileMediaNode.to(uploadResolvedMediaNode.to(buildPayloadNode.to(afterWebhookChain)));
+const directChain = buildDirectMediaNode.to(uploadResolvedMediaNode.to(buildPayloadNode.to(afterWebhookChain)));
 
 export default workflow('KSP2fJsRJkghbBnX', 'CODEX - POST.devad.io - Sheet To Social Full')
   .add(overviewNote)
