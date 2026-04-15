@@ -27,9 +27,21 @@ This folder contains the working n8n template for `CODEX - POST.devad.io - Sheet
 1. Copy or recreate the workflow in n8n using `codex-post-sheet-to-social-full.sdk.js`.
 2. Relink the Google Sheets credential in `Read Post Sheet` and `Update Sheet Status`.
 3. Relink the Google Drive credential in `List Drive Folder Files`.
-4. Open the node named `add-HERE-your-token-and-ids`.
-5. Replace all placeholder values with your own POST.devad.io token, integration IDs, sheet URL, and any optional defaults.
-6. Run the workflow with one test row first.
+4. Open the node `Download Drive Media Asset`.
+5. Set:
+   - Authentication: `Predefined Credential Type`
+   - Credential Type: `Google Drive OAuth2 API`
+   - Credential: your real Google Drive credential
+6. Save the workflow once from the n8n UI.
+7. Open the node named `add-HERE-your-token-and-ids`.
+8. Replace all placeholder values with your own POST.devad.io token, integration IDs, sheet URL, and any optional defaults.
+9. Run the workflow with one test row first.
+
+Why step 4-6 matters:
+
+- this workflow downloads Google Drive files through an `HTTP Request` node so large Drive videos can use `acknowledgeAbuse=true`
+- some n8n API/MCP workflow updates do not keep the HTTP Request node's Google Drive credential binding
+- the manual UI save fixes that once
 
 ## What to edit in `add-HERE-your-token-and-ids`
 
@@ -96,7 +108,7 @@ This is the main setup node. Most users only need to edit this node and relink G
 - `Build Media From Folder`
   - Converts the folder file list into ordered media URLs and infers `carousel`, `image`, or `video`.
 - `Build Media From Drive File`
-  - Converts one Drive file ID into a direct download URL.
+  - Converts one Drive file ID into a media item for the authenticated Drive download path.
 - `Build Media From Direct Links`
   - Uses one or more direct media URLs already present in the row.
 - `Route Upload Need`
@@ -107,6 +119,10 @@ This is the main setup node. Most users only need to edit this node and relink G
   - This is what makes carousel upload possible.
 - `Download Media Asset`
   - Downloads each media asset into n8n binary data.
+- `Download Drive Media Asset`
+  - Downloads Drive files through the Google Drive API using `alt=media`, `acknowledgeAbuse=true`, and `supportsAllDrives=true`.
+  - This is the node that must be manually bound to your Google Drive credential after import.
+  - This node is the reason Google Drive videos can work in n8n instead of only in Apps Script.
 - `Normalize Binary Metadata`
   - Ensures the downloaded binary has a usable filename extension and MIME type such as `.mp4` and `video/mp4`.
   - This avoids Laravel upload validation failures on Google Drive video files.
@@ -180,11 +196,25 @@ Without that branch, the workflow is harder to read and harder for beginners to 
   - relink Google Sheets OAuth2
 - If `List Drive Folder Files` fails:
   - relink Google Drive OAuth2
+- If `Download Drive Media Asset` fails with `Credentials not found`:
+  - open that node in the n8n UI
+  - set `Predefined Credential Type`
+  - choose `Google Drive OAuth2 API`
+  - select your real Google Drive credential
+  - save the workflow and rerun
+- If Google Drive videos mark `Done` but do not really publish:
+  - inspect `Download Drive Media Asset`
+  - verify the binary is the real file, not a tiny preview artifact
+  - inspect `Upload Binary To POST.devad.io`
+  - verify `/upload` returns a real uploaded URL
 - If `Fetch PostApi Accounts` fails:
   - verify `base_url`
   - verify `post_devad_io_token`
 - If rows are skipped:
   - confirm the `Action?` column contains `To do`, `post`, `queue`, or `publish`
+- If the sheet shows `#REF!` near your status columns:
+  - remove broken formulas from the `Check` / `Action?` area
+  - make sure the workflow can write plain values back into the target row
 - If nothing should send a story:
   - keep `facebook_plus_story = 0`
   - keep `instagram_plus_story = 0`
@@ -195,4 +225,6 @@ Without that branch, the workflow is harder to read and harder for beginners to 
 2. Confirm the media link is stable and public.
 3. Run the workflow manually.
 4. Confirm the sheet writes back `Done` plus a useful log.
-5. Only then increase `max_rows_per_run` or add optional webhook fan-out.
+5. Test one Google Drive video row.
+6. Test one carousel row.
+7. Only then increase `max_rows_per_run` or add optional webhook fan-out.

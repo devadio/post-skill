@@ -1,5 +1,8 @@
 ﻿// Sanitized public template.
 // Replace only the placeholder values in add-HERE-your-token-and-ids and relink Google credentials in n8n.
+// After import, manually open `Download Drive Media Asset`, select your Google Drive OAuth2 credential,
+// and save the workflow once. This is required because some n8n API/MCP imports do not persist that
+// HTTP Request node credential binding.
 import { workflow, node, trigger, sticky, newCredential, switchCase, splitInBatches, nextBatch, expr } from '@n8n/workflow-sdk';
 
 const overviewNote = sticky(`## POST.devad.io -> Google Sheet -> Social
@@ -9,7 +12,8 @@ const overviewNote = sticky(`## POST.devad.io -> Google Sheet -> Social
 3. Expands Google Drive folder links and file links.
 4. Supports direct links, text/image/video/carousel, comments, and FB/IG story duplicates.
 5. Writes status back to Action? and log.
-6. If Google Sheets or Google Drive nodes fail auth, relink them in n8n.`, undefined, {
+6. If Google Sheets or Google Drive nodes fail auth, relink them in n8n.
+7. After import, manually bind the credential in Download Drive Media Asset once.`, undefined, {
   name: 'Workflow overview',
   width: 540,
   height: 320,
@@ -20,6 +24,7 @@ const credentialsNote = sticky(`## Relink if needed
 
 - Google Sheets node uses a Google Sheets OAuth2 credential.
 - Google Drive node uses a Google Drive OAuth2 credential.
+- Download Drive Media Asset must also be manually bound once after import.
 - If either node errors, relink the credential in n8n and rerun.`, undefined, {
   name: 'Credential note',
   width: 320,
@@ -349,20 +354,27 @@ const downloadMethodRouteNode = switchCase({
 });
 
 const downloadDriveMediaNode = node({
-  type: 'n8n-nodes-base.googleDrive',
-  version: 3,
+  type: 'n8n-nodes-base.httpRequest',
+  version: 4.4,
   credentials: { googleDriveOAuth2Api: newCredential('Google Drive OAuth2') },
   config: {
     name: 'Download Drive Media Asset',
     position: [1720, -180],
     parameters: {
-      resource: 'file',
-      operation: 'download',
-      authentication: 'oAuth2',
-      fileId: { __rl: true, mode: 'id', value: expr('{{ $json.mediaFileId }}') },
+      method: 'GET',
+      url: expr('{{ "https://www.googleapis.com/drive/v3/files/" + $json.mediaFileId }}'),
+      authentication: 'predefinedCredentialType',
+      nodeCredentialType: 'googleDriveOAuth2Api',
+      sendQuery: true,
+      queryParameters: {
+        parameters: [
+          { name: 'alt', value: 'media' },
+          { name: 'acknowledgeAbuse', value: 'true' },
+          { name: 'supportsAllDrives', value: 'true' },
+        ],
+      },
       options: {
-        binaryPropertyName: 'data',
-        fileName: expr('{{ $json.mediaFileName || ("upload-" + String(($json.mediaIndex ?? 0) + 1) + ($json.postType === "video" ? ".mp4" : ".jpg")) }}'),
+        response: { response: { responseFormat: 'file', outputPropertyName: 'data' } },
       },
     },
   },
@@ -672,13 +684,14 @@ const buildSheetUpdateNode = node({
     parameters: {
       mode: 'runOnceForAllItems',
       language: 'javaScript',
-      jsCode: `function compact(v){const t=typeof v==='string'?v:JSON.stringify(v||{}); return t.replace(/\\s+/g,' ').trim();}
+      jsCode: `function compact(v){return typeof v==='string' ? v : JSON.stringify(v||{});}
 const row=$('Build PostApi Payload').item.json; const feed=$('Post Feed To POST.devad.io').item.json; let story=null; try{story=$('Post Story To POST.devad.io').item.json;}catch(e){story=null;}
-let log='âœ… Posted successfully: '+new Date().toLocaleString(); log+=' | Channels: '+(Array.isArray(row.selectedTargets)?row.selectedTargets.map(t=>t.key).join(', '):''); log+=' | Feed response: '+compact(feed); if(story) log+=' | Story response: '+compact(story);
-return [{json:{row_number:String(row.rowNumber),'Action?':'ðŸŸ¢ Done',log}}];`,
+const okMark=String.fromCharCode(9989); const doneMark=String.fromCharCode(55357,57314)+' Done';
+let log=okMark+' Posted successfully: '+new Date().toLocaleString(); log+=' | Channels: '+(Array.isArray(row.selectedTargets)?row.selectedTargets.map(t=>t.key).join(', '):''); log+=' | Feed response: '+compact(feed); if(story) log+=' | Story response: '+compact(story);
+return [{json:{row_number:String(row.rowNumber),'Action?':doneMark,log}}];`,
     },
   },
-  output: [{ row_number: '2', 'Action?': 'ðŸŸ¢ Done', log: 'âœ… Posted successfully' }],
+  output: [{ row_number: '2', 'Action?': '🟢 Done', log: '✅ Posted successfully' }],
 });
 
 const updateSheetNode = node({

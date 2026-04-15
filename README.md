@@ -51,6 +51,15 @@ The repo now includes the working n8n template used for:
 - optionally sending a separate FB/IG story request
 - writing `Action?` and `log` back into the same sheet row
 
+Important for Google Drive video/file usage:
+
+- after importing the template, open the node `Download Drive Media Asset`
+- set Authentication to `Predefined Credential Type`
+- choose `Google Drive OAuth2 API`
+- select your real Google Drive credential and save the workflow once
+
+This one-time UI save is required because some n8n API/MCP updates do not persist the HTTP Request node's Drive credential binding.
+
 Start here:
 
 - [n8n template guide](n8n-automation/README.md)
@@ -90,9 +99,12 @@ Channel behavior still depends on the account type, media type, and the capabili
 
 1. Read the Google Sheet guide if you want the sheet-first workflow.
 2. Read the n8n guide if you want the automation-first workflow.
-3. Add your POST.devad.io token and integration IDs.
-4. Test one Telegram or single-image row first.
-5. Only then enable optional story or webhook branches.
+3. Import the n8n template and relink Google credentials.
+4. Manually bind the Google Drive credential in `Download Drive Media Asset`.
+5. Add your POST.devad.io token and integration IDs.
+6. Test one Telegram or single-image row first.
+7. Test one Google Drive video row.
+8. Only then enable optional story or webhook branches.
 
 ## Notes about private values
 
