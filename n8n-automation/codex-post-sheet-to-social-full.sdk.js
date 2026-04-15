@@ -348,12 +348,82 @@ const downloadMediaNode = node({
   output: [{ binary: { data: { mimeType: 'image/jpeg', fileName: 'example.jpg' } } }],
 });
 
+const normalizeBinaryMetaNode = node({
+  type: 'n8n-nodes-base.code',
+  version: 2,
+  config: {
+    name: 'Normalize Binary Metadata',
+    position: [1850, -80],
+    parameters: {
+      mode: 'runOnceForEachItem',
+      language: 'javaScript',
+      jsCode: `const item = $input.item;
+const json = item.json || {};
+const binary = item.binary || {};
+if (!binary.data) {
+  throw new Error('Downloaded media is missing binary data');
+}
+
+function extFromMime(mime, postType) {
+  const m = String(mime || '').toLowerCase();
+  if (m.includes('video/mp4')) return 'mp4';
+  if (m.includes('image/png')) return 'png';
+  if (m.includes('image/webp')) return 'webp';
+  if (m.includes('image/jpeg') || m.includes('image/jpg')) return 'jpg';
+  return postType === 'video' ? 'mp4' : 'jpg';
+}
+
+function mimeFromExt(ext, postType) {
+  const e = String(ext || '').toLowerCase();
+  if (e === 'mp4') return 'video/mp4';
+  if (e === 'png') return 'image/png';
+  if (e === 'webp') return 'image/webp';
+  if (e === 'jpg' || e === 'jpeg') return 'image/jpeg';
+  return postType === 'video' ? 'video/mp4' : 'image/jpeg';
+}
+
+const mediaUrl = String(json.mediaUrl || '');
+let fileName = String(binary.data.fileName || '').trim();
+let mimeType = String(binary.data.mimeType || '').trim().toLowerCase();
+
+let ext = '';
+const urlMatch = mediaUrl.split('?')[0].match(/\\.([a-z0-9]+)$/i);
+if (urlMatch) {
+  ext = urlMatch[1].toLowerCase();
+}
+
+if (!ext && fileName.match(/\\.([a-z0-9]+)$/i)) {
+  ext = fileName.match(/\\.([a-z0-9]+)$/i)[1].toLowerCase();
+}
+
+if (!ext) {
+  ext = extFromMime(mimeType, json.postType);
+}
+
+if (!fileName || !/\\.[a-z0-9]+$/i.test(fileName)) {
+  fileName = 'upload-' + String((json.mediaIndex ?? 0) + 1) + '.' + ext;
+}
+
+if (!mimeType || mimeType === 'application/octet-stream') {
+  mimeType = mimeFromExt(ext, json.postType);
+}
+
+binary.data.fileName = fileName;
+binary.data.fileExtension = ext;
+binary.data.mimeType = mimeType;
+
+return [{ json, binary }];`,
+    },
+  },
+  output: [{ binary: { data: { mimeType: 'video/mp4', fileName: 'upload-1.mp4', fileExtension: 'mp4' } } }],
+});
+
 const uploadBinaryNode = node({
   type: 'n8n-nodes-base.httpRequest',
   version: 4.4,
   config: {
     name: 'Upload Binary To POST.devad.io',
-    position: [1980, -80],
+    position: [2110, -80],
     parameters: {
       method: 'POST',
       url: expr('{{ $("add-HERE-your-token-and-ids").item.json.base_url + "/upload" }}'),
@@ -616,7 +686,7 @@ const afterWebhookChain = webhookRouteNode
   .onCase(0, sendWebhookNode.to(afterFeedChain))
   .onCase(1, afterFeedChain);
 
-const uploadChain = expandMediaUploadsNode.to(downloadMediaNode.to(uploadBinaryNode.to(collectUploadedMediaNode.to(buildPayloadNode.to(afterWebhookChain)))));
+const uploadChain = expandMediaUploadsNode.to(downloadMediaNode.to(normalizeBinaryMetaNode.to(uploadBinaryNode.to(collectUploadedMediaNode.to(buildPayloadNode.to(afterWebhookChain))))));
 
 const folderChain = folderSearchNode.to(buildFolderMediaNode.to(uploadNeedRouteNode
   .onCase(0, uploadChain)

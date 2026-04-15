@@ -107,6 +107,9 @@ This is the main setup node. Most users only need to edit this node and relink G
   - This is what makes carousel upload possible.
 - `Download Media Asset`
   - Downloads each media asset into n8n binary data.
+- `Normalize Binary Metadata`
+  - Ensures the downloaded binary has a usable filename extension and MIME type such as `.mp4` and `video/mp4`.
+  - This avoids Laravel upload validation failures on Google Drive video files.
 - `Upload Binary To POST.devad.io`
   - Uploads the downloaded binary file to POST.devad.io `/upload`.
   - This matches the working Google Sheets Apps Script behavior.
