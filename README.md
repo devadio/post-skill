@@ -1,70 +1,110 @@
-# 🚨 Post-Skill: The Ultimate AI & Human Social Media Scheduler
+# Post-Skill
 
-**Stop burning your tokens on repetitive publishing loops!** Post-Skill is your simple, low-cost, open-source solution to schedule and publish social media content with zero hassle. Skip the bloated dashboards, fragile custom API calls, and repetitive prompt instructions. Just add your content and media, and let the system handle the heavy lifting.
+Post-Skill is an open reference bundle for building social publishing flows around POST.devad.io. It is designed for both human operators and AI agents.
 
-# Ai Agent Skill
-Most posting APIs are too complex, causing prompt bloat, high token use, and hallucinated payloads. Post-Skill is built for AI agents to work faster with less guesswork and fewer tokens.
-* **Quick Onboarding:** Feed your AI the [MASTER_PROMPT.md](MASTER_PROMPT.md) to get it executing instantly.
-* **Technical Docs:** Point your agent to [SKILL.md](SKILL.md) for the complete rules and technical documentation.
-* **Ready Payloads:** Use the ready-made JSON examples in the [`payloads/`](payloads/) folder for guaranteed safe formatting.
-* **Testing:** Leverage local test runners in `scripts/test_runner.js` and `scripts/test_runner.py` for product-ready examples.
+## What this repo gives you
 
-# N8N
-Stop building massive, tangled workflows with separate nodes for every single platform. Instead, just have n8n send the final content to the API or Sheet, and let the scripts handle the actual publishing. 
-* **Cheapest Practical Tool:** Enjoy a lower operating cost than typical dashboard-first tools, perfect for creators, agencies, founders, and growing teams.
-* **Validate Webhooks First:** Catch common mistakes before live publishing using the included local test runners:
-```bash
-node scripts/test_runner.js health
-node scripts/test_runner.js facebook_carousel --dry-run --print-payload
-python scripts/test_runner.py instagram_video --dry-run --print-payload
-```
+- A Google Sheets + Apps Script workflow for row-based publishing
+- A working n8n automation template for the same POST.devad.io flow
+- Example payloads for common post types
+- AI-agent-facing docs that explain the expected payload shape and workflow rules
 
-# Google Sheet for Human & Agent
-The Google Sheet workflow is one of the strongest parts of this repo—a powerful engine for bulk planning and queue-based scheduling.
-For Humans: Enjoy zero learning curve, easy bulk planning, and having all your content visible in one single place.
-For AI Agents: The sheet acts as a structured database where rows are easily read and updated, media links are processed safely, and remote posting is executed flawlessly.
-Get The Sheet Guide: Start with the [Google Sheet Guide](https://www.google.com/search?q=google-sheet/README.md) to set up your workflow.
-Apps Script Engine: The [google-sheet/apps-script/](https://www.google.com/search?q=google-sheet/apps-script/README.md) folder is a full working reference bundle that automatically turns the sheet into a publishing queue, detects media types, builds payloads, and writes results back. It exposes a lightweight sheet API for AI agents and serves as a blueprint for other languages.
+## Main areas
 
-✅ **Supported Formats & Safe Post Types**
-Post-Skill safely supports the most useful social post types when using stable media links:
-* **Text**: Safest for short updates, CTAs, and announcements. Useful for Facebook, LinkedIn, X, Telegram, Tumblr, and Google Business.
-* **Single Image**: Safest formats are jpg, jpeg, png, and webp. Use one direct public image URL or a Google Drive file with public view access (or stable CDN).
-* **Carousel**: Safest workflow is a Google Drive folder link containing only the intended images. Avoid nested folders, shortcuts, and unsupported files.
-* **Video / Reels / Shorts**: Safest format is mp4. Use one stable public video URL and avoid preview pages, login walls, and expiring links.
-* **Stories**: Safest format is 9:16 jpg/mp4. Use one public URL. Supported natively for Facebook and Instagram. Use the `+ STORY` button in Google Sheets to auto-duplicate feed posts to your story!
-* **First Comment**: Post promotional links or discussion-starters as the first comment automatically (Supported on Facebook and Instagram). Use the `💬 COMMENT` button in the UI.
-* Safe Google Sheet Creative Types: Use `image_manual`, `video_manual`, or `carousel_manual` for the current workflow.
+- `SKILL.md`
+  - Technical reference for AI agents and developers
+- `MASTER_PROMPT.md`
+  - Short onboarding prompt for assistants
+- `payloads/`
+  - Example payloads for platforms and post types
+- `scripts/`
+  - Local test runners
+- `google-sheet/`
+  - Google Sheets publishing workflow docs
+- `google-sheet/apps-script/`
+  - Full Apps Script bundle mirrored from the working sheet project
+- `n8n-automation/`
+  - Sanitized n8n workflow template and setup guide
 
-🌍 **Supported Channels**
-Automate workflows for 10 platforms (behavior depends on account setup and media type):
-TikTok
-Instagram
-Facebook
-LinkedIn
-YouTube
-X / Twitter
-Pinterest
-Telegram
-Tumblr
-Google Business Profile
----
+## Google Sheet workflow
 
-## Repository Structure
+The Google Sheet workflow is the easiest way to manage content for both humans and agents:
 
-- `SKILL.md`: the main skill and technical documentation
-- `ARTICLE.md`: a shorter human-focused overview
-- `MASTER_PROMPT.md`: a quick onboarding prompt for AI assistants
-- `scripts/`: production-ready test runners in JavaScript and Python
-- `payloads/`: ready-to-use JSON examples for platforms and media types
-- `google-sheet/`: Google Sheets automation guide
-- `google-sheet/apps-script/`: full Apps Script reference bundle
+- one row per planned post
+- media links stored directly in the sheet
+- action status written back into the same row
+- support for link-in-caption, first comment, and optional FB/IG story duplicates
 
----
+Start here:
+
+- [Google Sheet guide](google-sheet/README.md)
+- [Apps Script bundle](google-sheet/apps-script/README.md)
+
+## n8n workflow template
+
+The repo now includes the working n8n template used for:
+
+- reading queued rows from the `post` tab
+- resolving direct links, Google Drive files, and Google Drive folders
+- detecting `text`, `image`, `video`, and `carousel`
+- sending feed posts to POST.devad.io
+- optionally sending a separate FB/IG story request
+- writing `Action?` and `log` back into the same sheet row
+
+Start here:
+
+- [n8n template guide](n8n-automation/README.md)
+- [Sanitized workflow source](n8n-automation/codex-post-sheet-to-social-full.sdk.js)
+
+### n8n benefits
+
+- lower maintenance than building one branch per platform
+- one shared setup node for token, IDs, and defaults
+- one-row-per-run safety by default
+- easy to adapt for webhook fan-out or queue-based automation
+
+## Supported content types
+
+- `text`
+- `image`
+- `video`
+- `carousel`
+- optional FB/IG first comment behavior
+- optional FB/IG story duplicate behavior
+
+## Supported channels in the current reference flow
+
+- TikTok
+- Instagram
+- Facebook
+- LinkedIn
+- YouTube
+- Pinterest
+- Telegram
+- Tumblr
+- Google Business Profile
+
+Channel behavior still depends on the account type, media type, and the capabilities available in your POST.devad.io integrations.
+
+## Recommended order for new users
+
+1. Read the Google Sheet guide if you want the sheet-first workflow.
+2. Read the n8n guide if you want the automation-first workflow.
+3. Add your POST.devad.io token and integration IDs.
+4. Test one Telegram or single-image row first.
+5. Only then enable optional story or webhook branches.
+
+## Notes about private values
+
+This repo is intended to be public-safe:
+
+- no private API tokens should be committed
+- no personal integration IDs should be committed
+- no private Google credentials should be committed
+
+Use placeholder values in public templates and fill real values only inside your own live environment.
 
 ## Support
 
-- **Start posting everywhere today:** [post.devad.io](https://post.devad.io)
-- **Read the main documentation:** [SKILL.md](SKILL.md)
-- **Google Sheet workflow:** [google-sheet/README.md](google-sheet/README.md)
-- **Support:** [devad.io/guides/topics/post-devad-io-docs/](https://devad.io/guides/topics/post-devad-io-docs/)
+- [POST.devad.io](https://post.devad.io)
+- [Docs and guides](https://devad.io/guides/topics/post-devad-io-docs/)
