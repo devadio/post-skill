@@ -161,10 +161,10 @@ const normalizeRowsNode = node({
       jsCode: `const cfg=$('add-HERE-your-token-and-ids').item.json;
 function s(v){return String(v||'').trim().toLowerCase().replace(/[^a-z0-9]+/g,'_').replace(/^_+|_+$/g,'');}
 function rv(row, aliases){const m={}; for(const [k,v] of Object.entries(row||{})) m[s(k)] = v; for(const a of aliases){const hit=m[s(a)]; if(hit!==undefined && String(hit).trim()!=='') return String(hit).trim();} return '';}
-function list(v){return v?String(v).split(/[,\\n|]/).map(i=>i.trim()).filter(Boolean):[];}
+function list(v){const raw=String(v||''); const nl=String.fromCharCode(10); return raw.split(nl).flatMap(i=>i.split(',')).flatMap(i=>i.split('|')).map(i=>i.trim()).filter(Boolean);}
 function parseRows(v){return new Set(list(v).map(n=>Number(String(n).trim())).filter(n=>Number.isInteger(n) && n > 1));}
-function gidFile(u){const m=String(u||'').match(/\\/d\\/([a-zA-Z0-9_-]+)/)||String(u||'').match(/[?&]id=([a-zA-Z0-9_-]+)/); return m?m[1]:'';}
-function gidFolder(u){const m=String(u||'').match(/\\/folders\\/([a-zA-Z0-9_-]+)/); return m?m[1]:'';}
+function gidFile(u){const text=String(u||''); const byPath=text.split('/d/'); if(byPath[1]) return byPath[1].split(/[/?&#]/)[0]; const byId=text.split('id='); if(byId[1]) return byId[1].split(/[&#]/)[0]; return '';}
+function gidFolder(u){const text=String(u||''); const byPath=text.split('/folders/'); if(byPath[1]) return byPath[1].split(/[/?&#]/)[0]; return '';}
 function hint(t, links){const v=String(t||'').toLowerCase(); if(v.includes('carousel')) return 'carousel'; if(v.includes('video')) return 'video'; if(v.includes('image')||v.includes('photo')) return 'image'; if(v.includes('text')) return 'text'; if(links.length>1) return 'carousel'; return '';}
 function hasUsableRow(title, caption, promoLink, mediaLink){return !!(String(title||'').trim() || String(caption||'').trim() || String(promoLink||'').trim() || String(mediaLink||'').trim());}
 const out=[]; const rows=$input.all().map(i=>i.json);
@@ -259,11 +259,11 @@ const buildFolderMediaNode = node({
       jsCode: `function infer(h, files){if(h) return h; if(files.length>1) return 'carousel'; const m=String(files[0]?.mimeType||'').toLowerCase(); return m.startsWith('video/')?'video':'image';}
 const row=$('Current Row Batch').item.json;
 const files=$input.all().map(i=>i.json).filter(f=>f.id && (/^image\\//i.test(String(f.mimeType||'')) || /^video\\//i.test(String(f.mimeType||'')))).sort((a,b)=>String(a.name||'').localeCompare(String(b.name||''),undefined,{numeric:true,sensitivity:'base'}));
-const mediaUrls=files.map(f=>'https://drive.google.com/uc?export=download&id='+f.id);
-return [{json:{...row,mediaUrls,postType:mediaUrls.length?infer(row.postTypeHint,files):(row.postTypeHint||'text')}}];`,
+const mediaFiles=files.map(f=>({fileId:f.id,fileName:f.name||'',mimeType:f.mimeType||''}));
+return [{json:{...row,mediaFiles,mediaUrls:[],postType:mediaFiles.length?infer(row.postTypeHint,files):(row.postTypeHint||'text')}}];`,
     },
   },
-  output: [{ rowNumber: 2, mediaUrls: ['https://drive.google.com/uc?export=download&id=abc123'], postType: 'image' }],
+  output: [{ rowNumber: 2, mediaFiles: [{ fileId: 'abc123', fileName: 'slide-1.jpg', mimeType: 'image/jpeg' }], postType: 'image' }],
 });
 
 const buildFileMediaNode = node({
@@ -275,10 +275,10 @@ const buildFileMediaNode = node({
     parameters: {
       mode: 'runOnceForAllItems',
       language: 'javaScript',
-      jsCode: `const row=$input.first().json; const postType=row.postTypeHint||'image'; return [{json:{...row,mediaUrls:row.googleDriveFileId?['https://drive.google.com/uc?export=download&id='+row.googleDriveFileId]:[],postType:postType==='text'?'text':postType}}];`,
+      jsCode: `const row=$input.first().json; const postType=row.postTypeHint||'image'; return [{json:{...row,mediaFiles:row.googleDriveFileId?[{fileId:row.googleDriveFileId,fileName:'',mimeType:''}]:[],mediaUrls:[],postType:postType==='text'?'text':postType}}];`,
     },
   },
-  output: [{ rowNumber: 2, mediaUrls: ['https://drive.google.com/uc?export=download&id=ADD_HERE_YOUR_DRIVE_FILE_ID'], postType: 'image' }],
+  output: [{ rowNumber: 2, mediaFiles: [{ fileId: 'ADD_HERE_YOUR_DRIVE_FILE_ID', fileName: '', mimeType: '' }], postType: 'image' }],
 });
 
 const buildDirectMediaNode = node({
@@ -305,7 +305,7 @@ const uploadNeedRouteNode = switchCase({
     parameters: {
       mode: 'expression',
       numberOutputs: 2,
-      output: expr('{{ Array.isArray($json.mediaUrls) && $json.mediaUrls.length ? 0 : 1 }}'),
+      output: expr('{{ ((Array.isArray($json.mediaFiles) && $json.mediaFiles.length) || (Array.isArray($json.mediaUrls) && $json.mediaUrls.length)) ? 0 : 1 }}'),
     },
   },
 });
@@ -320,14 +320,53 @@ const expandMediaUploadsNode = node({
       mode: 'runOnceForAllItems',
       language: 'javaScript',
       jsCode: `const row=$input.first().json;
+const files=Array.isArray(row.mediaFiles)?row.mediaFiles.filter(file => file && file.fileId):[];
 const urls=Array.isArray(row.mediaUrls)?row.mediaUrls.filter(Boolean):[];
-if (!urls.length) {
-  return [];
-}
-return urls.map((mediaUrl, mediaIndex) => ({json:{...row,mediaUrl,mediaIndex}}));`,
+const items=[];
+files.forEach((file, mediaIndex) => {
+  items.push({json:{...row,mediaSource:'drive',mediaIndex,mediaFileId:file.fileId,mediaFileName:file.fileName||'',mediaFileMimeType:file.mimeType||''}});
+});
+urls.forEach((mediaUrl, urlIndex) => {
+  items.push({json:{...row,mediaSource:'url',mediaIndex:files.length + urlIndex,mediaUrl}});
+});
+return items;`,
     },
   },
-  output: [{ rowNumber: 2, mediaUrl: 'https://cdn.example.com/example-image.jpg', mediaIndex: 0, postType: 'image' }],
+  output: [{ rowNumber: 2, mediaSource: 'drive', mediaFileId: 'abc123', mediaFileName: 'slide-1.jpg', mediaFileMimeType: 'image/jpeg', mediaIndex: 0, postType: 'image' }],
+});
+
+const downloadMethodRouteNode = switchCase({
+  version: 3.4,
+  config: {
+    name: 'Route Download Method',
+    position: [1590, -80],
+    parameters: {
+      mode: 'expression',
+      numberOutputs: 2,
+      output: expr('{{ $json.mediaSource === "drive" ? 0 : 1 }}'),
+    },
+  },
+});
+
+const downloadDriveMediaNode = node({
+  type: 'n8n-nodes-base.googleDrive',
+  version: 3,
+  credentials: { googleDriveOAuth2Api: newCredential('Google Drive OAuth2') },
+  config: {
+    name: 'Download Drive Media Asset',
+    position: [1720, -180],
+    parameters: {
+      resource: 'file',
+      operation: 'download',
+      authentication: 'oAuth2',
+      fileId: { __rl: true, mode: 'id', value: expr('{{ $json.mediaFileId }}') },
+      options: {
+        binaryPropertyName: 'data',
+        fileName: expr('{{ $json.mediaFileName || ("upload-" + String(($json.mediaIndex ?? 0) + 1) + ($json.postType === "video" ? ".mp4" : ".jpg")) }}'),
+      },
+    },
+  },
+  output: [{ binary: { data: { mimeType: 'video/mp4', fileName: 'example.mp4' } } }],
 });
 
 const downloadMediaNode = node({
@@ -382,14 +421,14 @@ function mimeFromExt(ext, postType) {
   return postType === 'video' ? 'video/mp4' : 'image/jpeg';
 }
 
-const mediaUrl = String(json.mediaUrl || '');
-let fileName = String(binary.data.fileName || '').trim();
-let mimeType = String(binary.data.mimeType || '').trim().toLowerCase();
+const mediaRef = String(json.mediaUrl || json.mediaFileName || '');
+let fileName = String(binary.data.fileName || json.mediaFileName || '').trim();
+let mimeType = String(binary.data.mimeType || json.mediaFileMimeType || '').trim().toLowerCase();
 
 let ext = '';
-const urlMatch = mediaUrl.split('?')[0].match(/\\.([a-z0-9]+)$/i);
-if (urlMatch) {
-  ext = urlMatch[1].toLowerCase();
+const refMatch = mediaRef.split('?')[0].match(/\\.([a-z0-9]+)$/i);
+if (refMatch) {
+  ext = refMatch[1].toLowerCase();
 }
 
 if (!ext && fileName.match(/\\.([a-z0-9]+)$/i)) {
@@ -412,7 +451,7 @@ binary.data.fileName = fileName;
 binary.data.fileExtension = ext;
 binary.data.mimeType = mimeType;
 
-return [{ json, binary }];`,
+return { json, binary };`,
     },
   },
   output: [{ binary: { data: { mimeType: 'video/mp4', fileName: 'upload-1.mp4', fileExtension: 'mp4' } } }],
@@ -487,7 +526,7 @@ const buildPayloadNode = node({
       jsCode: `function s(v){return String(v||'').trim().toLowerCase().replace(/[^a-z0-9]+/g,'_').replace(/^_+|_+$/g,'');}
 function rv(row, aliases){const m={}; for(const [k,v] of Object.entries(row||{})) m[s(k)] = v; for(const a of aliases){const hit=m[s(a)]; if(hit!==undefined && String(hit).trim()!=='') return String(hit).trim();} return '';}
 function yes(v,d=false){if(v===undefined||v===null||v==='') return d; return ['1','true','yes','y','on','ok','done'].includes(String(v).trim().toLowerCase());}
-function list(v){return v?String(v).split(/[,\\n|]/).map(i=>i.trim()).filter(Boolean):[];}
+function list(v){const raw=String(v||''); const nl=String.fromCharCode(10); return raw.split(nl).flatMap(i=>i.split(',')).flatMap(i=>i.split('|')).map(i=>i.trim()).filter(Boolean);}
 function alias(v){return String(v||'').trim().toLowerCase().replace(/[^a-z0-9]+/g,'');}
 function ttPrivacy(v){const n=String(v||'PUBLIC_TO_EVERYONE').trim().toUpperCase(); if(['PUBLIC','EVERYONE','PUBLIC_TO_EVERYONE'].includes(n)) return 'PUBLIC_TO_EVERYONE'; if(['FRIENDS','FRIEND','MUTUAL_FOLLOW_FRIENDS'].includes(n)) return 'MUTUAL_FOLLOW_FRIENDS'; if(['FOLLOWERS','FOLLOWER','FOLLOWER_OF_CREATOR'].includes(n)) return 'FOLLOWER_OF_CREATOR'; if(['PRIVATE','ONLY_ME','SELF_ONLY'].includes(n)) return 'SELF_ONLY'; return n;}
 function ytPrivacy(v){const n=String(v||'public').trim().toLowerCase(); return ['private','unlisted','public'].includes(n)?n:'public';}
@@ -499,7 +538,7 @@ function desiredProvider(key){if(key==='linkedin_page'||key==='linkedin_profile'
 function resolveIntegrationId(key, configuredId, accountMap, accountBuckets){if(configuredId && accountMap.has(configuredId)) return configuredId; const provider=desiredProvider(key); const categories=desiredCategories(key); for(const category of categories){const match=(accountBuckets[provider+'::'+category]||[])[0]; if(match && match.id) return match.id;} return '';}
 function choose(row,cfg,type,accountMap,accounts){const req=list(rv(row,['channels','channel','social channels','networks'])).map(alias); const conf=configured(cfg); const keys=req.length?Object.keys(conf).filter(k=>req.includes(alias(k))||req.includes(alias(k.replace('_profile','').replace('_page','')))):defaultKeys(type); const out=[]; const usedIds=new Set(); const accountBuckets=bucketAccounts(accounts); for(const key of keys){const integrationId=resolveIntegrationId(key, conf[key], accountMap, accountBuckets); if(!integrationId||!accountMap.has(integrationId)||usedIds.has(integrationId)) continue; usedIds.add(integrationId); out.push({key,integrationId,account:accountMap.get(integrationId)});} return out;}
 function promoMode(targetKey,row,cfg){const fromRow=rv(row,[targetKey+' promo link mode',targetKey.replace('_',' ')+' promo link mode','promo link mode']); if(fromRow) return fromRow.toLowerCase(); if(targetKey==='facebook') return String(cfg.facebook_promo_link_mode||'comment').toLowerCase(); if(targetKey==='instagram') return String(cfg.instagram_promo_link_mode||'comment').toLowerCase(); return String(cfg.default_promo_link_mode||'caption').toLowerCase();}
-function caption(base,link,mode){const c=String(base||'').trim(); const l=String(link||'').trim(); if(mode!=='caption'||!l) return c; if(c.includes(l)) return c; return c?c+'\\n\\n'+l:l;}
+function caption(base,link,mode){const c=String(base||'').trim(); const l=String(link||'').trim(); const nl=String.fromCharCode(10); if(mode!=='caption'||!l) return c; if(c.includes(l)) return c; return c?c+nl+nl+l:l;}
 function settingsFor(target,row,type,link,title,content,cfg){const l=String(link||'').trim(); const mode=promoMode(target.key,row,cfg); const settings={};
   if(target.key==='facebook'){settings.post_type=type; settings.fb_type=type==='video'?'reels':'feed'; if(mode==='comment'&&l) settings.fb_comment=l; return settings;}
   if(target.key==='instagram'){if(type==='text') return null; settings.post_type=type; settings.ig_type=type==='video'?'reels':'feed'; if(mode==='comment'&&l) settings.ig_comment=l; return settings;}
@@ -686,7 +725,10 @@ const afterWebhookChain = webhookRouteNode
   .onCase(0, sendWebhookNode.to(afterFeedChain))
   .onCase(1, afterFeedChain);
 
-const uploadChain = expandMediaUploadsNode.to(downloadMediaNode.to(normalizeBinaryMetaNode.to(uploadBinaryNode.to(collectUploadedMediaNode.to(buildPayloadNode.to(afterWebhookChain))))));
+const uploadChain = expandMediaUploadsNode.to(downloadMethodRouteNode
+  .onCase(0, downloadDriveMediaNode.to(normalizeBinaryMetaNode.to(uploadBinaryNode.to(collectUploadedMediaNode.to(buildPayloadNode.to(afterWebhookChain))))))
+  .onCase(1, downloadMediaNode.to(normalizeBinaryMetaNode.to(uploadBinaryNode.to(collectUploadedMediaNode.to(buildPayloadNode.to(afterWebhookChain))))))
+);
 
 const folderChain = folderSearchNode.to(buildFolderMediaNode.to(uploadNeedRouteNode
   .onCase(0, uploadChain)
