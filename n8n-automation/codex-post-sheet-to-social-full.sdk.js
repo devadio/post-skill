@@ -297,77 +297,109 @@ const row=$input.first().json; const mediaUrls=Array.isArray(row.directMediaUrls
   output: [{ rowNumber: 2, mediaUrls: ['https://cdn.example.com/example-image.jpg'], postType: 'image' }],
 });
 
-const uploadResolvedMediaNode = node({
+const uploadNeedRouteNode = switchCase({
+  version: 3.4,
+  config: {
+    name: 'Route Upload Need',
+    position: [1200, 40],
+    parameters: {
+      mode: 'expression',
+      numberOutputs: 2,
+      output: expr('{{ Array.isArray($json.mediaUrls) && $json.mediaUrls.length ? 0 : 1 }}'),
+    },
+  },
+});
+
+const expandMediaUploadsNode = node({
   type: 'n8n-nodes-base.code',
   version: 2,
   config: {
-    name: 'Upload Media To POST.devad.io',
-    position: [1200, 40],
+    name: 'Expand Media Upload Items',
+    position: [1460, -80],
     parameters: {
       mode: 'runOnceForAllItems',
       language: 'javaScript',
       jsCode: `const row=$input.first().json;
-const cfg=$('add-HERE-your-token-and-ids').item.json;
 const urls=Array.isArray(row.mediaUrls)?row.mediaUrls.filter(Boolean):[];
-if (!urls.length || row.postType==='text') {
-  return [{json:{...row,uploadedMediaUrls:[]}}];
+if (!urls.length) {
+  return [];
 }
-
-function inferFileName(url, contentType, index){
-  let fileName = '';
-  try {
-    const parsed = new URL(String(url));
-    fileName = String(parsed.pathname.split('/').pop() || '').trim();
-  } catch (e) {}
-  if (fileName && /\\.[a-z0-9]+$/i.test(fileName)) {
-    return fileName;
-  }
-  const type = String(contentType || '').toLowerCase();
-  if (type.includes('video/mp4')) return 'upload-' + (index + 1) + '.mp4';
-  if (type.includes('image/png')) return 'upload-' + (index + 1) + '.png';
-  if (type.includes('image/webp')) return 'upload-' + (index + 1) + '.webp';
-  if (type.includes('image/jpeg') || type.includes('image/jpg')) return 'upload-' + (index + 1) + '.jpg';
-  return 'upload-' + (index + 1) + '.bin';
-}
-
-async function uploadOne(url, index){
-  const sourceResp = await fetch(url, { redirect: 'follow' });
-  if (!sourceResp.ok) {
-    throw new Error('Media fetch failed (' + sourceResp.status + '): ' + url);
-  }
-  const bytes = await sourceResp.arrayBuffer();
-  const contentType = String(sourceResp.headers.get('content-type') || '').toLowerCase();
-  const fileName = inferFileName(url, contentType, index);
-  const form = new FormData();
-  const blob = new Blob([bytes], { type: contentType || 'application/octet-stream' });
-  form.append('file', blob, fileName);
-
-  const uploadUrl = String(cfg.base_url || '').replace(/\\/$/, '') + '/upload?api_token=' + encodeURIComponent(cfg.post_devad_io_token);
-  const uploadResp = await fetch(uploadUrl, {
-    method: 'POST',
-    headers: {
-      Accept: 'application/json',
-      Authorization: 'Bearer ' + cfg.post_devad_io_token,
-      'X-Api-Token': cfg.post_devad_io_token,
+return urls.map((mediaUrl, mediaIndex) => ({json:{...row,mediaUrl,mediaIndex}}));`,
     },
-    body: form,
-    redirect: 'follow',
-  });
-  const uploadText = await uploadResp.text();
-  let uploadJson = {};
-  try { uploadJson = JSON.parse(uploadText); } catch (e) {}
-  if (!((uploadResp.status === 200 || uploadResp.status === 201) && uploadJson.url)) {
-    throw new Error('Upload failed (' + uploadResp.status + '): ' + (uploadJson.message || uploadText || url));
-  }
-  return uploadJson.url;
-}
+  },
+  output: [{ rowNumber: 2, mediaUrl: 'https://cdn.example.com/example-image.jpg', mediaIndex: 0, postType: 'image' }],
+});
 
-const uploadedMediaUrls = [];
-for (let i = 0; i < urls.length; i++) {
-  uploadedMediaUrls.push(await uploadOne(urls[i], i));
-}
+const downloadMediaNode = node({
+  type: 'n8n-nodes-base.httpRequest',
+  version: 4.4,
+  config: {
+    name: 'Download Media Asset',
+    position: [1720, -80],
+    parameters: {
+      method: 'GET',
+      url: expr('{{ $json.mediaUrl }}'),
+      options: {
+        redirect: { redirect: { followRedirects: true, maxRedirects: 10 } },
+        response: { response: { responseFormat: 'file', outputPropertyName: 'data' } },
+      },
+    },
+  },
+  output: [{ binary: { data: { mimeType: 'image/jpeg', fileName: 'example.jpg' } } }],
+});
 
-return [{json:{...row,uploadedMediaUrls}}];`,
+const uploadBinaryNode = node({
+  type: 'n8n-nodes-base.httpRequest',
+  version: 4.4,
+  config: {
+    name: 'Upload Binary To POST.devad.io',
+    position: [1980, -80],
+    parameters: {
+      method: 'POST',
+      url: expr('{{ $("add-HERE-your-token-and-ids").item.json.base_url + "/upload" }}'),
+      sendQuery: true,
+      queryParameters: { parameters: [{ name: 'api_token', value: expr('{{ $("add-HERE-your-token-and-ids").item.json.post_devad_io_token }}') }] },
+      sendHeaders: true,
+      headerParameters: {
+        parameters: [
+          { name: 'Accept', value: 'application/json' },
+          { name: 'Authorization', value: expr('{{ "Bearer " + $("add-HERE-your-token-and-ids").item.json.post_devad_io_token }}') },
+          { name: 'X-Api-Token', value: expr('{{ $("add-HERE-your-token-and-ids").item.json.post_devad_io_token }}') },
+        ],
+      },
+      sendBody: true,
+      contentType: 'multipart-form-data',
+      bodyParameters: {
+        parameters: [
+          { parameterType: 'formBinaryData', name: 'file', inputDataFieldName: 'data' },
+        ],
+      },
+      options: {
+        response: { response: { responseFormat: 'json' } },
+      },
+    },
+  },
+  output: [{ url: 'https://post.devad.io/uploads/example.jpg', mime_type: 'image/jpeg', name: 'example.jpg' }],
+});
+
+const collectUploadedMediaNode = node({
+  type: 'n8n-nodes-base.code',
+  version: 2,
+  config: {
+    name: 'Collect Uploaded Media URLs',
+    position: [2240, -80],
+    parameters: {
+      mode: 'runOnceForAllItems',
+      language: 'javaScript',
+      jsCode: `const base=$('Expand Media Upload Items').first().json;
+const uploadedMediaUrls=$input.all()
+  .map(item => item.json || {})
+  .map(item => item.url || item.body?.url || '')
+  .filter(Boolean);
+if (!uploadedMediaUrls.length) {
+  throw new Error('No uploaded media URLs were returned from POST.devad.io /upload');
+}
+return [{json:{...base,uploadedMediaUrls}}];`,
     },
   },
   output: [{ rowNumber: 2, uploadedMediaUrls: ['https://post.devad.io/uploads/example.jpg'], postType: 'image' }],
@@ -378,7 +410,7 @@ const buildPayloadNode = node({
   version: 2,
   config: {
     name: 'Build PostApi Payload',
-    position: [1460, 40],
+    position: [2500, 40],
     parameters: {
       mode: 'runOnceForAllItems',
       language: 'javaScript',
@@ -439,7 +471,7 @@ const webhookRouteNode = switchCase({
   version: 3.4,
   config: {
     name: 'Route Optional Webhook',
-    position: [1720, 40],
+    position: [2760, 40],
     parameters: { mode: 'expression', numberOutputs: 2, output: expr('{{ $json.webhookUrl ? 0 : 1 }}') },
   },
 });
@@ -449,7 +481,7 @@ const sendWebhookNode = node({
   version: 4.4,
   config: {
     name: 'Send Optional Webhook',
-    position: [1980, -40],
+    position: [3020, -40],
     parameters: {
       method: expr('{{ $json.webhookMethod || "POST" }}'),
       url: expr('{{ $json.webhookUrl }}'),
@@ -467,7 +499,7 @@ const postFeedNode = node({
   version: 4.4,
   config: {
     name: 'Post Feed To POST.devad.io',
-    position: [2240, 40],
+    position: [3280, 40],
     parameters: {
       method: 'POST',
       url: expr('{{ $("add-HERE-your-token-and-ids").item.json.base_url + "/posts" }}'),
@@ -486,7 +518,7 @@ const storyRouteNode = switchCase({
   version: 3.4,
   config: {
     name: 'Route Story Request',
-    position: [2500, 40],
+    position: [3540, 40],
     parameters: {
       mode: 'expression',
       numberOutputs: 2,
@@ -500,7 +532,7 @@ const postStoryNode = node({
   version: 4.4,
   config: {
     name: 'Post Story To POST.devad.io',
-    position: [2760, -40],
+    position: [3800, -40],
     parameters: {
       method: 'POST',
       url: expr('{{ $("add-HERE-your-token-and-ids").item.json.base_url + "/posts" }}'),
@@ -518,7 +550,7 @@ const postStoryNode = node({
 const noStoryNode = node({
   type: 'n8n-nodes-base.noOp',
   version: 1,
-  config: { name: 'No Story Needed', position: [2760, 140], parameters: {} },
+  config: { name: 'No Story Needed', position: [3800, 140], parameters: {} },
   output: [{}],
 });
 
@@ -527,7 +559,7 @@ const buildSheetUpdateNode = node({
   version: 2,
   config: {
     name: 'Build Sheet Update Data',
-    position: [3020, 40],
+    position: [4060, 40],
     parameters: {
       mode: 'runOnceForAllItems',
       language: 'javaScript',
@@ -546,7 +578,7 @@ const updateSheetNode = node({
   credentials: { googleSheetsOAuth2Api: newCredential('Google Sheets OAuth2') },
   config: {
     name: 'Update Sheet Status',
-    position: [3280, 40],
+    position: [4320, 40],
     parameters: {
       resource: 'sheet',
       operation: 'update',
@@ -584,9 +616,20 @@ const afterWebhookChain = webhookRouteNode
   .onCase(0, sendWebhookNode.to(afterFeedChain))
   .onCase(1, afterFeedChain);
 
-const folderChain = folderSearchNode.to(buildFolderMediaNode.to(uploadResolvedMediaNode.to(buildPayloadNode.to(afterWebhookChain))));
-const fileChain = buildFileMediaNode.to(uploadResolvedMediaNode.to(buildPayloadNode.to(afterWebhookChain)));
-const directChain = buildDirectMediaNode.to(uploadResolvedMediaNode.to(buildPayloadNode.to(afterWebhookChain)));
+const uploadChain = expandMediaUploadsNode.to(downloadMediaNode.to(uploadBinaryNode.to(collectUploadedMediaNode.to(buildPayloadNode.to(afterWebhookChain)))));
+
+const folderChain = folderSearchNode.to(buildFolderMediaNode.to(uploadNeedRouteNode
+  .onCase(0, uploadChain)
+  .onCase(1, buildPayloadNode.to(afterWebhookChain))
+));
+const fileChain = buildFileMediaNode.to(uploadNeedRouteNode
+  .onCase(0, uploadChain)
+  .onCase(1, buildPayloadNode.to(afterWebhookChain))
+);
+const directChain = buildDirectMediaNode.to(uploadNeedRouteNode
+  .onCase(0, uploadChain)
+  .onCase(1, buildPayloadNode.to(afterWebhookChain))
+);
 
 export default workflow('KSP2fJsRJkghbBnX', 'CODEX - POST.devad.io - Sheet To Social Full')
   .add(overviewNote)

@@ -99,10 +99,21 @@ This is the main setup node. Most users only need to edit this node and relink G
   - Converts one Drive file ID into a direct download URL.
 - `Build Media From Direct Links`
   - Uses one or more direct media URLs already present in the row.
-- `Upload Media To POST.devad.io`
-  - Downloads each resolved media asset and uploads it to POST.devad.io `/upload`.
+- `Route Upload Need`
+  - Sends text-only rows directly to payload build.
+  - Sends image, video, and carousel rows into the upload path.
+- `Expand Media Upload Items`
+  - Splits one row with multiple media URLs into one n8n item per media asset.
+  - This is what makes carousel upload possible.
+- `Download Media Asset`
+  - Downloads each media asset into n8n binary data.
+- `Upload Binary To POST.devad.io`
+  - Uploads the downloaded binary file to POST.devad.io `/upload`.
   - This matches the working Google Sheets Apps Script behavior.
   - It is especially important for video and carousel reliability.
+- `Collect Uploaded Media URLs`
+  - Rebuilds the original row after all media files have been uploaded.
+  - Produces the final uploaded media URL list used by the publish payload.
 
 ### Payload building and optional fan-out
 
