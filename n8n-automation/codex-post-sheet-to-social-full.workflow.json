@@ -1,0 +1,1197 @@
+{
+  "name": "CODEX - POST.devad.io - Sheet To Social Full",
+  "nodes": [
+    {
+      "id": "0f15b0ec-b1be-4707-a5b6-11b63b82b2f8",
+      "name": "Workflow overview",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        -1000,
+        -280
+      ],
+      "parameters": {
+        "content": "## POST.devad.io -> Google Sheet -> Social\n\n1. Edit only the node named add-HERE-your-token-and-ids.\n2. Reads the post tab directly from Google Sheets.\n3. Expands Google Drive folder links and file links.\n4. Supports direct links, text/image/video/carousel, comments, and FB/IG story duplicates.\n5. Writes status back to Action? and log.\n6. If Google Sheets or Google Drive nodes fail auth, relink them in n8n.\n7. After import, manually bind the credential in Download Drive Media Asset once.",
+        "width": 540,
+        "height": 320
+      }
+    },
+    {
+      "id": "19da6820-8c55-4cde-b5e5-3d153bc1d6dd",
+      "name": "Credential note",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        -380,
+        -260
+      ],
+      "parameters": {
+        "content": "## Relink if needed\n\n- Google Sheets node uses a Google Sheets OAuth2 credential.\n- Google Drive node uses a Google Drive OAuth2 credential.\n- Download Drive Media Asset must also be manually bound once after import.\n- If either node errors, relink the credential in n8n and rerun.",
+        "color": 6,
+        "width": 320,
+        "height": 220
+      }
+    },
+    {
+      "id": "79330c1a-89eb-432e-b06a-74dce5b7a015",
+      "name": "Manual Trigger",
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [
+        -880,
+        40
+      ]
+    },
+    {
+      "id": "025e998b-389f-4430-a53d-d501abb11da4",
+      "name": "add-HERE-your-token-and-ids",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        -620,
+        40
+      ],
+      "parameters": {
+        "mode": "manual",
+        "assignments": {
+          "assignments": [
+            {
+              "id": "cfg-base-url",
+              "name": "base_url",
+              "value": "https://post.devad.io/api/public/v1",
+              "type": "string"
+            },
+            {
+              "id": "cfg-sheet-url",
+              "name": "spreadsheet_url",
+              "value": "https://docs.google.com/spreadsheets/d/YOUR_SHEET_ID/edit#gid=0",
+              "type": "string"
+            },
+            {
+              "id": "cfg-sheet-name",
+              "name": "sheet_name",
+              "value": "post",
+              "type": "string"
+            },
+            {
+              "id": "cfg-token",
+              "name": "post_devad_io_token",
+              "value": "ADD_HERE_YOUR_POST_DEVD_IO_TOKEN",
+              "type": "string"
+            },
+            {
+              "id": "cfg-instagram",
+              "name": "instagram_id",
+              "value": "ADD_HERE_YOUR_INSTAGRAM_ID",
+              "type": "string"
+            },
+            {
+              "id": "cfg-youtube",
+              "name": "youtube_id",
+              "value": "ADD_HERE_YOUR_YOUTUBE_ID",
+              "type": "string"
+            },
+            {
+              "id": "cfg-tiktok",
+              "name": "tiktok_id",
+              "value": "ADD_HERE_YOUR_TIKTOK_ID",
+              "type": "string"
+            },
+            {
+              "id": "cfg-facebook",
+              "name": "facebook_id",
+              "value": "ADD_HERE_YOUR_FACEBOOK_ID",
+              "type": "string"
+            },
+            {
+              "id": "cfg-pinterest",
+              "name": "pinterest_id",
+              "value": "ADD_HERE_YOUR_PINTEREST_ID",
+              "type": "string"
+            },
+            {
+              "id": "cfg-pinterest-board",
+              "name": "pinterest_board_id",
+              "value": "ADD_HERE_YOUR_PINTEREST_BOARD_ID",
+              "type": "string"
+            },
+            {
+              "id": "cfg-telegram",
+              "name": "telegram_id",
+              "value": "ADD_HERE_YOUR_TELEGRAM_ID",
+              "type": "string"
+            },
+            {
+              "id": "cfg-li-page",
+              "name": "linkedin_page_id",
+              "value": "ADD_HERE_YOUR_LINKEDIN_PAGE_ID",
+              "type": "string"
+            },
+            {
+              "id": "cfg-li-profile",
+              "name": "linkedin_profile_id",
+              "value": "ADD_HERE_YOUR_LINKEDIN_PROFILE_ID",
+              "type": "string"
+            },
+            {
+              "id": "cfg-tumblr",
+              "name": "tumblr_id",
+              "value": "ADD_HERE_YOUR_TUMBLR_ID",
+              "type": "string"
+            },
+            {
+              "id": "cfg-gbp",
+              "name": "google_business_profile_id",
+              "value": "ADD_HERE_YOUR_GOOGLE_BUSINESS_PROFILE_ID",
+              "type": "string"
+            },
+            {
+              "id": "cfg-default-promo",
+              "name": "default_promo_link_mode",
+              "value": "caption",
+              "type": "string"
+            },
+            {
+              "id": "cfg-fb-promo",
+              "name": "facebook_promo_link_mode",
+              "value": "comment",
+              "type": "string"
+            },
+            {
+              "id": "cfg-ig-promo",
+              "name": "instagram_promo_link_mode",
+              "value": "comment",
+              "type": "string"
+            },
+            {
+              "id": "cfg-fb-story",
+              "name": "facebook_plus_story",
+              "value": "0",
+              "type": "string"
+            },
+            {
+              "id": "cfg-ig-story",
+              "name": "instagram_plus_story",
+              "value": "0",
+              "type": "string"
+            },
+            {
+              "id": "cfg-row-select",
+              "name": "process_row_numbers",
+              "value": "",
+              "type": "string"
+            },
+            {
+              "id": "cfg-max-rows",
+              "name": "max_rows_per_run",
+              "value": "1",
+              "type": "string"
+            },
+            {
+              "id": "cfg-webhook-url",
+              "name": "default_webhook_url",
+              "value": "",
+              "type": "string"
+            },
+            {
+              "id": "cfg-webhook-method",
+              "name": "default_webhook_method",
+              "value": "POST",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      }
+    },
+    {
+      "id": "e416577a-8976-4856-9402-4b71e73ef916",
+      "name": "Fetch PostApi Accounts",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.4,
+      "position": [
+        -360,
+        40
+      ],
+      "parameters": {
+        "method": "GET",
+        "url": "={{ $json.base_url + \"/accounts\" }}",
+        "sendQuery": true,
+        "queryParameters": {
+          "parameters": [
+            {
+              "name": "api_token",
+              "value": "={{ $json.post_devad_io_token }}"
+            }
+          ]
+        },
+        "options": {
+          "response": {
+            "response": {
+              "responseFormat": "json"
+            }
+          }
+        }
+      }
+    },
+    {
+      "id": "3dd05a48-1487-41b1-8bd5-56ed44124441",
+      "name": "Read Post Sheet",
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        -100,
+        40
+      ],
+      "parameters": {
+        "resource": "sheet",
+        "operation": "read",
+        "authentication": "oAuth2",
+        "documentId": {
+          "__rl": true,
+          "mode": "url",
+          "value": "={{ $(\"add-HERE-your-token-and-ids\").item.json.spreadsheet_url }}"
+        },
+        "sheetName": {
+          "__rl": true,
+          "mode": "name",
+          "value": "={{ $(\"add-HERE-your-token-and-ids\").item.json.sheet_name }}"
+        },
+        "options": {
+          "returnAllMatches": "returnAllMatches"
+        }
+      }
+    },
+    {
+      "id": "a547715c-bbcc-4cbb-8372-16213c3cc29d",
+      "name": "Normalize Action Rows",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        160,
+        40
+      ],
+      "parameters": {
+        "mode": "runOnceForAllItems",
+        "language": "javaScript",
+        "jsCode": "const cfg=$('add-HERE-your-token-and-ids').item.json;\nfunction s(v){return String(v||'').trim().toLowerCase().replace(/[^a-z0-9]+/g,'_').replace(/^_+|_+$/g,'');}\nfunction rv(row, aliases){const m={}; for(const [k,v] of Object.entries(row||{})) m[s(k)] = v; for(const a of aliases){const hit=m[s(a)]; if(hit!==undefined && String(hit).trim()!=='') return String(hit).trim();} return '';}\nfunction list(v){const raw=String(v||''); const nl=String.fromCharCode(10); return raw.split(nl).flatMap(i=>i.split(',')).flatMap(i=>i.split('|')).map(i=>i.trim()).filter(Boolean);}\nfunction parseRows(v){return new Set(list(v).map(n=>Number(String(n).trim())).filter(n=>Number.isInteger(n) && n > 1));}\nfunction gidFile(u){const text=String(u||''); const byPath=text.split('/d/'); if(byPath[1]) return byPath[1].split(/[/?&#]/)[0]; const byId=text.split('id='); if(byId[1]) return byId[1].split(/[&#]/)[0]; return '';}\nfunction gidFolder(u){const text=String(u||''); const byPath=text.split('/folders/'); if(byPath[1]) return byPath[1].split(/[/?&#]/)[0]; return '';}\nfunction hint(t, links){const v=String(t||'').toLowerCase(); if(v.includes('carousel')) return 'carousel'; if(v.includes('video')) return 'video'; if(v.includes('image')||v.includes('photo')) return 'image'; if(v.includes('text')) return 'text'; if(links.length>1) return 'carousel'; return '';}\nfunction hasUsableRow(title, caption, promoLink, mediaLink){return !!(String(title||'').trim() || String(caption||'').trim() || String(promoLink||'').trim() || String(mediaLink||'').trim());}\nconst out=[]; const rows=$input.all().map(i=>i.json);\nconst selectedRows=parseRows(cfg.process_row_numbers || '');\nconst maxRows=Math.max(0, parseInt(String(cfg.max_rows_per_run || '1'), 10) || 0);\nfor(let i=0;i<rows.length;i++){const row=rows[i]; const action=rv(row,['action?','action']); if(!['to do','todo','post','queue','publish'].includes(String(action).trim().toLowerCase())) continue;\n  const rowNumber=Number(row.row_number||i+2);\n  if(selectedRows.size && !selectedRows.has(rowNumber)) continue;\n  const title=rv(row,['title']); const promoLink=rv(row,['promotional link','link']); const captionBase=rv(row,['social media summary (caption)','caption','summary']); const mediaLink=rv(row,['creative link','media','media url']);\n  if(!hasUsableRow(title, captionBase, promoLink, mediaLink)) continue;\n  const links=list(mediaLink); const folderId=links.length===1?gidFolder(links[0]):''; const fileId=!folderId&&links.length===1?gidFile(links[0]):''; const h=hint(rv(row,['creative type']), links);\n  let src=folderId?'folder':(fileId?'file':'direct'); if(!links.length && h==='text') src='direct';\n  out.push({json:{rowNumber:rowNumber,row_number:String(rowNumber),sourceRow:row,title,promoLink,captionBase,creativeType:rv(row,['creative type']),postTypeHint:h,mediaSourceType:src,googleDriveFolderId:folderId,googleDriveFileId:fileId,directMediaUrls:src==='direct'?links:[],webhookUrl:rv(row,['webhook url'])||cfg.default_webhook_url,webhookMethod:(rv(row,['webhook method'])||cfg.default_webhook_method||'POST').toUpperCase(),scheduleAt:rv(row,['schedule at','publish at','date'])}});\n  if(maxRows > 0 && out.length >= maxRows) break;\n}\nreturn out;"
+      }
+    },
+    {
+      "id": "d1ca3a5c-8b16-444a-8019-a74b6b0aebb7",
+      "name": "Done",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        2920,
+        320
+      ],
+      "parameters": {
+        "mode": "manual",
+        "assignments": {
+          "assignments": [
+            {
+              "id": "done-msg",
+              "name": "message",
+              "value": "Workflow finished processing current actionable rows.",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      }
+    },
+    {
+      "id": "4cb2187c-ac24-4106-8ce4-ba3f01d932b2",
+      "name": "Route Media Source",
+      "type": "n8n-nodes-base.switch",
+      "typeVersion": 3.4,
+      "position": [
+        680,
+        40
+      ],
+      "parameters": {
+        "mode": "expression",
+        "numberOutputs": 3,
+        "output": "={{ $json.mediaSourceType === \"folder\" ? 0 : ($json.mediaSourceType === \"file\" ? 1 : 2) }}"
+      }
+    },
+    {
+      "id": "dc7ccf2f-d4c5-43c3-8db4-d59767e2c751",
+      "name": "List Drive Folder Files",
+      "type": "n8n-nodes-base.googleDrive",
+      "typeVersion": 3,
+      "position": [
+        940,
+        -120
+      ],
+      "parameters": {
+        "resource": "fileFolder",
+        "operation": "search",
+        "authentication": "oAuth2",
+        "searchMethod": "query",
+        "queryString": "={{ \"\\\"\" + $(\"Current Row Batch\").item.json.googleDriveFolderId + \"\\\" in parents and trashed = false and mimeType != \\\"application/vnd.google-apps.folder\\\"\" }}",
+        "returnAll": true,
+        "options": {
+          "fields": [
+            "id",
+            "name",
+            "mimeType",
+            "webViewLink"
+          ]
+        }
+      }
+    },
+    {
+      "id": "6b598a74-4e24-4968-ae45-00f6180d9422",
+      "name": "Build Media From Folder",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1200,
+        -120
+      ],
+      "parameters": {
+        "mode": "runOnceForAllItems",
+        "language": "javaScript",
+        "jsCode": "function infer(h, files){if(h) return h; if(files.length>1) return 'carousel'; const m=String(files[0]?.mimeType||'').toLowerCase(); return m.startsWith('video/')?'video':'image';}\nconst row=$('Current Row Batch').item.json;\nconst files=$input.all().map(i=>i.json).filter(f=>f.id && (/^image\\//i.test(String(f.mimeType||'')) || /^video\\//i.test(String(f.mimeType||'')))).sort((a,b)=>String(a.name||'').localeCompare(String(b.name||''),undefined,{numeric:true,sensitivity:'base'}));\nconst mediaFiles=files.map(f=>({fileId:f.id,fileName:f.name||'',mimeType:f.mimeType||''}));\nreturn [{json:{...row,mediaFiles,mediaUrls:[],postType:mediaFiles.length?infer(row.postTypeHint,files):(row.postTypeHint||'text')}}];"
+      }
+    },
+    {
+      "id": "38d43db5-bf91-49b1-9f49-16dec331fa4e",
+      "name": "Route Upload Need",
+      "type": "n8n-nodes-base.switch",
+      "typeVersion": 3.4,
+      "position": [
+        1200,
+        40
+      ],
+      "parameters": {
+        "mode": "expression",
+        "numberOutputs": 2,
+        "output": "={{ ((Array.isArray($json.mediaFiles) && $json.mediaFiles.length) || (Array.isArray($json.mediaUrls) && $json.mediaUrls.length)) ? 0 : 1 }}"
+      }
+    },
+    {
+      "id": "81e69b84-8d7c-4e20-834e-2d85bd2cc2b6",
+      "name": "Expand Media Upload Items",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1460,
+        -80
+      ],
+      "parameters": {
+        "mode": "runOnceForAllItems",
+        "language": "javaScript",
+        "jsCode": "const row=$input.first().json;\nconst files=Array.isArray(row.mediaFiles)?row.mediaFiles.filter(file => file && file.fileId):[];\nconst urls=Array.isArray(row.mediaUrls)?row.mediaUrls.filter(Boolean):[];\nconst items=[];\nfiles.forEach((file, mediaIndex) => {\n  items.push({json:{...row,mediaSource:'drive',mediaIndex,mediaFileId:file.fileId,mediaFileName:file.fileName||'',mediaFileMimeType:file.mimeType||''}});\n});\nurls.forEach((mediaUrl, urlIndex) => {\n  items.push({json:{...row,mediaSource:'url',mediaIndex:files.length + urlIndex,mediaUrl}});\n});\nreturn items;"
+      }
+    },
+    {
+      "id": "e00c245c-9ffb-4366-8504-7d5b5875d68d",
+      "name": "Route Download Method",
+      "type": "n8n-nodes-base.switch",
+      "typeVersion": 3.4,
+      "position": [
+        1590,
+        -80
+      ],
+      "parameters": {
+        "mode": "expression",
+        "numberOutputs": 2,
+        "output": "={{ $json.mediaSource === \"drive\" ? 0 : 1 }}"
+      }
+    },
+    {
+      "id": "c63fe386-1320-4afe-a429-801f475030b0",
+      "name": "Download Drive Media Asset",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.4,
+      "position": [
+        1720,
+        -180
+      ],
+      "parameters": {
+        "method": "GET",
+        "url": "={{ \"https://www.googleapis.com/drive/v3/files/\" + $json.mediaFileId }}",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "googleDriveOAuth2Api",
+        "sendQuery": true,
+        "queryParameters": {
+          "parameters": [
+            {
+              "name": "alt",
+              "value": "media"
+            },
+            {
+              "name": "acknowledgeAbuse",
+              "value": "true"
+            },
+            {
+              "name": "supportsAllDrives",
+              "value": "true"
+            }
+          ]
+        },
+        "options": {
+          "response": {
+            "response": {
+              "responseFormat": "file",
+              "outputPropertyName": "data"
+            }
+          }
+        }
+      }
+    },
+    {
+      "id": "d754d33e-cb75-46fc-b48d-dfb9223eccdb",
+      "name": "Normalize Binary Metadata",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1850,
+        -80
+      ],
+      "parameters": {
+        "mode": "runOnceForEachItem",
+        "language": "javaScript",
+        "jsCode": "const item = $input.item;\nconst json = item.json || {};\nconst binary = item.binary || {};\nif (!binary.data) {\n  throw new Error('Downloaded media is missing binary data');\n}\n\nfunction extFromMime(mime, postType) {\n  const m = String(mime || '').toLowerCase();\n  if (m.includes('video/mp4')) return 'mp4';\n  if (m.includes('image/png')) return 'png';\n  if (m.includes('image/webp')) return 'webp';\n  if (m.includes('image/jpeg') || m.includes('image/jpg')) return 'jpg';\n  return postType === 'video' ? 'mp4' : 'jpg';\n}\n\nfunction mimeFromExt(ext, postType) {\n  const e = String(ext || '').toLowerCase();\n  if (e === 'mp4') return 'video/mp4';\n  if (e === 'png') return 'image/png';\n  if (e === 'webp') return 'image/webp';\n  if (e === 'jpg' || e === 'jpeg') return 'image/jpeg';\n  return postType === 'video' ? 'video/mp4' : 'image/jpeg';\n}\n\nconst mediaRef = String(json.mediaUrl || json.mediaFileName || '');\nlet fileName = String(binary.data.fileName || json.mediaFileName || '').trim();\nlet mimeType = String(binary.data.mimeType || json.mediaFileMimeType || '').trim().toLowerCase();\n\nlet ext = '';\nconst refMatch = mediaRef.split('?')[0].match(/\\.([a-z0-9]+)$/i);\nif (refMatch) {\n  ext = refMatch[1].toLowerCase();\n}\n\nif (!ext && fileName.match(/\\.([a-z0-9]+)$/i)) {\n  ext = fileName.match(/\\.([a-z0-9]+)$/i)[1].toLowerCase();\n}\n\nif (!ext) {\n  ext = extFromMime(mimeType, json.postType);\n}\n\nif (!fileName || !/\\.[a-z0-9]+$/i.test(fileName)) {\n  fileName = 'upload-' + String((json.mediaIndex ?? 0) + 1) + '.' + ext;\n}\n\nif (!mimeType || mimeType === 'application/octet-stream') {\n  mimeType = mimeFromExt(ext, json.postType);\n}\n\nbinary.data.fileName = fileName;\nbinary.data.fileExtension = ext;\nbinary.data.mimeType = mimeType;\n\nreturn { json, binary };"
+      }
+    },
+    {
+      "id": "3ffa8285-9c24-47af-9c4f-0a706f66d874",
+      "name": "Upload Binary To POST.devad.io",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.4,
+      "position": [
+        2110,
+        -80
+      ],
+      "parameters": {
+        "method": "POST",
+        "url": "={{ $(\"add-HERE-your-token-and-ids\").item.json.base_url + \"/upload\" }}",
+        "sendQuery": true,
+        "queryParameters": {
+          "parameters": [
+            {
+              "name": "api_token",
+              "value": "={{ $(\"add-HERE-your-token-and-ids\").item.json.post_devad_io_token }}"
+            }
+          ]
+        },
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Accept",
+              "value": "application/json"
+            },
+            {
+              "name": "Authorization",
+              "value": "={{ \"Bearer \" + $(\"add-HERE-your-token-and-ids\").item.json.post_devad_io_token }}"
+            },
+            {
+              "name": "X-Api-Token",
+              "value": "={{ $(\"add-HERE-your-token-and-ids\").item.json.post_devad_io_token }}"
+            }
+          ]
+        },
+        "sendBody": true,
+        "contentType": "multipart-form-data",
+        "bodyParameters": {
+          "parameters": [
+            {
+              "parameterType": "formBinaryData",
+              "name": "file",
+              "inputDataFieldName": "data"
+            }
+          ]
+        },
+        "options": {
+          "response": {
+            "response": {
+              "responseFormat": "json"
+            }
+          }
+        }
+      }
+    },
+    {
+      "id": "40ad7485-33ad-4c99-a1b6-0c38d08ae0fd",
+      "name": "Collect Uploaded Media URLs",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        2240,
+        -80
+      ],
+      "parameters": {
+        "mode": "runOnceForAllItems",
+        "language": "javaScript",
+        "jsCode": "const base=$('Expand Media Upload Items').first().json;\nconst uploadedMediaUrls=$input.all()\n  .map(item => item.json || {})\n  .map(item => item.url || item.body?.url || '')\n  .filter(Boolean);\nif (!uploadedMediaUrls.length) {\n  throw new Error('No uploaded media URLs were returned from POST.devad.io /upload');\n}\nreturn [{json:{...base,uploadedMediaUrls}}];"
+      }
+    },
+    {
+      "id": "d870bb0e-f729-438a-a4cb-08235344d5f0",
+      "name": "Build PostApi Payload",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        2500,
+        40
+      ],
+      "parameters": {
+        "mode": "runOnceForAllItems",
+        "language": "javaScript",
+        "jsCode": "function s(v){return String(v||'').trim().toLowerCase().replace(/[^a-z0-9]+/g,'_').replace(/^_+|_+$/g,'');}\nfunction rv(row, aliases){const m={}; for(const [k,v] of Object.entries(row||{})) m[s(k)] = v; for(const a of aliases){const hit=m[s(a)]; if(hit!==undefined && String(hit).trim()!=='') return String(hit).trim();} return '';}\nfunction yes(v,d=false){if(v===undefined||v===null||v==='') return d; return ['1','true','yes','y','on','ok','done'].includes(String(v).trim().toLowerCase());}\nfunction list(v){const raw=String(v||''); const nl=String.fromCharCode(10); return raw.split(nl).flatMap(i=>i.split(',')).flatMap(i=>i.split('|')).map(i=>i.trim()).filter(Boolean);}\nfunction alias(v){return String(v||'').trim().toLowerCase().replace(/[^a-z0-9]+/g,'');}\nfunction ttPrivacy(v){const n=String(v||'PUBLIC_TO_EVERYONE').trim().toUpperCase(); if(['PUBLIC','EVERYONE','PUBLIC_TO_EVERYONE'].includes(n)) return 'PUBLIC_TO_EVERYONE'; if(['FRIENDS','FRIEND','MUTUAL_FOLLOW_FRIENDS'].includes(n)) return 'MUTUAL_FOLLOW_FRIENDS'; if(['FOLLOWERS','FOLLOWER','FOLLOWER_OF_CREATOR'].includes(n)) return 'FOLLOWER_OF_CREATOR'; if(['PRIVATE','ONLY_ME','SELF_ONLY'].includes(n)) return 'SELF_ONLY'; return n;}\nfunction ytPrivacy(v){const n=String(v||'public').trim().toLowerCase(); return ['private','unlisted','public'].includes(n)?n:'public';}\nfunction configured(cfg){return {facebook:cfg.facebook_id,instagram:cfg.instagram_id,youtube:cfg.youtube_id,tiktok:cfg.tiktok_id,pinterest:cfg.pinterest_id,telegram:cfg.telegram_id,linkedin_page:cfg.linkedin_page_id,linkedin_profile:cfg.linkedin_profile_id,tumblr:cfg.tumblr_id,google_business_profile:cfg.google_business_profile_id};}\nfunction defaultKeys(type){if(type==='video') return ['facebook','instagram','youtube','tiktok','linkedin_profile','linkedin_page','telegram','tumblr']; if(type==='carousel') return ['facebook','instagram','linkedin_profile','linkedin_page']; if(type==='text') return ['facebook','linkedin_profile','linkedin_page','telegram','tumblr','google_business_profile']; return ['facebook','instagram','linkedin_profile','linkedin_page','pinterest','telegram','tumblr','google_business_profile'];}\nfunction bucketAccounts(accounts){const buckets={}; for(const a of accounts){const provider=String(a.provider||'').toLowerCase(); const category=String(a.category||'').toLowerCase(); const key=provider+'::'+category; if(!buckets[key]) buckets[key]=[]; buckets[key].push(a);} return buckets;}\nfunction desiredCategories(key){if(key==='facebook') return ['page']; if(key==='instagram') return ['profile']; if(key==='youtube') return ['channel']; if(key==='tiktok') return ['profile']; if(key==='pinterest') return ['board']; if(key==='telegram') return ['channel']; if(key==='linkedin_page') return ['page']; if(key==='linkedin_profile') return ['profile']; if(key==='tumblr') return ['blog']; if(key==='google_business_profile') return ['location']; return [];}\nfunction desiredProvider(key){if(key==='linkedin_page'||key==='linkedin_profile') return 'linkedin'; return key;}\nfunction resolveIntegrationId(key, configuredId, accountMap, accountBuckets){if(configuredId && accountMap.has(configuredId)) return configuredId; const provider=desiredProvider(key); const categories=desiredCategories(key); for(const category of categories){const match=(accountBuckets[provider+'::'+category]||[])[0]; if(match && match.id) return match.id;} return '';}\nfunction choose(row,cfg,type,accountMap,accounts){const req=list(rv(row,['channels','channel','social channels','networks'])).map(alias); const conf=configured(cfg); const keys=req.length?Object.keys(conf).filter(k=>req.includes(alias(k))||req.includes(alias(k.replace('_profile','').replace('_page','')))):defaultKeys(type); const out=[]; const usedIds=new Set(); const accountBuckets=bucketAccounts(accounts); for(const key of keys){const integrationId=resolveIntegrationId(key, conf[key], accountMap, accountBuckets); if(!integrationId||!accountMap.has(integrationId)||usedIds.has(integrationId)) continue; usedIds.add(integrationId); out.push({key,integrationId,account:accountMap.get(integrationId)});} return out;}\nfunction promoMode(targetKey,row,cfg){const fromRow=rv(row,[targetKey+' promo link mode',targetKey.replace('_',' ')+' promo link mode','promo link mode']); if(fromRow) return fromRow.toLowerCase(); if(targetKey==='facebook') return String(cfg.facebook_promo_link_mode||'comment').toLowerCase(); if(targetKey==='instagram') return String(cfg.instagram_promo_link_mode||'comment').toLowerCase(); return String(cfg.default_promo_link_mode||'caption').toLowerCase();}\nfunction caption(base,link,mode){const c=String(base||'').trim(); const l=String(link||'').trim(); const nl=String.fromCharCode(10); if(mode!=='caption'||!l) return c; if(c.includes(l)) return c; return c?c+nl+nl+l:l;}\nfunction settingsFor(target,row,type,link,title,content,cfg){const l=String(link||'').trim(); const mode=promoMode(target.key,row,cfg); const settings={};\n  if(target.key==='facebook'){settings.post_type=type; settings.fb_type=type==='video'?'reels':'feed'; if(mode==='comment'&&l) settings.fb_comment=l; return settings;}\n  if(target.key==='instagram'){if(type==='text') return null; settings.post_type=type; settings.ig_type=type==='video'?'reels':'feed'; if(mode==='comment'&&l) settings.ig_comment=l; return settings;}\n  if(target.key==='linkedin_page'||target.key==='linkedin_profile'){settings.post_type=type; return settings;}\n  if(target.key==='telegram'){if(type==='carousel') return null; settings.post_type=type; return settings;}\n  if(target.key==='tiktok'){if(type==='text'||type==='carousel') return null; settings.post_type=type; settings.tt_privacy=ttPrivacy(rv(row,['tiktok privacy','privacy','privacy level'])); settings.tt_consent=yes(rv(row,['tiktok consent','music usage confirmation','consent']),true)?1:0; settings.tt_allow_comment=yes(rv(row,['tiktok allow comment','allow comment']),true)?1:0; settings.tt_allow_duet=yes(rv(row,['tiktok allow duet','allow duet']),false)?1:0; settings.tt_allow_stitch=yes(rv(row,['tiktok allow stitch','allow stitch']),false)?1:0; return settings;}\n  if(target.key==='youtube'){if(type!=='video') return null; settings.post_type='video'; settings.youtube_title=rv(row,['youtube title'])||title||String(content||'').slice(0,95)||'POST.devad.io upload'; settings.youtube_privacy=ytPrivacy(rv(row,['youtube privacy','privacy'])); settings.youtube_category=Number(rv(row,['youtube category','category'])||22); return settings;}\n  if(target.key==='pinterest'){if(type!=='image') return null; settings.post_type='image'; settings.pinterest_title=rv(row,['pinterest title'])||title||'POST.devad.io pin'; settings.pinterest_link=l||''; const board=rv(row,['pinterest board id','board id'])||cfg.pinterest_board_id; settings.pinterest_board=board; settings.pinterest_board_id=board; return settings;}\n  if(target.key==='google_business_profile'){if(type==='video'||type==='carousel') return null; settings.post_type=type==='text'?'text':'image'; if(l){settings.gbp_action='LEARN_MORE'; settings.gbp_link=l;} return settings;}\n  if(target.key==='tumblr'){if(type==='carousel') return null; settings.post_type=type; return settings;}\n  settings.post_type=type; return settings;\n}\nfunction addStory(key,type,cfg){if(type!=='image'&&type!=='video') return false; if(key==='facebook') return yes(cfg.facebook_plus_story,false); if(key==='instagram') return yes(cfg.instagram_plus_story,false); return false;}\nconst cfg=$('add-HERE-your-token-and-ids').item.json; const raw=$('Fetch PostApi Accounts').item.json||{}; const accounts=Array.isArray(raw.data)?raw.data:(Array.isArray(raw.body?.data)?raw.body.data:[]); const accountMap=new Map(accounts.map(a=>[a.id,a]));\nconst row=$input.first().json; const src=row.sourceRow||{}; const mediaUrls=Array.isArray(row.uploadedMediaUrls)?row.uploadedMediaUrls.filter(Boolean):(Array.isArray(row.mediaUrls)?row.mediaUrls.filter(Boolean):[]); const type=row.postType||row.postTypeHint||(mediaUrls.length?'image':'text'); const title=row.title||rv(src,['title']); const promo=row.promoLink||rv(src,['promotional link','link']); const base=row.captionBase||rv(src,['social media summary (caption)','caption','summary']);\nconst targets=choose(src,cfg,type,accountMap,accounts); const feedPosts=[]; const storyPosts=[]; const selectedTargets=[];\nfor(const target of targets){const content=caption(base,promo,promoMode(target.key,src,cfg)); const settings=settingsFor(target,src,type,promo,title,content,cfg); if(!settings) continue; const post={integration:{id:target.integrationId},value:[{content}],media:mediaUrls,settings}; feedPosts.push(post); selectedTargets.push({key:target.key,id:target.integrationId,provider:target.account.provider,category:target.account.category}); if(addStory(target.key,type,cfg)){const story=JSON.parse(JSON.stringify(post)); story.settings.post_type='story'; if(target.key==='facebook') story.settings.fb_type='story'; if(target.key==='instagram') story.settings.ig_type='story'; storyPosts.push(story);}}\nif(!feedPosts.length) return [];\nconst feedPostApiBody=row.scheduleAt?{type:'schedule',date:row.scheduleAt,posts:feedPosts}:{posts:feedPosts};\nconst storyPostApiBody=storyPosts.length?(row.scheduleAt?{type:'schedule',date:row.scheduleAt,posts:storyPosts}:{posts:storyPosts}):null;\nreturn [{json:{...row,postType:type,mediaUrls,selectedTargets,feedPostApiBody,storyPostApiBody,webhookBody:{source:'n8n-post-devad-sheet',row_number:row.rowNumber,title,caption:base,promotional_link:promo,media:mediaUrls,post_type:type,channels:selectedTargets,feed_post_api_body:feedPostApiBody,story_post_api_body:storyPostApiBody}}}];"
+      }
+    },
+    {
+      "id": "c8a9222b-94dc-4dff-90d1-b62e254ebc36",
+      "name": "Route Optional Webhook",
+      "type": "n8n-nodes-base.switch",
+      "typeVersion": 3.4,
+      "position": [
+        2760,
+        40
+      ],
+      "parameters": {
+        "mode": "expression",
+        "numberOutputs": 2,
+        "output": "={{ $json.webhookUrl ? 0 : 1 }}"
+      }
+    },
+    {
+      "id": "2a9b69cd-8729-4940-873d-718ce70294ca",
+      "name": "Send Optional Webhook",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.4,
+      "position": [
+        3020,
+        -40
+      ],
+      "parameters": {
+        "method": "={{ $json.webhookMethod || \"POST\" }}",
+        "url": "={{ $json.webhookUrl }}",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ $(\"Build PostApi Payload\").item.json.webhookBody }}",
+        "options": {
+          "response": {
+            "response": {
+              "responseFormat": "json"
+            }
+          }
+        }
+      }
+    },
+    {
+      "id": "40a88c89-71ba-4402-a4f0-adf8861ed89b",
+      "name": "Post Feed To POST.devad.io",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.4,
+      "position": [
+        3280,
+        40
+      ],
+      "parameters": {
+        "method": "POST",
+        "url": "={{ $(\"add-HERE-your-token-and-ids\").item.json.base_url + \"/posts\" }}",
+        "sendQuery": true,
+        "queryParameters": {
+          "parameters": [
+            {
+              "name": "api_token",
+              "value": "={{ $(\"add-HERE-your-token-and-ids\").item.json.post_devad_io_token }}"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ $(\"Build PostApi Payload\").item.json.feedPostApiBody }}",
+        "options": {
+          "response": {
+            "response": {
+              "responseFormat": "json"
+            }
+          }
+        }
+      }
+    },
+    {
+      "id": "acbed421-5661-47b4-8262-1a61b908cd7b",
+      "name": "Route Story Request",
+      "type": "n8n-nodes-base.switch",
+      "typeVersion": 3.4,
+      "position": [
+        3540,
+        40
+      ],
+      "parameters": {
+        "mode": "expression",
+        "numberOutputs": 2,
+        "output": "={{ Array.isArray($(\"Build PostApi Payload\").item.json.storyPostApiBody?.posts) && $(\"Build PostApi Payload\").item.json.storyPostApiBody.posts.length ? 0 : 1 }}"
+      }
+    },
+    {
+      "id": "c321a13e-a1bd-457c-b1c7-b0167360a551",
+      "name": "Post Story To POST.devad.io",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.4,
+      "position": [
+        3800,
+        -40
+      ],
+      "parameters": {
+        "method": "POST",
+        "url": "={{ $(\"add-HERE-your-token-and-ids\").item.json.base_url + \"/posts\" }}",
+        "sendQuery": true,
+        "queryParameters": {
+          "parameters": [
+            {
+              "name": "api_token",
+              "value": "={{ $(\"add-HERE-your-token-and-ids\").item.json.post_devad_io_token }}"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ $(\"Build PostApi Payload\").item.json.storyPostApiBody }}",
+        "options": {
+          "response": {
+            "response": {
+              "responseFormat": "json"
+            }
+          }
+        }
+      }
+    },
+    {
+      "id": "4226b9b7-6823-4466-a0ed-cd4231519bd5",
+      "name": "Build Sheet Update Data",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        4060,
+        40
+      ],
+      "parameters": {
+        "mode": "runOnceForAllItems",
+        "language": "javaScript",
+        "jsCode": "function compact(v){return typeof v==='string' ? v : JSON.stringify(v||{});}\nconst row=$('Build PostApi Payload').item.json; const feed=$('Post Feed To POST.devad.io').item.json; let story=null; try{story=$('Post Story To POST.devad.io').item.json;}catch(e){story=null;}\nconst okMark=String.fromCharCode(9989); const doneMark=String.fromCharCode(55357,57314)+' Done';\nlet log=okMark+' Posted successfully: '+new Date().toLocaleString(); log+=' | Channels: '+(Array.isArray(row.selectedTargets)?row.selectedTargets.map(t=>t.key).join(', '):''); log+=' | Feed response: '+compact(feed); if(story) log+=' | Story response: '+compact(story);\nreturn [{json:{row_number:String(row.rowNumber),'Action?':doneMark,log}}];"
+      }
+    },
+    {
+      "id": "ea11dc31-3fa1-4c15-a283-551889a41d76",
+      "name": "Update Sheet Status",
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        4320,
+        40
+      ],
+      "parameters": {
+        "resource": "sheet",
+        "operation": "update",
+        "authentication": "oAuth2",
+        "documentId": {
+          "__rl": true,
+          "mode": "url",
+          "value": "={{ $(\"add-HERE-your-token-and-ids\").item.json.spreadsheet_url }}"
+        },
+        "sheetName": {
+          "__rl": true,
+          "mode": "name",
+          "value": "={{ $(\"add-HERE-your-token-and-ids\").item.json.sheet_name }}"
+        },
+        "columns": {
+          "value": {
+            "Action?": "={{ $json[\"Action?\"] }}",
+            "log": "={{ $json.log }}",
+            "row_number": "={{ $json.row_number }}"
+          },
+          "schema": [
+            {
+              "id": "Action?",
+              "type": "string",
+              "display": true,
+              "required": false,
+              "displayName": "Action?",
+              "defaultMatch": false,
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "log",
+              "type": "string",
+              "display": true,
+              "required": false,
+              "displayName": "log",
+              "defaultMatch": false,
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "row_number",
+              "type": "string",
+              "display": true,
+              "removed": false,
+              "readOnly": true,
+              "required": false,
+              "displayName": "row_number",
+              "defaultMatch": false,
+              "canBeUsedToMatch": true
+            }
+          ],
+          "mappingMode": "defineBelow",
+          "matchingColumns": [
+            "row_number"
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      }
+    },
+    {
+      "id": "2ab2c28c-8b7b-405b-bc16-58e19e403d06",
+      "name": "Current Row Batch",
+      "type": "n8n-nodes-base.splitInBatches",
+      "typeVersion": 3,
+      "position": [
+        420,
+        40
+      ],
+      "parameters": {
+        "batchSize": 1
+      }
+    },
+    {
+      "id": "0b981e4d-7219-42ef-9c5d-ba9f6172b2b7",
+      "name": "No Story Needed",
+      "type": "n8n-nodes-base.noOp",
+      "typeVersion": 1,
+      "position": [
+        3800,
+        140
+      ],
+      "parameters": {}
+    },
+    {
+      "id": "0a7030ca-13f3-44c4-921c-efb7d1365d87",
+      "name": "Download Media Asset",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.4,
+      "position": [
+        1720,
+        -80
+      ],
+      "parameters": {
+        "method": "GET",
+        "url": "={{ $json.mediaUrl }}",
+        "options": {
+          "redirect": {
+            "redirect": {
+              "followRedirects": true,
+              "maxRedirects": 10
+            }
+          },
+          "response": {
+            "response": {
+              "responseFormat": "file",
+              "outputPropertyName": "data"
+            }
+          }
+        }
+      }
+    },
+    {
+      "id": "fe975892-402e-437b-8031-8f92d4a17e7b",
+      "name": "Build Media From Drive File",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        940,
+        40
+      ],
+      "parameters": {
+        "mode": "runOnceForAllItems",
+        "language": "javaScript",
+        "jsCode": "const row=$input.first().json; const postType=row.postTypeHint||'image'; return [{json:{...row,mediaFiles:row.googleDriveFileId?[{fileId:row.googleDriveFileId,fileName:'',mimeType:''}]:[],mediaUrls:[],postType:postType==='text'?'text':postType}}];"
+      }
+    },
+    {
+      "id": "919f1fb8-cf08-43e3-beb3-a21ca826316b",
+      "name": "Build Media From Direct Links",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        940,
+        200
+      ],
+      "parameters": {
+        "mode": "runOnceForAllItems",
+        "language": "javaScript",
+        "jsCode": "function infer(h, urls){if(h) return h; if(!urls.length) return 'text'; if(urls.length>1) return 'carousel'; const f=String(urls[0]||'').split('?')[0].toLowerCase(); return /\\.(mp4|mov|webm|avi|mkv|m4v|3gp)$/.test(f)?'video':'image';}\nconst row=$input.first().json; const mediaUrls=Array.isArray(row.directMediaUrls)?row.directMediaUrls.filter(Boolean):[]; return [{json:{...row,mediaUrls,postType:infer(row.postTypeHint,mediaUrls)}}];"
+      }
+    }
+  ],
+  "connections": {
+    "Manual Trigger": {
+      "main": [
+        [
+          {
+            "node": "add-HERE-your-token-and-ids",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "add-HERE-your-token-and-ids": {
+      "main": [
+        [
+          {
+            "node": "Fetch PostApi Accounts",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Fetch PostApi Accounts": {
+      "main": [
+        [
+          {
+            "node": "Read Post Sheet",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Read Post Sheet": {
+      "main": [
+        [
+          {
+            "node": "Normalize Action Rows",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Normalize Action Rows": {
+      "main": [
+        [
+          {
+            "node": "Current Row Batch",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Route Media Source": {
+      "main": [
+        [
+          {
+            "node": "List Drive Folder Files",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Build Media From Drive File",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Build Media From Direct Links",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "List Drive Folder Files": {
+      "main": [
+        [
+          {
+            "node": "Build Media From Folder",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Build Media From Folder": {
+      "main": [
+        [
+          {
+            "node": "Route Upload Need",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Route Upload Need": {
+      "main": [
+        [
+          {
+            "node": "Expand Media Upload Items",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Build PostApi Payload",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Expand Media Upload Items": {
+      "main": [
+        [
+          {
+            "node": "Route Download Method",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Route Download Method": {
+      "main": [
+        [
+          {
+            "node": "Download Drive Media Asset",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Download Media Asset",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Download Drive Media Asset": {
+      "main": [
+        [
+          {
+            "node": "Normalize Binary Metadata",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Normalize Binary Metadata": {
+      "main": [
+        [
+          {
+            "node": "Upload Binary To POST.devad.io",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Upload Binary To POST.devad.io": {
+      "main": [
+        [
+          {
+            "node": "Collect Uploaded Media URLs",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Collect Uploaded Media URLs": {
+      "main": [
+        [
+          {
+            "node": "Build PostApi Payload",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Build PostApi Payload": {
+      "main": [
+        [
+          {
+            "node": "Route Optional Webhook",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Route Optional Webhook": {
+      "main": [
+        [
+          {
+            "node": "Send Optional Webhook",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Post Feed To POST.devad.io",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Send Optional Webhook": {
+      "main": [
+        [
+          {
+            "node": "Post Feed To POST.devad.io",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Post Feed To POST.devad.io": {
+      "main": [
+        [
+          {
+            "node": "Route Story Request",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Route Story Request": {
+      "main": [
+        [
+          {
+            "node": "Post Story To POST.devad.io",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "No Story Needed",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Post Story To POST.devad.io": {
+      "main": [
+        [
+          {
+            "node": "Build Sheet Update Data",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Build Sheet Update Data": {
+      "main": [
+        [
+          {
+            "node": "Update Sheet Status",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Update Sheet Status": {
+      "main": [
+        [
+          {
+            "node": "Current Row Batch",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Current Row Batch": {
+      "main": [
+        [
+          {
+            "node": "Done",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Route Media Source",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "No Story Needed": {
+      "main": [
+        [
+          {
+            "node": "Build Sheet Update Data",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Download Media Asset": {
+      "main": [
+        [
+          {
+            "node": "Normalize Binary Metadata",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Build Media From Drive File": {
+      "main": [
+        [
+          {
+            "node": "Route Upload Need",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Build Media From Direct Links": {
+      "main": [
+        [
+          {
+            "node": "Route Upload Need",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {}
+}

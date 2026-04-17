@@ -63,6 +63,7 @@ This one-time UI save is required because some n8n API/MCP updates do not persis
 Start here:
 
 - [n8n template guide](n8n-automation/README.md)
+- [Importable workflow JSON](n8n-automation/codex-post-sheet-to-social-full.workflow.json)
 - [Sanitized workflow source](n8n-automation/codex-post-sheet-to-social-full.sdk.js)
 
 ### n8n benefits
@@ -99,7 +100,7 @@ Channel behavior still depends on the account type, media type, and the capabili
 
 1. Read the Google Sheet guide if you want the sheet-first workflow.
 2. Read the n8n guide if you want the automation-first workflow.
-3. Import the n8n template and relink Google credentials.
+3. Import the n8n workflow JSON and relink Google credentials.
 4. Manually bind the Google Drive credential in `Download Drive Media Asset`.
 5. Add your POST.devad.io token and integration IDs.
 6. Test one Telegram or single-image row first.

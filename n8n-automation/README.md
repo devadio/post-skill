@@ -15,16 +15,20 @@ This folder contains the working n8n template for `CODEX - POST.devad.io - Sheet
 
 ## Files in this folder
 
+- `codex-post-sheet-to-social-full.workflow.json`
+  - Importable n8n workflow JSON for beginners
+  - Generated from the sanitized SDK source
+  - Contains no private API token, integration IDs, or bound credentials
 - `codex-post-sheet-to-social-full.sdk.js`
-  - Sanitized n8n Workflow SDK source
+  - Sanitized n8n Workflow SDK source for developers
+  - Source-of-truth used to generate the JSON export
   - Safe to commit publicly
-  - Replace placeholders before first run
 - `README.md`
   - Setup guide and node-by-node explanation
 
 ## First-time setup
 
-1. Copy or recreate the workflow in n8n using `codex-post-sheet-to-social-full.sdk.js`.
+1. Import `codex-post-sheet-to-social-full.workflow.json` into n8n.
 2. Relink the Google Sheets credential in `Read Post Sheet` and `Update Sheet Status`.
 3. Relink the Google Drive credential in `List Drive Folder Files`.
 4. Open the node `Download Drive Media Asset`.
@@ -36,6 +40,12 @@ This folder contains the working n8n template for `CODEX - POST.devad.io - Sheet
 7. Open the node named `add-HERE-your-token-and-ids`.
 8. Replace all placeholder values with your own POST.devad.io token, integration IDs, sheet URL, and any optional defaults.
 9. Run the workflow with one test row first.
+
+If you are maintaining or modifying the workflow logic itself:
+
+- edit `codex-post-sheet-to-social-full.sdk.js`
+- regenerate `codex-post-sheet-to-social-full.workflow.json`
+- commit both files together
 
 Why step 4-6 matters:
 
