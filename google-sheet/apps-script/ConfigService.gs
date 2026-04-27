@@ -1,4 +1,8 @@
 /**
+ * @OnlyCurrentDoc
+ */
+
+/**
  * ConfigService.gs
  * 100% Sidebar-Managed Configuration - POST.devad.io
  */

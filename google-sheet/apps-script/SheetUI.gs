@@ -48,10 +48,7 @@ function getUnifiedData() {
     const token = scriptProps.getProperty("POST_API_TOKEN") || "";
     const platforms = getPlatformSettings();
     const selectedSchedule = scriptProps.getProperty("AUTOMATION_SCHEDULE") || "hour_1";
-    const triggers = ScriptApp.getProjectTriggers();
-    const status = (triggers.length > 0)
-      ? "Active: " + (AUTOMATION_OPTIONS[selectedSchedule] || AUTOMATION_OPTIONS.hour_1).label
-      : "Inactive";
+    const status = getAutomationStatus_(selectedSchedule);
 
     return {
       token: token,
@@ -133,6 +130,17 @@ function stopAllTriggers() {
 function silentlyStopTriggers() {
   const triggers = ScriptApp.getProjectTriggers();
   triggers.forEach(t => ScriptApp.deleteTrigger(t));
+}
+
+function getAutomationStatus_(selectedSchedule) {
+  try {
+    const triggers = ScriptApp.getProjectTriggers();
+    return (triggers.length > 0)
+      ? "Active: " + (AUTOMATION_OPTIONS[selectedSchedule] || AUTOMATION_OPTIONS.hour_1).label
+      : "Inactive";
+  } catch (e) {
+    return "Inactive";
+  }
 }
 
 /**
