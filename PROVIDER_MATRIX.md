@@ -17,12 +17,14 @@ After package build:
 ```powershell
 node packages\devad-post-agent\dist\cli.js provider-matrix --dry-run
 node packages\devad-post-agent\dist\cli.js provider-matrix --dry-run --provider pinterest_board
+node packages\devad-post-agent\dist\cli.js provider-rules:compare --dry-run --file saved-automation-response.json
 ```
 
 MCP tool:
 
 ```text
 post_provider_matrix_run
+post_provider_rules_compare
 ```
 
 ## What It Proves
@@ -31,6 +33,7 @@ post_provider_matrix_run
 - Implemented variants return expected `PASS` rows.
 - Intentionally unsupported variants return expected `BLOCKED` rows.
 - The current Agent Kit validator enforces exact MIME, supported first-comment variants, and basic media constraints when payloads include `settings.mime_type` and metadata.
+- `provider-rules:compare` can prove a saved/live CORE `/automation` `provider_rules` contract still matches the local Agent Kit fixture.
 - No API key, OAuth session, `DEVAD_POST_ALLOW_WRITES`, `/posts`, `/media`, or social provider call is required.
 
 ## What It Does Not Prove
@@ -39,5 +42,7 @@ post_provider_matrix_run
 - Live provider publishing works.
 - External social pages show the marker.
 - Billing or workspace plan gates allow a real live post.
+
+`provider-rules:compare --live` is still read-only but does require a workspace API key because it fetches `GET /api/v1/post/automation`. It does not publish or upload media.
 
 For live proof, still use native CORE flows and external provider visibility with a unique marker.

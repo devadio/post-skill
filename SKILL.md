@@ -31,12 +31,13 @@ That legacy API and its old payload examples are reference material only.
 6. Live writes require `DEVAD_POST_ALLOW_WRITES=1`, explicit confirmation, API key scope, POST plan entitlement, idempotency, quota, and provider-rule checks.
 7. Agent Kit create-post paths are validation-gated: CLI `posts:create` and MCP `post_posts_create` run provider media-rule preflight before writes.
 8. Query provider rules before building automation payloads when available: CLI `provider-rules` or MCP `post_provider_rules_get`.
-9. Run the provider matrix before provider chunks when available: CLI `provider-matrix` or MCP `post_provider_matrix_run`.
-10. For live retries, pass stable idempotency keys: scripts and CLI use `--idempotency-key`, MCP uses `idempotency_key` / `idempotencyKey`, and n8n/Sheets use row-based keys.
-11. Treat CORE `block_states` and Agent Kit `validation.provider_results` as source-of-truth structured output. Do not parse human messages when structured states exist.
-12. Do not claim a provider `PASS` unless CORE succeeds and the external provider page/permalink shows the exact unique marker.
-13. External model or agent advice is not proof; verify it against CORE source, tests, and official provider docs.
-14. When editing CORE provider-rule fixtures or Sheet/n8n template preflight maps, run `pnpm --filter @devad/post-agent verify:template-preflight`.
+9. Compare local rules with saved/live `/automation` rules before assuming deployed parity: CLI `provider-rules:compare` or MCP `post_provider_rules_compare`.
+10. Run the provider matrix before provider chunks when available: CLI `provider-matrix` or MCP `post_provider_matrix_run`.
+11. For live retries, pass stable idempotency keys: scripts and CLI use `--idempotency-key`, MCP uses `idempotency_key` / `idempotencyKey`, and n8n/Sheets use row-based keys.
+12. Treat CORE `block_states` and Agent Kit `validation.provider_results` as source-of-truth structured output. Do not parse human messages when structured states exist.
+13. Do not claim a provider `PASS` unless CORE succeeds and the external provider page/permalink shows the exact unique marker.
+14. External model or agent advice is not proof; verify it against CORE source, tests, and official provider docs.
+15. When editing CORE provider-rule fixtures or Sheet/n8n template preflight maps, run `pnpm --filter @devad/post-agent verify:template-preflight`.
 
 ## Provider-First Thinking Rule
 
@@ -79,16 +80,17 @@ Bad examples to reject:
 1. Load account/channel choices from CORE with a dry-run or accounts call.
 2. Normalize the user row or payload into native CORE shape.
 3. If the CORE Agent Kit is available, inspect supported variants with CLI `provider-rules` or MCP `post_provider_rules_get`.
-4. If the CORE Agent Kit is available, run CLI `provider-matrix` or MCP `post_provider_matrix_run` to catch validator/fixture mismatches before provider chunks.
-5. Validate provider/channel/variant and media rules before building payload.
-6. Run CLI `validate` or MCP `post_dry_run_validate`; create-post also runs the same preflight gate.
-7. Run dry-run first and inspect `warnings`, `blocking_reasons`, `block_states`, and `validation.provider_results`.
-8. For live writes, require:
+4. If a saved or live `/automation` contract is available, compare it with CLI `provider-rules:compare` or MCP `post_provider_rules_compare`.
+5. If the CORE Agent Kit is available, run CLI `provider-matrix` or MCP `post_provider_matrix_run` to catch validator/fixture mismatches before provider chunks.
+6. Validate provider/channel/variant and media rules before building payload.
+7. Run CLI `validate` or MCP `post_dry_run_validate`; create-post also runs the same preflight gate.
+8. Run dry-run first and inspect `warnings`, `blocking_reasons`, `block_states`, and `validation.provider_results`.
+9. For live writes, require:
    - `DEVAD_POST_ALLOW_WRITES=1`
    - explicit `--live --confirm` or MCP `confirm: true`
    - a scoped `wsk_...` key from environment
    - a unique marker in the post text
-9. After publish, wait the provider-appropriate interval and verify the exact marker externally.
+10. After publish, wait the provider-appropriate interval and verify the exact marker externally.
 
 ## Environment
 
