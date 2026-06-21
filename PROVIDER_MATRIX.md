@@ -9,6 +9,7 @@ From the CORE repo:
 ```powershell
 pnpm --filter @devad/post-agent dry:provider-matrix
 pnpm --filter @devad/post-agent dry:provider-matrix -- --provider facebook_page
+pnpm --filter @devad/post-agent dry:provider-proof:queue
 pnpm --filter @devad/post-agent dry:provider-proof:chunk -- --provider pinterest_board
 pnpm --filter @devad/post-agent dry:provider-proof:packet -- --provider pinterest_board
 pnpm --filter @devad/post-agent dry:provider-matrix -- --provider youtube_channel --include-payloads
@@ -19,6 +20,7 @@ After package build:
 ```powershell
 node packages\devad-post-agent\dist\cli.js provider-matrix --dry-run
 node packages\devad-post-agent\dist\cli.js provider-matrix --dry-run --provider pinterest_board
+node packages\devad-post-agent\dist\cli.js provider-proof:queue --dry-run
 node packages\devad-post-agent\dist\cli.js provider-proof:chunk --dry-run --provider pinterest_board
 node packages\devad-post-agent\dist\cli.js provider-proof:packet --dry-run --provider pinterest_board
 node packages\devad-post-agent\dist\cli.js provider-rules:compare --dry-run --file saved-automation-response.json
@@ -28,6 +30,7 @@ MCP tool:
 
 ```text
 post_provider_matrix_run
+post_provider_proof_queue_plan
 post_provider_proof_chunk_plan
 post_provider_proof_packet_build
 post_provider_rules_compare
@@ -36,6 +39,7 @@ post_provider_rules_compare
 ## What It Proves
 
 - The local CORE provider-rule fixture and Agent Kit validator agree.
+- `provider-proof:queue` can return the ready/delayed/code-only provider order without provider calls.
 - `provider-proof:chunk` can compose a secret-safe provider chunk execution plan from the packet, matrix, gates, commands, and result-table columns.
 - `provider-proof:packet` can build a secret-safe provider chunk packet from local CORE provider rules before live proof.
 - Implemented variants return expected `PASS` rows.
