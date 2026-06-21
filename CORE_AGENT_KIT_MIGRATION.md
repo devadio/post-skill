@@ -13,6 +13,7 @@ This repo used to describe the old POST.devad.io public API flow. Current Devad 
 | Live writes | require explicit user approval, `DEVAD_POST_ALLOW_WRITES=1`, and `confirm` |
 | Limits | enforced by CORE POST plans, quota, throttles, idempotency, and provider rules |
 | Retry key | use `--idempotency-key`, MCP `idempotency_key`, or row-based Sheet/n8n keys |
+| Rule catalog | inspect with Agent Kit `provider-rules` / MCP `post_provider_rules_get` before payload build |
 | Preflight | run Agent Kit `validate` / `post_dry_run_validate`; create-post also blocks `BLOCKED` provider media-rule results before writes |
 | Template drift | run `pnpm --filter @devad/post-agent verify:template-preflight` after CORE provider-rule or Sheet/n8n preflight edits |
 
@@ -32,17 +33,18 @@ This repo used to describe the old POST.devad.io public API flow. Current Devad 
 2. Make every script dry-run by default.
 3. Require `--live --confirm`, `DEVAD_POST_ALLOW_WRITES=1`, and a stable idempotency key for live writes.
 4. Normalize old payloads into CORE-native request shape.
-5. Add provider-first validation before payload build:
+5. Query the provider-rule catalog before payload build when Agent Kit is available.
+6. Add provider-first validation before payload build:
    - provider
    - channel
    - variant
    - media MIME/count/ratio/size/duration
    - provider-specific payload
-6. Run Agent Kit `validate` / MCP `post_dry_run_validate` where available, and rely on `posts:create` preflight to block `BLOCKED` provider media-rule mismatches.
-7. Preserve CORE `block_states`, Agent Kit `validation.provider_results`, warnings, and blocking reasons.
-8. Add idempotency/correlation IDs to n8n and Sheets.
-9. Run the template drift gate when Sheet/n8n embedded preflight maps or provider-rule fixtures change.
-10. Verify external provider URLs before marking a provider/type as passed.
+7. Run Agent Kit `validate` / MCP `post_dry_run_validate` where available, and rely on `posts:create` preflight to block `BLOCKED` provider media-rule mismatches.
+8. Preserve CORE `block_states`, Agent Kit `validation.provider_results`, warnings, and blocking reasons.
+9. Add idempotency/correlation IDs to n8n and Sheets.
+10. Run the template drift gate when Sheet/n8n embedded preflight maps or provider-rule fixtures change.
+11. Verify external provider URLs before marking a provider/type as passed.
 
 ## Provider Baseline
 
@@ -72,6 +74,7 @@ When running inside the CORE monorepo, also verify Agent Kit preflight:
 
 ```powershell
 node packages\devad-post-agent\dist\cli.js validate --dry-run --file packages\devad-post-agent\examples\create-post.native.json
+node packages\devad-post-agent\dist\cli.js provider-rules --dry-run --provider pinterest_board
 node packages\devad-post-agent\dist\cli.js posts:create --dry-run --file packages\devad-post-agent\examples\create-post.native.json
 node packages\devad-post-agent\dist\mcp.js --list-tools
 pnpm --filter @devad/post-agent verify:template-preflight

@@ -19,6 +19,7 @@ Safety:
 - Do not live publish unless I explicitly approve live mode and the runtime has DEVAD_POST_ALLOW_WRITES=1.
 - A live write also needs an explicit confirm flag, valid API key scope, POST plan entitlement, quota, idempotency, and provider-rule checks.
 - Preserve CORE block_states, Agent Kit validation.provider_results, warnings, and blocking reasons. Do not parse human error text when structured states exist.
+- If the CORE Agent Kit is available, inspect supported provider variants with CLI provider-rules or MCP post_provider_rules_get before building payloads.
 - If the CORE Agent Kit is available, run CLI validate or MCP post_dry_run_validate before creating posts. CLI posts:create and MCP post_posts_create also run validation preflight; BLOCKED results must stop before writes.
 - If editing CORE provider-rule fixtures or Sheet/n8n embedded preflight maps, run `pnpm --filter @devad/post-agent verify:template-preflight`.
 

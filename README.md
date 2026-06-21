@@ -76,11 +76,15 @@ Without `--live --confirm` plus `DEVAD_POST_ALLOW_WRITES=1`, scripts stay in dry
 When the CORE Agent Kit package is available, run one of these before live writes:
 
 ```bash
+devad-post provider-rules --provider facebook_page
 devad-post validate --input payload.json
 devad-post posts:create --dry-run --input payload.json
 ```
 
+Use `provider-rules` to inspect the current local provider variant/media matrix before constructing Sheet, n8n, or agent payloads.
+
 MCP agents should call `post_dry_run_validate` before `post_posts_create`. The current Agent Kit also runs validation inside `posts:create` / `post_posts_create`: a `BLOCKED` provider media-rule result returns structured `ok:false` output and stops before writes; warning-only payloads continue with validation evidence.
+MCP agents can call `post_provider_rules_get` first to inspect supported variants without API keys, live-write permission, or provider calls.
 
 ## Main Areas
 

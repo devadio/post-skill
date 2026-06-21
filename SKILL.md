@@ -30,11 +30,12 @@ That legacy API and its old payload examples are reference material only.
 5. Dry-run is the default for CLI, scripts, MCP, n8n, and Sheets.
 6. Live writes require `DEVAD_POST_ALLOW_WRITES=1`, explicit confirmation, API key scope, POST plan entitlement, idempotency, quota, and provider-rule checks.
 7. Agent Kit create-post paths are validation-gated: CLI `posts:create` and MCP `post_posts_create` run provider media-rule preflight before writes.
-8. For live retries, pass stable idempotency keys: scripts and CLI use `--idempotency-key`, MCP uses `idempotency_key` / `idempotencyKey`, and n8n/Sheets use row-based keys.
-9. Treat CORE `block_states` and Agent Kit `validation.provider_results` as source-of-truth structured output. Do not parse human messages when structured states exist.
-10. Do not claim a provider `PASS` unless CORE succeeds and the external provider page/permalink shows the exact unique marker.
-11. External model or agent advice is not proof; verify it against CORE source, tests, and official provider docs.
-12. When editing CORE provider-rule fixtures or Sheet/n8n template preflight maps, run `pnpm --filter @devad/post-agent verify:template-preflight`.
+8. Query provider rules before building automation payloads when available: CLI `provider-rules` or MCP `post_provider_rules_get`.
+9. For live retries, pass stable idempotency keys: scripts and CLI use `--idempotency-key`, MCP uses `idempotency_key` / `idempotencyKey`, and n8n/Sheets use row-based keys.
+10. Treat CORE `block_states` and Agent Kit `validation.provider_results` as source-of-truth structured output. Do not parse human messages when structured states exist.
+11. Do not claim a provider `PASS` unless CORE succeeds and the external provider page/permalink shows the exact unique marker.
+12. External model or agent advice is not proof; verify it against CORE source, tests, and official provider docs.
+13. When editing CORE provider-rule fixtures or Sheet/n8n template preflight maps, run `pnpm --filter @devad/post-agent verify:template-preflight`.
 
 ## Provider-First Thinking Rule
 
@@ -74,15 +75,16 @@ Bad examples to reject:
 
 1. Load account/channel choices from CORE with a dry-run or accounts call.
 2. Normalize the user row or payload into native CORE shape.
-3. Validate provider/channel/variant and media rules before building payload.
-4. If the CORE Agent Kit is available, run CLI `validate` or MCP `post_dry_run_validate`; create-post also runs the same preflight gate.
-5. Run dry-run first and inspect `warnings`, `blocking_reasons`, `block_states`, and `validation.provider_results`.
-6. For live writes, require:
+3. If the CORE Agent Kit is available, inspect supported variants with CLI `provider-rules` or MCP `post_provider_rules_get`.
+4. Validate provider/channel/variant and media rules before building payload.
+5. Run CLI `validate` or MCP `post_dry_run_validate`; create-post also runs the same preflight gate.
+6. Run dry-run first and inspect `warnings`, `blocking_reasons`, `block_states`, and `validation.provider_results`.
+7. For live writes, require:
    - `DEVAD_POST_ALLOW_WRITES=1`
    - explicit `--live --confirm` or MCP `confirm: true`
    - a scoped `wsk_...` key from environment
    - a unique marker in the post text
-7. After publish, wait the provider-appropriate interval and verify the exact marker externally.
+8. After publish, wait the provider-appropriate interval and verify the exact marker externally.
 
 ## Environment
 
