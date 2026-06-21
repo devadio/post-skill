@@ -14,6 +14,7 @@ This repo used to describe the old POST.devad.io public API flow. Current Devad 
 | Limits | enforced by CORE POST plans, quota, throttles, idempotency, and provider rules |
 | Retry key | use `--idempotency-key`, MCP `idempotency_key`, or row-based Sheet/n8n keys |
 | Preflight | run Agent Kit `validate` / `post_dry_run_validate`; create-post also blocks `BLOCKED` provider media-rule results before writes |
+| Template drift | run `pnpm --filter @devad/post-agent verify:template-preflight` after CORE provider-rule or Sheet/n8n preflight edits |
 
 ## Do Not Reintroduce
 
@@ -40,7 +41,8 @@ This repo used to describe the old POST.devad.io public API flow. Current Devad 
 6. Run Agent Kit `validate` / MCP `post_dry_run_validate` where available, and rely on `posts:create` preflight to block `BLOCKED` provider media-rule mismatches.
 7. Preserve CORE `block_states`, Agent Kit `validation.provider_results`, warnings, and blocking reasons.
 8. Add idempotency/correlation IDs to n8n and Sheets.
-9. Verify external provider URLs before marking a provider/type as passed.
+9. Run the template drift gate when Sheet/n8n embedded preflight maps or provider-rule fixtures change.
+10. Verify external provider URLs before marking a provider/type as passed.
 
 ## Provider Baseline
 
@@ -72,6 +74,7 @@ When running inside the CORE monorepo, also verify Agent Kit preflight:
 node packages\devad-post-agent\dist\cli.js validate --dry-run --file packages\devad-post-agent\examples\create-post.native.json
 node packages\devad-post-agent\dist\cli.js posts:create --dry-run --file packages\devad-post-agent\examples\create-post.native.json
 node packages\devad-post-agent\dist\mcp.js --list-tools
+pnpm --filter @devad/post-agent verify:template-preflight
 ```
 
 ```powershell

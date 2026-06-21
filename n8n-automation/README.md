@@ -35,8 +35,9 @@ Before using this workflow with CORE:
 6. Send one row or one small batch per run by default.
 7. Add an idempotency or correlation key derived from the sheet row id and campaign id.
 8. Validate provider, channel, variant, media MIME/count/ratio/duration before building payload.
-9. Preserve `block_states`, warnings, and blocking reasons in the Sheet log column.
-10. Do not claim provider PASS from n8n success alone; verify the exact marker on the external provider URL.
+9. If you add embedded CORE preflight maps, keep them aligned with [../TEMPLATE_PREFLIGHT_DRIFT.md](../TEMPLATE_PREFLIGHT_DRIFT.md).
+10. Preserve `block_states`, warnings, and blocking reasons in the Sheet log column.
+11. Do not claim provider PASS from n8n success alone; verify the exact marker on the external provider URL.
 
 ## Provider Rule Reminder
 

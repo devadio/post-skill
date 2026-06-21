@@ -34,6 +34,7 @@ That legacy API and its old payload examples are reference material only.
 9. Treat CORE `block_states` and Agent Kit `validation.provider_results` as source-of-truth structured output. Do not parse human messages when structured states exist.
 10. Do not claim a provider `PASS` unless CORE succeeds and the external provider page/permalink shows the exact unique marker.
 11. External model or agent advice is not proof; verify it against CORE source, tests, and official provider docs.
+12. When editing CORE provider-rule fixtures or Sheet/n8n template preflight maps, run `pnpm --filter @devad/post-agent verify:template-preflight`.
 
 ## Provider-First Thinking Rule
 
@@ -137,6 +138,8 @@ They must:
 - send stable idempotency/correlation IDs
 - preserve `block_states`, warnings, blocking reasons, and Agent Kit `validation.provider_results`
 - avoid live writes unless the user explicitly enables live mode
+
+If you are working inside the CORE monorepo and touch Sheet/n8n embedded preflight maps or provider-rule fixtures, follow [TEMPLATE_PREFLIGHT_DRIFT.md](TEMPLATE_PREFLIGHT_DRIFT.md) and run the drift verifier before claiming alignment.
 
 ## Legacy Reference Boundary
 

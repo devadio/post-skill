@@ -18,6 +18,7 @@ The old `post.devad.io/api/public/v1` flow is legacy reference material only. Ne
 - example payload fixtures
 - Google Sheets and n8n reference workflows
 - migration guidance for old POST.devad.io row/payload shapes
+- CORE template preflight drift guidance for Sheet/n8n provider-rule sync
 
 ## Safety Model
 
@@ -90,6 +91,7 @@ MCP agents should call `post_dry_run_validate` before `post_posts_create`. The c
 - `google-sheet/`: Google Sheets publishing workflow reference.
 - `google-sheet/apps-script/`: Apps Script bundle from the old sheet workflow.
 - `n8n-automation/`: n8n workflow reference for row-based automation.
+- `TEMPLATE_PREFLIGHT_DRIFT.md`: CORE command to keep Sheet/n8n embedded preflight maps aligned with Agent Kit provider rules.
 
 ## Provider Baseline
 
@@ -117,6 +119,8 @@ They should be adapted to:
 - preserve warnings, blocking reasons, and `block_states`
 - preserve Agent Kit `validation.provider_results` when available
 - avoid live writes unless explicitly enabled
+
+When editing CORE monorepo Sheet/n8n template preflight maps or provider-rule fixtures, run the drift gate from [TEMPLATE_PREFLIGHT_DRIFT.md](TEMPLATE_PREFLIGHT_DRIFT.md).
 
 ## Private Values
 

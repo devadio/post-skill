@@ -37,9 +37,10 @@ Before using the Sheet workflow with CORE:
 5. Add a live-write gate requiring explicit user confirmation.
 6. Generate stable idempotency/correlation IDs per row.
 7. Validate provider, channel, variant, media MIME/count/ratio/duration before payload build.
-8. Write CORE `block_states`, warnings, and blocking reasons back to the sheet.
-9. Process one row or one small batch at a time by default.
-10. Verify exact external provider markers before marking a row as passed.
+8. If you add embedded CORE preflight maps, keep them aligned with [../TEMPLATE_PREFLIGHT_DRIFT.md](../TEMPLATE_PREFLIGHT_DRIFT.md).
+9. Write CORE `block_states`, warnings, and blocking reasons back to the sheet.
+10. Process one row or one small batch at a time by default.
+11. Verify exact external provider markers before marking a row as passed.
 
 ## Safe Use Today
 
