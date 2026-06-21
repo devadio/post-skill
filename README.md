@@ -84,7 +84,7 @@ devad-post posts:create --dry-run --input payload.json
 ```
 
 Use `provider-rules` to inspect the current local provider variant/media matrix before constructing Sheet, n8n, or agent payloads.
-Use `provider-rules:compare` to compare local Agent Kit rules with a saved or live CORE `/automation` `provider_rules` contract before assuming local and deployed rules match.
+Use `provider-rules:compare` to compare local Agent Kit rules with a saved or live CORE `/automation` `provider_rules` contract before assuming local and deployed rules match. Record `summary.mismatches: 0` and `fingerprints.match: true` as the compact proof; do not paste full provider-rule payloads into docs or logs.
 Use `provider-matrix` to dry-sweep implemented and intentionally unsupported variants and catch fixture-vs-validator mismatches before provider-specific chunks.
 
 MCP agents should call `post_dry_run_validate` before `post_posts_create`. The current Agent Kit also runs validation inside `posts:create` / `post_posts_create`: a `BLOCKED` provider media-rule result returns structured `ok:false` output and stops before writes; warning-only payloads continue with validation evidence.

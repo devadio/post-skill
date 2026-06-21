@@ -31,7 +31,7 @@ That legacy API and its old payload examples are reference material only.
 6. Live writes require `DEVAD_POST_ALLOW_WRITES=1`, explicit confirmation, API key scope, POST plan entitlement, idempotency, quota, and provider-rule checks.
 7. Agent Kit create-post paths are validation-gated: CLI `posts:create` and MCP `post_posts_create` run provider media-rule preflight before writes.
 8. Query provider rules before building automation payloads when available: CLI `provider-rules` or MCP `post_provider_rules_get`.
-9. Compare local rules with saved/live `/automation` rules before assuming deployed parity: CLI `provider-rules:compare` or MCP `post_provider_rules_compare`.
+9. Compare local rules with saved/live `/automation` rules before assuming deployed parity: CLI `provider-rules:compare` or MCP `post_provider_rules_compare`; record `summary.mismatches: 0` and `fingerprints.match: true` instead of full payload dumps.
 10. Run the provider matrix before provider chunks when available: CLI `provider-matrix` or MCP `post_provider_matrix_run`.
 11. For live retries, pass stable idempotency keys: scripts and CLI use `--idempotency-key`, MCP uses `idempotency_key` / `idempotencyKey`, and n8n/Sheets use row-based keys.
 12. Treat CORE `block_states` and Agent Kit `validation.provider_results` as source-of-truth structured output. Do not parse human messages when structured states exist.

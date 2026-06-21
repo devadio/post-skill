@@ -33,7 +33,7 @@ post_provider_rules_compare
 - Implemented variants return expected `PASS` rows.
 - Intentionally unsupported variants return expected `BLOCKED` rows.
 - The current Agent Kit validator enforces exact MIME, supported first-comment variants, and basic media constraints when payloads include `settings.mime_type` and metadata.
-- `provider-rules:compare` can prove a saved/live CORE `/automation` `provider_rules` contract still matches the local Agent Kit fixture.
+- `provider-rules:compare` can prove a saved/live CORE `/automation` `provider_rules` contract still matches the local Agent Kit fixture; clean output has `summary.mismatches: 0` and `fingerprints.match: true`.
 - No API key, OAuth session, `DEVAD_POST_ALLOW_WRITES`, `/posts`, `/media`, or social provider call is required.
 
 ## What It Does Not Prove
