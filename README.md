@@ -38,6 +38,7 @@ Preferred:
 DEVAD_POST_API_BASE=https://devad.io/api/v1/post
 DEVAD_POST_API_KEY=wsk_xxx
 DEVAD_POST_ALLOW_WRITES=0
+DEVAD_POST_IDEMPOTENCY_KEY=manual-run-001
 ```
 
 Compatibility aliases may work in local scripts:
@@ -56,7 +57,8 @@ Node:
 ```bash
 node scripts/test_runner.js list-tests
 node scripts/test_runner.js facebook_image --print-payload
-node scripts/test_runner.js facebook_image --live --confirm
+node scripts/test_runner.js facebook_image --live --confirm --idempotency-key row-42-facebook-image
+node scripts/test_runner.js upload ./image.jpg --live --confirm --idempotency-key row-42-media-0
 ```
 
 Python:
@@ -64,10 +66,11 @@ Python:
 ```bash
 python scripts/test_runner.py list-tests
 python scripts/test_runner.py facebook_image --print-payload
-python scripts/test_runner.py facebook_image --live --confirm
+python scripts/test_runner.py facebook_image --live --confirm --idempotency-key row-42-facebook-image
+python scripts/test_runner.py upload ./image.jpg --live --confirm --idempotency-key row-42-media-0
 ```
 
-Without `--live --confirm` plus `DEVAD_POST_ALLOW_WRITES=1`, scripts stay in dry-run mode.
+Without `--live --confirm` plus `DEVAD_POST_ALLOW_WRITES=1`, scripts stay in dry-run mode. Live writes also require `--idempotency-key` or `DEVAD_POST_IDEMPOTENCY_KEY` so retries do not double-post.
 
 ## Main Areas
 

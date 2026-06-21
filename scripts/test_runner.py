@@ -275,9 +275,14 @@ def assert_token_present(command_name: str) -> None:
 
 def assert_live_allowed(command_name: str, confirmed: bool) -> None:
     if not ALLOW_WRITES:
-        raise RuntimeError(f"Live '{command_name}' is blocked. Set DEVAD_POST_ALLOW_WRITES=1 and pass --live --confirm.")
+        raise RuntimeError(f"Live '{command_name}' is blocked. Set DEVAD_POST_ALLOW_WRITES=1 and pass --live --confirm --idempotency-key <stable-key>.")
     if not confirmed:
         raise RuntimeError(f"Live '{command_name}' requires --confirm.")
+
+
+def assert_idempotency_key(command_name: str, idempotency_key: str) -> None:
+    if not idempotency_key.strip():
+        raise RuntimeError(f"Live '{command_name}' requires a stable --idempotency-key or DEVAD_POST_IDEMPOTENCY_KEY.")
 
 
 def build_api_url(path_name: str) -> str:
@@ -291,13 +296,15 @@ def try_parse_json(raw_text: str):
         return None
 
 
-def api_request_json(method: str, path_name: str, body: Optional[Dict[str, object]] = None) -> Dict[str, object]:
+def api_request_json(method: str, path_name: str, body: Optional[Dict[str, object]] = None, idempotency_key: str = "") -> Dict[str, object]:
     request_body = None if body is None else json.dumps(body).encode("utf-8")
     headers = {
         "Accept": "application/json",
     }
     if API_TOKEN:
         headers["Authorization"] = f"Bearer {API_TOKEN}"
+    if idempotency_key:
+        headers["Idempotency-Key"] = idempotency_key
     if request_body is not None:
         headers["Content-Type"] = "application/json"
 
@@ -365,7 +372,7 @@ def build_multipart_body(field_name: str, file_name: str, content_type: str, fil
     return body, boundary
 
 
-def upload_source(source: str, dry_run: bool) -> str:
+def upload_source(source: str, dry_run: bool, idempotency_key: str = "") -> str:
     file_data, file_name, content_type = read_upload_source(source)
 
     if dry_run:
@@ -382,15 +389,18 @@ def upload_source(source: str, dry_run: bool) -> str:
         "Authorization": f"Bearer {API_TOKEN}",
         "Content-Type": f"multipart/form-data; boundary={boundary}",
     }
+    if idempotency_key:
+        headers["Idempotency-Key"] = idempotency_key
 
-    request = Request(build_api_url("/upload"), data=body, headers=headers, method="POST")
+    request = Request(build_api_url("/media"), data=body, headers=headers, method="POST")
     try:
         with urlopen(request, timeout=REQUEST_TIMEOUT_SECONDS) as response:
             raw_text = response.read().decode("utf-8", errors="replace")
             payload = try_parse_json(raw_text)
-            if not isinstance(payload, dict) or not payload.get("url"):
-                raise ResponseAwareError("Upload succeeded but no URL was returned.", response.status, raw_text)
-            return str(payload["url"])
+            media = payload.get("media") if isinstance(payload, dict) else None
+            if not isinstance(media, dict) or not media.get("id"):
+                raise ResponseAwareError("Upload succeeded but no media.id was returned.", response.status, raw_text)
+            return json.dumps(media, indent=2)
     except Exception as exc:
         response_code = getattr(exc, "code", None)
         response_text = ""
@@ -413,12 +423,13 @@ def print_usage() -> None:
         "  python scripts/test_runner.py accounts",
         "  python scripts/test_runner.py health",
         "  python scripts/test_runner.py facebook_image --print-payload",
-        "  python scripts/test_runner.py facebook_image --live --confirm",
-        "  python scripts/test_runner.py upload <path-or-url> --live --confirm",
+        "  python scripts/test_runner.py facebook_image --live --confirm --idempotency-key row-42-facebook-image",
+        "  python scripts/test_runner.py upload <path-or-url> --live --confirm --idempotency-key row-42-media-0",
         "",
         "Required env for live requests:",
         "  DEVAD_POST_API_KEY or DEVAD_POST_TOKEN or DEVAD_WORKSPACE_API_KEY",
         "  DEVAD_POST_ALLOW_WRITES=1",
+        "  DEVAD_POST_IDEMPOTENCY_KEY or --idempotency-key",
     ]
     print("\n".join(lines))
 
@@ -430,6 +441,7 @@ def parse_args(argv: List[str]) -> argparse.Namespace:
     parser.add_argument("--dry-run", action="store_true")
     parser.add_argument("--live", action="store_true")
     parser.add_argument("--confirm", action="store_true")
+    parser.add_argument("--idempotency-key", default=os.getenv("DEVAD_POST_IDEMPOTENCY_KEY", ""))
     parser.add_argument("--print-payload", action="store_true")
     parser.add_argument("--help", "-h", action="store_true")
     return parser.parse_args(argv)
@@ -484,13 +496,15 @@ def main(argv: List[str]) -> int:
             raise RuntimeError("Missing upload source. Use: python scripts/test_runner.py upload <path-or-url>")
         if args.live:
             assert_live_allowed("upload", args.confirm)
+            assert_idempotency_key("upload", args.idempotency_key)
             assert_token_present("upload")
-        print(upload_source(args.extra[0], not args.live))
+        print(upload_source(args.extra[0], not args.live, args.idempotency_key))
         return 0
 
     payload = build_test_payload(args.command)
     if args.live:
         assert_live_allowed(args.command, args.confirm)
+        assert_idempotency_key(args.command, args.idempotency_key)
         assert_token_present(args.command)
     validate_payload(payload, require_integration_ids=args.live)
 
@@ -501,7 +515,7 @@ def main(argv: List[str]) -> int:
         print("\nDry run passed. No live request was sent.")
         return 0
 
-    print_response(args.command, api_request_json("POST", "/posts", payload))
+    print_response(args.command, api_request_json("POST", "/posts", payload, args.idempotency_key))
     return 0
 
 

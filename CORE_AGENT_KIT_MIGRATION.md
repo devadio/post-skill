@@ -12,6 +12,7 @@ This repo used to describe the old POST.devad.io public API flow. Current Devad 
 | Default mode | dry-run |
 | Live writes | require explicit user approval, `DEVAD_POST_ALLOW_WRITES=1`, and `confirm` |
 | Limits | enforced by CORE POST plans, quota, throttles, idempotency, and provider rules |
+| Retry key | use `--idempotency-key`, MCP `idempotency_key`, or row-based Sheet/n8n keys |
 
 ## Do Not Reintroduce
 
@@ -27,7 +28,7 @@ This repo used to describe the old POST.devad.io public API flow. Current Devad 
 
 1. Update docs and prompts to CORE API and bearer `wsk_...` auth.
 2. Make every script dry-run by default.
-3. Require `--live --confirm` and `DEVAD_POST_ALLOW_WRITES=1` for live writes.
+3. Require `--live --confirm`, `DEVAD_POST_ALLOW_WRITES=1`, and a stable idempotency key for live writes.
 4. Normalize old payloads into CORE-native request shape.
 5. Add provider-first validation before payload build:
    - provider
@@ -58,15 +59,15 @@ This repo used to describe the old POST.devad.io public API flow. Current Devad 
 ```powershell
 node --check scripts\test_runner.js
 node scripts\test_runner.js facebook_image --print-payload
-node scripts\test_runner.js facebook_image --live --confirm
+node scripts\test_runner.js facebook_image --live --confirm --idempotency-key row-42-facebook-image
 ```
 
-The final command should fail closed unless `DEVAD_POST_ALLOW_WRITES=1` and a valid `wsk_...` key are present.
+The final command should fail closed unless `DEVAD_POST_ALLOW_WRITES=1`, a stable idempotency key, and a valid `wsk_...` key are present.
 
 ```powershell
 python -m py_compile scripts\test_runner.py
 python scripts\test_runner.py facebook_image --print-payload
-python scripts\test_runner.py facebook_image --live --confirm
+python scripts\test_runner.py facebook_image --live --confirm --idempotency-key row-42-facebook-image
 ```
 
 Use the bundled Python executable on Windows if `python` is not available on PATH.

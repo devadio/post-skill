@@ -96,17 +96,17 @@ async function main() {
       throw new Error("Missing upload source. Use: node test_runner.js upload <path-or-url>");
     }
     if (options.live) {
-      assertLiveAllowed_("upload", options.confirm);
+      assertLiveAllowed_("upload", options.confirm, options.idempotencyKey);
       assertTokenPresent_("upload");
     }
-    const uploadedUrl = await uploadSource_(source, !options.live);
-    console.log(uploadedUrl);
+    const uploaded = await uploadSource_(source, !options.live, options.idempotencyKey);
+    console.log(uploaded);
     return;
   }
 
   const payload = buildPayloadForCommand_(command);
   if (options.live) {
-    assertLiveAllowed_(command, options.confirm);
+    assertLiveAllowed_(command, options.confirm, options.idempotencyKey);
     assertTokenPresent_(command);
   }
   validatePayload_(payload, { requireIntegrationIds: options.live });
@@ -120,15 +120,18 @@ async function main() {
     return;
   }
 
-  const result = await apiRequestJson_("POST", "/posts", payload);
+  const result = await apiRequestJson_("POST", "/posts", payload, {
+    idempotencyKey: options.idempotencyKey,
+  });
   printResponse_(command, result);
 }
 
 function parseCli_(argv) {
-  const options = { live: false, confirm: false, printPayload: false, help: false };
+  const options = { live: false, confirm: false, printPayload: false, help: false, idempotencyKey: process.env.DEVAD_POST_IDEMPOTENCY_KEY || "" };
   const positional = [];
 
-  argv.forEach(arg => {
+  for (let index = 0; index < argv.length; index += 1) {
+    const arg = argv[index];
     if (arg === "--dry-run") {
       options.live = false;
     } else if (arg === "--live") {
@@ -137,12 +140,15 @@ function parseCli_(argv) {
       options.confirm = true;
     } else if (arg === "--print-payload") {
       options.printPayload = true;
+    } else if (arg === "--idempotency-key") {
+      options.idempotencyKey = argv[index + 1] || "";
+      index += 1;
     } else if (arg === "--help" || arg === "-h") {
       options.help = true;
     } else {
       positional.push(arg);
     }
-  });
+  }
 
   return {
     command: positional[0] || "",
@@ -158,12 +164,13 @@ function printUsage_() {
     "  node scripts/test_runner.js accounts",
     "  node scripts/test_runner.js health",
     "  node scripts/test_runner.js facebook_image --print-payload",
-    "  node scripts/test_runner.js facebook_image --live --confirm",
-    "  node scripts/test_runner.js upload <path-or-url> --live --confirm",
+    "  node scripts/test_runner.js facebook_image --live --confirm --idempotency-key row-42-facebook-image",
+    "  node scripts/test_runner.js upload <path-or-url> --live --confirm --idempotency-key row-42-media-0",
     "",
     "Required env for live requests:",
     "  DEVAD_POST_API_KEY or DEVAD_POST_TOKEN or DEVAD_WORKSPACE_API_KEY",
     "  DEVAD_POST_ALLOW_WRITES=1",
+    "  DEVAD_POST_IDEMPOTENCY_KEY or --idempotency-key",
     "",
     "Optional env:",
     "  DEVAD_POST_API_BASE",
@@ -407,17 +414,20 @@ function assertTokenPresent_(commandName) {
   }
 }
 
-function assertLiveAllowed_(commandName, confirmed) {
+function assertLiveAllowed_(commandName, confirmed, idempotencyKey) {
   if (!ALLOW_WRITES) {
-    throw new Error("Live '" + commandName + "' is blocked. Set DEVAD_POST_ALLOW_WRITES=1 and pass --live --confirm.");
+    throw new Error("Live '" + commandName + "' is blocked. Set DEVAD_POST_ALLOW_WRITES=1 and pass --live --confirm --idempotency-key <stable-key>.");
   }
   if (!confirmed) {
     throw new Error("Live '" + commandName + "' requires --confirm.");
   }
+  if (!String(idempotencyKey || "").trim()) {
+    throw new Error("Live '" + commandName + "' requires a stable --idempotency-key or DEVAD_POST_IDEMPOTENCY_KEY.");
+  }
 }
 
-async function apiRequestJson_(method, pathName, body = null) {
-  const response = await apiRequestRaw_(method, pathName, body);
+async function apiRequestJson_(method, pathName, body = null, extraOptions = {}) {
+  const response = await apiRequestRaw_(method, pathName, body, extraOptions);
   return {
     code: response.code,
     body: response.json !== null ? response.json : response.text,
@@ -428,22 +438,26 @@ async function apiRequestJson_(method, pathName, body = null) {
 async function apiRequestRaw_(method, pathName, body = null, extraOptions = {}) {
   const controller = new AbortController();
   const timeout = setTimeout(() => controller.abort(), REQUEST_TIMEOUT_MS);
+  const { idempotencyKey, ...requestOptions } = extraOptions;
 
   try {
     const url = buildApiUrl_(pathName);
     const headers = {
       Accept: "application/json",
-      ...(extraOptions.headers || {}),
+      ...(requestOptions.headers || {}),
     };
     if (API_TOKEN) {
       headers.Authorization = "Bearer " + API_TOKEN;
+    }
+    if (idempotencyKey) {
+      headers["Idempotency-Key"] = idempotencyKey;
     }
     const options = {
       method,
       headers,
       redirect: "manual",
       signal: controller.signal,
-      ...extraOptions,
+      ...requestOptions,
     };
 
     if (body !== null && body !== undefined && !options.body) {
@@ -502,7 +516,7 @@ function printResponse_(label, result) {
   console.log(JSON.stringify(result.body, null, 2));
 }
 
-async function uploadSource_(source, dryRun) {
+async function uploadSource_(source, dryRun, idempotencyKey) {
   const uploadFile = await readUploadSource_(source);
 
   if (dryRun) {
@@ -518,12 +532,16 @@ async function uploadSource_(source, dryRun) {
   const blob = new Blob([uploadFile.data], { type: uploadFile.contentType });
   form.append("file", blob, uploadFile.fileName);
 
-  const response = await apiRequestRaw_("POST", "/upload", null, { body: form });
+  const response = await apiRequestRaw_("POST", "/media", null, {
+    body: form,
+    idempotencyKey,
+  });
   const json = response.json || {};
-  if (!json.url) {
-    throw createResponseAwareError_("Upload succeeded but no URL was returned.", response.code, response.text);
+  const media = json.media || json.data || json;
+  if (!media || !media.id) {
+    throw createResponseAwareError_("Upload succeeded but no media.id was returned.", response.code, response.text);
   }
-  return json.url;
+  return JSON.stringify(media, null, 2);
 }
 
 async function readUploadSource_(source) {

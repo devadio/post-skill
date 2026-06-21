@@ -29,9 +29,10 @@ That legacy API and its old payload examples are reference material only.
 4. Never pass tokens as CLI args, MCP args, query strings, screenshots, logs, or docs.
 5. Dry-run is the default for CLI, scripts, MCP, n8n, and Sheets.
 6. Live writes require `DEVAD_POST_ALLOW_WRITES=1`, explicit confirmation, API key scope, POST plan entitlement, idempotency, quota, and provider-rule checks.
-7. Treat CORE `block_states` as the source of truth. Do not parse human messages when structured states exist.
-8. Do not claim a provider `PASS` unless CORE succeeds and the external provider page/permalink shows the exact unique marker.
-9. External model or agent advice is not proof; verify it against CORE source, tests, and official provider docs.
+7. For live retries, pass stable idempotency keys: scripts and CLI use `--idempotency-key`, MCP uses `idempotency_key` / `idempotencyKey`, and n8n/Sheets use row-based keys.
+8. Treat CORE `block_states` as the source of truth. Do not parse human messages when structured states exist.
+9. Do not claim a provider `PASS` unless CORE succeeds and the external provider page/permalink shows the exact unique marker.
+10. External model or agent advice is not proof; verify it against CORE source, tests, and official provider docs.
 
 ## Provider-First Thinking Rule
 
@@ -88,6 +89,7 @@ Use these environment variables:
 DEVAD_POST_API_BASE=https://devad.io/api/v1/post
 DEVAD_POST_API_KEY=wsk_xxx
 DEVAD_POST_ALLOW_WRITES=0
+DEVAD_POST_IDEMPOTENCY_KEY=manual-run-001
 ```
 
 Compatibility aliases may be accepted by local scripts:
@@ -108,7 +110,7 @@ Node:
 ```bash
 node scripts/test_runner.js list-tests
 node scripts/test_runner.js facebook_image --print-payload
-node scripts/test_runner.js facebook_image --live --confirm
+node scripts/test_runner.js facebook_image --live --confirm --idempotency-key row-42-facebook-image
 ```
 
 Python:
@@ -116,10 +118,10 @@ Python:
 ```bash
 python scripts/test_runner.py list-tests
 python scripts/test_runner.py facebook_image --print-payload
-python scripts/test_runner.py facebook_image --live --confirm
+python scripts/test_runner.py facebook_image --live --confirm --idempotency-key row-42-facebook-image
 ```
 
-Without `--live --confirm`, scripts are dry-run only and do not call the POST API.
+Without `--live --confirm`, scripts are dry-run only and do not call the POST API. Live script writes also require `--idempotency-key` or `DEVAD_POST_IDEMPOTENCY_KEY`.
 
 ## Google Sheets And n8n
 
