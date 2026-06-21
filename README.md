@@ -98,6 +98,7 @@ Use `provider-proof:ledger:update` to merge proof outcomes into local rows and r
 Use `provider-proof:progress` after queue, ledger updates, or the current `.devad` provider-proof Markdown ledger to classify each provider as ready, waiting, investigate, closed, delayed, or code-only and select the next safe provider chunk. When using a Markdown ledger, pass the current git SHA and inspect `input_ledger.stale_against_current_sha`; stale ledger statuses can guide gates, but they are not current deploy proof.
 Use `provider-proof:chunk` before a provider chunk to compose the secret-safe packet, local matrix, variant statuses, safe commands, proof steps, result-table columns, and initial result rows.
 Use `provider-proof:packet` before a provider chunk to build a secret-safe variant/media/acceptance-gate packet from local CORE rules.
+Inspect `public_url_requirement`: `required_for_optional_media` means text-only is valid and public URL HTTP 200 is required only if media is attached, for example Google Business Profile standard posts.
 Use `provider-matrix` to dry-sweep implemented and intentionally unsupported variants and catch fixture-vs-validator mismatches before provider-specific chunks.
 
 MCP agents should call `post_dry_run_validate` before `post_posts_create`. The current Agent Kit also runs validation inside `posts:create` / `post_posts_create`: a `BLOCKED` provider media-rule result returns structured `ok:false` output and stops before writes; warning-only payloads continue with validation evidence.

@@ -55,7 +55,7 @@ post_provider_rules_compare
 - `provider-proof:ledger:update` can merge result updates into local rows while rejecting weak `PASS` evidence and ambiguous channel matches.
 - `provider-proof:progress` can classify providers as ready, waiting, investigate, closed, delayed, or code-only from JSON updates or the current `.devad` provider-proof Markdown ledger, flag stale ledger deploy evidence when given the current SHA, and select the next safe chunk.
 - `provider-proof:chunk` can compose a secret-safe provider chunk execution plan from the packet, matrix, gates, commands, result-table columns, and initial result rows.
-- `provider-proof:packet` can build a secret-safe provider chunk packet from local CORE provider rules before live proof.
+- `provider-proof:packet` can build a secret-safe provider chunk packet from local CORE provider rules before live proof, including `public_url_requirement` so optional-media variants are not confused with media-required variants.
 - Implemented variants return expected `PASS` rows.
 - Intentionally unsupported variants return expected `BLOCKED` rows.
 - The current Agent Kit validator enforces exact MIME, supported first-comment variants, and basic media constraints when payloads include `settings.mime_type` and metadata.
