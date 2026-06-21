@@ -89,6 +89,8 @@ MCP agents should call `post_dry_run_validate` before `post_posts_create`. The c
 MCP agents can call `post_provider_rules_get` first to inspect supported variants without API keys, live-write permission, or provider calls.
 MCP agents can call `post_provider_matrix_run` for a deterministic provider media matrix without API keys, live-write permission, or provider calls.
 
+For exact media checks, pass `settings.mime_type` plus available metadata (`duration_seconds`, `width`, `height`, `frame_rate`, `size_bytes`) into `validate` / `post_dry_run_validate`. The Agent Kit should block provider-specific MIME/spec issues early, such as Telegram `.mov` through `sendVideo`, TikTok over-duration video, or `first_comment` on Story variants.
+
 ## Main Areas
 
 - `SKILL.md`: technical operating rules for AI agents and developers.

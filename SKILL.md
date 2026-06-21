@@ -49,6 +49,8 @@ For every request, validate in this order:
 5. Reject unsupported combinations early with a clear blocking reason.
 6. Never coerce unknown media into `image_url` or `video_url`.
 
+When using the CORE Agent Kit, include `settings.mime_type` and available media metadata (`duration_seconds`, `width`, `height`, `frame_rate`, `size_bytes`) in validation payloads. Treat a `BLOCKED` result for MIME/spec/first-comment rules as a stop-before-write condition.
+
 Bad examples to reject:
 
 - PDF to Instagram `image_url`.

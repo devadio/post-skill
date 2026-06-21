@@ -30,6 +30,7 @@ post_provider_matrix_run
 - The local CORE provider-rule fixture and Agent Kit validator agree.
 - Implemented variants return expected `PASS` rows.
 - Intentionally unsupported variants return expected `BLOCKED` rows.
+- The current Agent Kit validator enforces exact MIME, supported first-comment variants, and basic media constraints when payloads include `settings.mime_type` and metadata.
 - No API key, OAuth session, `DEVAD_POST_ALLOW_WRITES`, `/posts`, `/media`, or social provider call is required.
 
 ## What It Does Not Prove
