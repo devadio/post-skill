@@ -35,7 +35,7 @@ That legacy API and its old payload examples are reference material only.
 10. Build the provider queue before multi-provider work when available: CLI `provider-proof:queue` or MCP `post_provider_proof_queue_plan`.
 11. Render the provider proof ledger before handoff when available: CLI `provider-proof:ledger` or MCP `post_provider_proof_ledger_render`.
 12. Merge proof outcomes with CLI `provider-proof:ledger:update` or MCP `post_provider_proof_ledger_update`; `PASS` requires `core_status`, `external_url`, and exact `marker`.
-13. Summarize progress with CLI `provider-proof:progress` or MCP `post_provider_proof_progress_report`; pass the current `.devad` provider-proof Markdown ledger when available, continue the first `READY` provider, investigate `INVESTIGATE`, and do not loop on `WAITING`, `DELAYED`, or `CODE_ONLY` entries.
+13. Summarize progress with CLI `provider-proof:progress` or MCP `post_provider_proof_progress_report`; pass the current `.devad` provider-proof Markdown ledger and current git SHA when available, inspect `input_ledger.stale_against_current_sha`, continue the first `READY` provider, investigate `INVESTIGATE`, and do not loop on `WAITING`, `DELAYED`, or `CODE_ONLY` entries.
 14. Build a provider chunk plan before live proof when available: CLI `provider-proof:chunk` or MCP `post_provider_proof_chunk_plan`; preserve its `result_rows`.
 15. Build a provider chunk packet before live proof when available: CLI `provider-proof:packet` or MCP `post_provider_proof_packet_build`.
 16. Run the provider matrix before provider chunks when available: CLI `provider-matrix` or MCP `post_provider_matrix_run`.
@@ -90,7 +90,7 @@ Bad examples to reject:
 5. For multi-provider runs, build a provider queue with CLI `provider-proof:queue` or MCP `post_provider_proof_queue_plan`.
 6. Render a provider proof ledger with CLI `provider-proof:ledger` or MCP `post_provider_proof_ledger_render` when a handoff needs the required Markdown table.
 7. Merge provider proof outcomes with CLI `provider-proof:ledger:update` or MCP `post_provider_proof_ledger_update`; never mark `PASS` without CORE status, external URL, and exact marker.
-8. Run progress with CLI `provider-proof:progress` or MCP `post_provider_proof_progress_report`; pass the current `.devad` provider-proof Markdown ledger when available and use `next_entry` to continue safely.
+8. Run progress with CLI `provider-proof:progress` or MCP `post_provider_proof_progress_report`; pass the current `.devad` provider-proof Markdown ledger and current git SHA when available, treat stale ledger deploy data as gates instead of proof, and use `next_entry` to continue safely.
 9. Build a provider chunk plan with CLI `provider-proof:chunk` or MCP `post_provider_proof_chunk_plan`, then use its `result_rows` as the provider proof table scaffold.
 10. Build a provider chunk packet with CLI `provider-proof:packet` or MCP `post_provider_proof_packet_build` when a smaller packet is enough.
 11. If the CORE Agent Kit is available, run CLI `provider-matrix` or MCP `post_provider_matrix_run` to catch validator/fixture mismatches before provider chunks.
