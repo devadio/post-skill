@@ -32,13 +32,14 @@ That legacy API and its old payload examples are reference material only.
 7. Agent Kit create-post paths are validation-gated: CLI `posts:create` and MCP `post_posts_create` run provider media-rule preflight before writes.
 8. Query provider rules before building automation payloads when available: CLI `provider-rules` or MCP `post_provider_rules_get`.
 9. Compare local rules with saved/live `/automation` rules before assuming deployed parity: CLI `provider-rules:compare` or MCP `post_provider_rules_compare`; record `summary.mismatches: 0` and `fingerprints.match: true` instead of full payload dumps.
-10. Build a provider chunk packet before live proof when available: CLI `provider-proof:packet` or MCP `post_provider_proof_packet_build`.
-11. Run the provider matrix before provider chunks when available: CLI `provider-matrix` or MCP `post_provider_matrix_run`.
-12. For live retries, pass stable idempotency keys: scripts and CLI use `--idempotency-key`, MCP uses `idempotency_key` / `idempotencyKey`, and n8n/Sheets use row-based keys.
-13. Treat CORE `block_states` and Agent Kit `validation.provider_results` as source-of-truth structured output. Do not parse human messages when structured states exist.
-14. Do not claim a provider `PASS` unless CORE succeeds and the external provider page/permalink shows the exact unique marker.
-15. External model or agent advice is not proof; verify it against CORE source, tests, and official provider docs.
-16. When editing CORE provider-rule fixtures or Sheet/n8n template preflight maps, run `pnpm --filter @devad/post-agent verify:template-preflight`.
+10. Build a provider chunk plan before live proof when available: CLI `provider-proof:chunk` or MCP `post_provider_proof_chunk_plan`.
+11. Build a provider chunk packet before live proof when available: CLI `provider-proof:packet` or MCP `post_provider_proof_packet_build`.
+12. Run the provider matrix before provider chunks when available: CLI `provider-matrix` or MCP `post_provider_matrix_run`.
+13. For live retries, pass stable idempotency keys: scripts and CLI use `--idempotency-key`, MCP uses `idempotency_key` / `idempotencyKey`, and n8n/Sheets use row-based keys.
+14. Treat CORE `block_states` and Agent Kit `validation.provider_results` as source-of-truth structured output. Do not parse human messages when structured states exist.
+15. Do not claim a provider `PASS` unless CORE succeeds and the external provider page/permalink shows the exact unique marker.
+16. External model or agent advice is not proof; verify it against CORE source, tests, and official provider docs.
+17. When editing CORE provider-rule fixtures or Sheet/n8n template preflight maps, run `pnpm --filter @devad/post-agent verify:template-preflight`.
 
 ## Provider-First Thinking Rule
 
@@ -82,12 +83,13 @@ Bad examples to reject:
 2. Normalize the user row or payload into native CORE shape.
 3. If the CORE Agent Kit is available, inspect supported variants with CLI `provider-rules` or MCP `post_provider_rules_get`.
 4. If a saved or live `/automation` contract is available, compare it with CLI `provider-rules:compare` or MCP `post_provider_rules_compare`.
-5. Build a provider chunk packet with CLI `provider-proof:packet` or MCP `post_provider_proof_packet_build`.
-6. If the CORE Agent Kit is available, run CLI `provider-matrix` or MCP `post_provider_matrix_run` to catch validator/fixture mismatches before provider chunks.
-7. Validate provider/channel/variant and media rules before building payload.
-8. Run CLI `validate` or MCP `post_dry_run_validate`; create-post also runs the same preflight gate.
-9. Run dry-run first and inspect `warnings`, `blocking_reasons`, `block_states`, and `validation.provider_results`.
-10. For live writes, require:
+5. Build a provider chunk plan with CLI `provider-proof:chunk` or MCP `post_provider_proof_chunk_plan`.
+6. Build a provider chunk packet with CLI `provider-proof:packet` or MCP `post_provider_proof_packet_build` when a smaller packet is enough.
+7. If the CORE Agent Kit is available, run CLI `provider-matrix` or MCP `post_provider_matrix_run` to catch validator/fixture mismatches before provider chunks.
+8. Validate provider/channel/variant and media rules before building payload.
+9. Run CLI `validate` or MCP `post_dry_run_validate`; create-post also runs the same preflight gate.
+10. Run dry-run first and inspect `warnings`, `blocking_reasons`, `block_states`, and `validation.provider_results`.
+11. For live writes, require:
    - `DEVAD_POST_ALLOW_WRITES=1`
    - explicit `--live --confirm` or MCP `confirm: true`
    - a scoped `wsk_...` key from environment
