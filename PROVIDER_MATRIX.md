@@ -39,8 +39,8 @@ post_provider_rules_compare
 ## What It Proves
 
 - The local CORE provider-rule fixture and Agent Kit validator agree.
-- `provider-proof:queue` can return the ready/delayed/code-only provider order without provider calls.
-- `provider-proof:chunk` can compose a secret-safe provider chunk execution plan from the packet, matrix, gates, commands, and result-table columns.
+- `provider-proof:queue` can return the ready/delayed/code-only provider order and initial result rows without provider calls.
+- `provider-proof:chunk` can compose a secret-safe provider chunk execution plan from the packet, matrix, gates, commands, result-table columns, and initial result rows.
 - `provider-proof:packet` can build a secret-safe provider chunk packet from local CORE provider rules before live proof.
 - Implemented variants return expected `PASS` rows.
 - Intentionally unsupported variants return expected `BLOCKED` rows.

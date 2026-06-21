@@ -33,7 +33,7 @@ That legacy API and its old payload examples are reference material only.
 8. Query provider rules before building automation payloads when available: CLI `provider-rules` or MCP `post_provider_rules_get`.
 9. Compare local rules with saved/live `/automation` rules before assuming deployed parity: CLI `provider-rules:compare` or MCP `post_provider_rules_compare`; record `summary.mismatches: 0` and `fingerprints.match: true` instead of full payload dumps.
 10. Build the provider queue before multi-provider work when available: CLI `provider-proof:queue` or MCP `post_provider_proof_queue_plan`.
-11. Build a provider chunk plan before live proof when available: CLI `provider-proof:chunk` or MCP `post_provider_proof_chunk_plan`.
+11. Build a provider chunk plan before live proof when available: CLI `provider-proof:chunk` or MCP `post_provider_proof_chunk_plan`; preserve its `result_rows`.
 12. Build a provider chunk packet before live proof when available: CLI `provider-proof:packet` or MCP `post_provider_proof_packet_build`.
 13. Run the provider matrix before provider chunks when available: CLI `provider-matrix` or MCP `post_provider_matrix_run`.
 14. For live retries, pass stable idempotency keys: scripts and CLI use `--idempotency-key`, MCP uses `idempotency_key` / `idempotencyKey`, and n8n/Sheets use row-based keys.
@@ -85,7 +85,7 @@ Bad examples to reject:
 3. If the CORE Agent Kit is available, inspect supported variants with CLI `provider-rules` or MCP `post_provider_rules_get`.
 4. If a saved or live `/automation` contract is available, compare it with CLI `provider-rules:compare` or MCP `post_provider_rules_compare`.
 5. For multi-provider runs, build a provider queue with CLI `provider-proof:queue` or MCP `post_provider_proof_queue_plan`.
-6. Build a provider chunk plan with CLI `provider-proof:chunk` or MCP `post_provider_proof_chunk_plan`.
+6. Build a provider chunk plan with CLI `provider-proof:chunk` or MCP `post_provider_proof_chunk_plan`, then use its `result_rows` as the provider proof table scaffold.
 7. Build a provider chunk packet with CLI `provider-proof:packet` or MCP `post_provider_proof_packet_build` when a smaller packet is enough.
 8. If the CORE Agent Kit is available, run CLI `provider-matrix` or MCP `post_provider_matrix_run` to catch validator/fixture mismatches before provider chunks.
 9. Validate provider/channel/variant and media rules before building payload.
