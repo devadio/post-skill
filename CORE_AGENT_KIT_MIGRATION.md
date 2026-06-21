@@ -13,6 +13,7 @@ This repo used to describe the old POST.devad.io public API flow. Current Devad 
 | Live writes | require explicit user approval, `DEVAD_POST_ALLOW_WRITES=1`, and `confirm` |
 | Limits | enforced by CORE POST plans, quota, throttles, idempotency, and provider rules |
 | Retry key | use `--idempotency-key`, MCP `idempotency_key`, or row-based Sheet/n8n keys |
+| Preflight | run Agent Kit `validate` / `post_dry_run_validate`; create-post also blocks `BLOCKED` provider media-rule results before writes |
 
 ## Do Not Reintroduce
 
@@ -36,9 +37,10 @@ This repo used to describe the old POST.devad.io public API flow. Current Devad 
    - variant
    - media MIME/count/ratio/size/duration
    - provider-specific payload
-6. Preserve CORE `block_states`, warnings, and blocking reasons.
-7. Add idempotency/correlation IDs to n8n and Sheets.
-8. Verify external provider URLs before marking a provider/type as passed.
+6. Run Agent Kit `validate` / MCP `post_dry_run_validate` where available, and rely on `posts:create` preflight to block `BLOCKED` provider media-rule mismatches.
+7. Preserve CORE `block_states`, Agent Kit `validation.provider_results`, warnings, and blocking reasons.
+8. Add idempotency/correlation IDs to n8n and Sheets.
+9. Verify external provider URLs before marking a provider/type as passed.
 
 ## Provider Baseline
 
@@ -63,6 +65,14 @@ node scripts\test_runner.js facebook_image --live --confirm --idempotency-key ro
 ```
 
 The final command should fail closed unless `DEVAD_POST_ALLOW_WRITES=1`, a stable idempotency key, and a valid `wsk_...` key are present.
+
+When running inside the CORE monorepo, also verify Agent Kit preflight:
+
+```powershell
+node packages\devad-post-agent\dist\cli.js validate --dry-run --file packages\devad-post-agent\examples\create-post.native.json
+node packages\devad-post-agent\dist\cli.js posts:create --dry-run --file packages\devad-post-agent\examples\create-post.native.json
+node packages\devad-post-agent\dist\mcp.js --list-tools
+```
 
 ```powershell
 python -m py_compile scripts\test_runner.py

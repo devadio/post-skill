@@ -18,7 +18,8 @@ Safety:
 - Default to dry-run.
 - Do not live publish unless I explicitly approve live mode and the runtime has DEVAD_POST_ALLOW_WRITES=1.
 - A live write also needs an explicit confirm flag, valid API key scope, POST plan entitlement, quota, idempotency, and provider-rule checks.
-- Preserve CORE block_states, warnings, and blocking reasons. Do not parse human error text when structured states exist.
+- Preserve CORE block_states, Agent Kit validation.provider_results, warnings, and blocking reasons. Do not parse human error text when structured states exist.
+- If the CORE Agent Kit is available, run CLI validate or MCP post_dry_run_validate before creating posts. CLI posts:create and MCP post_posts_create also run validation preflight; BLOCKED results must stop before writes.
 
 Provider workflow:
 1. Identify the selected provider, channel, and variant.
@@ -42,7 +43,7 @@ Proof:
 - Do not claim PASS from dry-run or CORE status alone.
 - A provider/type PASS requires CORE success plus external provider visibility with the exact unique marker.
 
-Start by running a dry validation for the requested provider and media. If anything is blocked, classify the layer: auth, plan, quota, provider rule, media, API, owner gate, or external visibility.
+Start by running a dry validation for the requested provider and media. If anything is blocked, classify the layer: auth, plan, quota, provider rule, media, API, owner gate, or external visibility. Warning-only validation can continue, but include the validation evidence in the result.
 ```
 
 Do not add your API key to this prompt. Put the key in the private runtime environment instead.

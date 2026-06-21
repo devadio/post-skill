@@ -72,6 +72,15 @@ python scripts/test_runner.py upload ./image.jpg --live --confirm --idempotency-
 
 Without `--live --confirm` plus `DEVAD_POST_ALLOW_WRITES=1`, scripts stay in dry-run mode. Live writes also require `--idempotency-key` or `DEVAD_POST_IDEMPOTENCY_KEY` so retries do not double-post.
 
+When the CORE Agent Kit package is available, run one of these before live writes:
+
+```bash
+devad-post validate --input payload.json
+devad-post posts:create --dry-run --input payload.json
+```
+
+MCP agents should call `post_dry_run_validate` before `post_posts_create`. The current Agent Kit also runs validation inside `posts:create` / `post_posts_create`: a `BLOCKED` provider media-rule result returns structured `ok:false` output and stops before writes; warning-only payloads continue with validation evidence.
+
 ## Main Areas
 
 - `SKILL.md`: technical operating rules for AI agents and developers.
@@ -106,6 +115,7 @@ They should be adapted to:
 - send stable idempotency/correlation IDs
 - process one row or one small batch by default
 - preserve warnings, blocking reasons, and `block_states`
+- preserve Agent Kit `validation.provider_results` when available
 - avoid live writes unless explicitly enabled
 
 ## Private Values
