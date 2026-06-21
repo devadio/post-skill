@@ -14,6 +14,7 @@ pnpm --filter @devad/post-agent dry:provider-proof:ledger -- --exclude-delayed -
 pnpm --filter @devad/post-agent dry:provider-proof:ledger:update -- --exclude-delayed --exclude-code-only --file provider-proof-updates.json
 pnpm --filter @devad/post-agent dry:provider-proof:progress -- --exclude-delayed --exclude-code-only --file provider-proof-updates.json
 pnpm --filter @devad/post-agent dry:provider-proof:progress -- --exclude-delayed --exclude-code-only --current-sha $(git rev-parse HEAD) --file .devad/features/post-direct-native-migration-2026-06-05/channels-long-run-2026-06-18/PROVIDER-PROOF-LEDGER-2026-06-21.md
+pnpm --filter @devad/post-agent dry:provider-proof:progress -- --exclude-delayed --exclude-code-only --browser-unavailable --current-sha $(git rev-parse HEAD) --file .devad/features/post-direct-native-migration-2026-06-05/channels-long-run-2026-06-18/PROVIDER-PROOF-LEDGER-2026-06-21.md
 pnpm --filter @devad/post-agent dry:provider-proof:chunk -- --provider pinterest_board
 pnpm --filter @devad/post-agent dry:provider-proof:packet -- --provider pinterest_board
 pnpm --filter @devad/post-agent dry:provider-matrix -- --provider youtube_channel --include-payloads
@@ -29,6 +30,7 @@ node packages\devad-post-agent\dist\cli.js provider-proof:ledger --dry-run --exc
 node packages\devad-post-agent\dist\cli.js provider-proof:ledger:update --dry-run --exclude-delayed --exclude-code-only --file provider-proof-updates.json
 node packages\devad-post-agent\dist\cli.js provider-proof:progress --dry-run --exclude-delayed --exclude-code-only --file provider-proof-updates.json
 node packages\devad-post-agent\dist\cli.js provider-proof:progress --dry-run --exclude-delayed --exclude-code-only --current-sha $(git rev-parse HEAD) --file .devad\features\post-direct-native-migration-2026-06-05\channels-long-run-2026-06-18\PROVIDER-PROOF-LEDGER-2026-06-21.md
+node packages\devad-post-agent\dist\cli.js provider-proof:progress --dry-run --exclude-delayed --exclude-code-only --browser-unavailable --current-sha $(git rev-parse HEAD) --file .devad\features\post-direct-native-migration-2026-06-05\channels-long-run-2026-06-18\PROVIDER-PROOF-LEDGER-2026-06-21.md
 node packages\devad-post-agent\dist\cli.js provider-proof:chunk --dry-run --provider pinterest_board
 node packages\devad-post-agent\dist\cli.js provider-proof:packet --dry-run --provider pinterest_board
 node packages\devad-post-agent\dist\cli.js provider-rules:compare --dry-run --file saved-automation-response.json
@@ -53,7 +55,7 @@ post_provider_rules_compare
 - `provider-proof:queue` can return the ready/delayed/code-only provider order and initial result rows without provider calls.
 - `provider-proof:ledger` can render the required Markdown proof table from local result rows without provider calls.
 - `provider-proof:ledger:update` can merge result updates into local rows while rejecting weak `PASS` evidence and ambiguous channel matches.
-- `provider-proof:progress` can classify providers as ready, waiting, investigate, closed, delayed, or code-only from JSON updates or the current `.devad` provider-proof Markdown ledger, flag stale ledger deploy evidence when given the current SHA, and select the next safe chunk.
+- `provider-proof:progress` can classify providers as ready, waiting, investigate, closed, delayed, or code-only from JSON updates or the current `.devad` provider-proof Markdown ledger, flag stale ledger deploy evidence when given the current SHA, select the next safe chunk, and keep browser-only investigations waiting when `--browser-unavailable` is set.
 - `provider-proof:chunk` can compose a secret-safe provider chunk execution plan from the packet, matrix, gates, commands, result-table columns, and initial result rows.
 - `provider-proof:packet` can build a secret-safe provider chunk packet from local CORE provider rules before live proof, including `public_url_requirement` so optional-media variants are not confused with media-required variants.
 - Implemented variants return expected `PASS` rows.
