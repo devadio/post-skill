@@ -79,6 +79,7 @@ When the CORE Agent Kit package is available, run one of these before live write
 devad-post provider-rules --provider facebook_page
 devad-post provider-rules:compare --file saved-automation-response.json
 devad-post provider-proof:queue
+devad-post provider-proof:ledger --exclude-delayed --exclude-code-only
 devad-post provider-proof:chunk --provider pinterest_board
 devad-post provider-proof:packet --provider pinterest_board
 devad-post provider-matrix --provider youtube_channel
@@ -89,6 +90,7 @@ devad-post posts:create --dry-run --input payload.json
 Use `provider-rules` to inspect the current local provider variant/media matrix before constructing Sheet, n8n, or agent payloads.
 Use `provider-rules:compare` to compare local Agent Kit rules with a saved or live CORE `/automation` `provider_rules` contract before assuming local and deployed rules match. Record `summary.mismatches: 0` and `fingerprints.match: true` as the compact proof; do not paste full provider-rule payloads into docs or logs.
 Use `provider-proof:queue` before multi-provider work to get the ready/delayed/code-only provider order and avoid jumping to unapproved channels. Keep its `result_rows` as the proof ledger scaffold.
+Use `provider-proof:ledger` when a handoff or agent run needs the required proof table rendered as deterministic Markdown from local result rows.
 Use `provider-proof:chunk` before a provider chunk to compose the secret-safe packet, local matrix, variant statuses, safe commands, proof steps, result-table columns, and initial result rows.
 Use `provider-proof:packet` before a provider chunk to build a secret-safe variant/media/acceptance-gate packet from local CORE rules.
 Use `provider-matrix` to dry-sweep implemented and intentionally unsupported variants and catch fixture-vs-validator mismatches before provider-specific chunks.
@@ -97,6 +99,7 @@ MCP agents should call `post_dry_run_validate` before `post_posts_create`. The c
 MCP agents can call `post_provider_rules_get` first to inspect supported variants without API keys, live-write permission, or provider calls.
 MCP agents can call `post_provider_rules_compare` with a `provider_rules` object to detect local/live contract drift without provider calls.
 MCP agents can call `post_provider_proof_queue_plan` to get the deterministic provider-by-provider queue and initial result rows without API keys, provider calls, browser data, or credential reads.
+MCP agents can call `post_provider_proof_ledger_render` to render the required Markdown proof table without API keys, provider calls, browser data, credential reads, or live writes.
 MCP agents can call `post_provider_proof_chunk_plan` to prepare the full provider chunk execution plan and result rows without API keys, provider calls, browser data, or credential reads.
 MCP agents can call `post_provider_proof_packet_build` to prepare a provider chunk packet without API keys, provider calls, or credential reads.
 MCP agents can call `post_provider_matrix_run` for a deterministic provider media matrix without API keys, live-write permission, or provider calls.
