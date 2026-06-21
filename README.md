@@ -1,123 +1,124 @@
 # Post-Skill
 
-Post-Skill is an open reference bundle for building social publishing flows around POST.devad.io. It is designed for both human operators and AI agents.
+Post-Skill is a public-safe reference bundle for building social publishing automation around the native Devad CORE POST API.
 
-## What this repo gives you
+Current API authority:
 
-- A Google Sheets + Apps Script workflow for row-based publishing
-- A working n8n automation template for the same POST.devad.io flow
-- Example payloads for common post types
-- AI-agent-facing docs that explain the expected payload shape and workflow rules
+```text
+https://devad.io/api/v1/post
+```
 
-## Main areas
+The old `post.devad.io/api/public/v1` flow is legacy reference material only. New agents and automations should use CORE workspace API keys, dry-run first, and provider-specific media rules.
 
-- `SKILL.md`
-  - Technical reference for AI agents and developers
-- `MASTER_PROMPT.md`
-  - Short onboarding prompt for assistants
-- `payloads/`
-  - Example payloads for platforms and post types
-- `scripts/`
-  - Local test runners
-- `google-sheet/`
-  - Google Sheets publishing workflow docs
-- `google-sheet/apps-script/`
-  - Full Apps Script bundle mirrored from the working sheet project
-- `n8n-automation/`
-  - Sanitized n8n workflow template and setup guide
+## What This Repo Gives You
 
-## Google Sheet workflow
+- AI-agent-facing instructions in `SKILL.md`
+- a short paste-ready prompt in `MASTER_PROMPT.md`
+- local Node and Python test runners
+- example payload fixtures
+- Google Sheets and n8n reference workflows
+- migration guidance for old POST.devad.io row/payload shapes
 
-The Google Sheet workflow is the easiest way to manage content for both humans and agents:
+## Safety Model
 
-- one row per planned post
-- media links stored directly in the sheet
-- action status written back into the same row
-- support for link-in-caption, first comment, and optional FB/IG story duplicates
+| Rule | Meaning |
+|---|---|
+| Native CORE API only | Clients call `/api/v1/post/*`; they do not write database rows or provider APIs directly. |
+| Bearer `wsk_...` only | Use `Authorization: Bearer wsk_...`; do not use query-token auth or `X-Api-Token`. |
+| Env-only secrets | API keys live in environment or private tool config, never in prompts, payload files, screenshots, or git. |
+| Dry-run default | Scripts, Sheets, n8n, and MCP-style agent calls should validate first and write only after explicit confirmation. |
+| Server-side limits win | POST plans, scopes, quota, idempotency, rate limits, and provider media rules are enforced by CORE. |
+| External proof required | A provider/type is not a PASS until the exact unique marker is visible on the provider page/permalink. |
 
-Start here:
+## Environment
 
-- [Google Sheet guide](google-sheet/README.md)
-- [Apps Script bundle](google-sheet/apps-script/README.md)
+Preferred:
 
-## n8n workflow template
+```bash
+DEVAD_POST_API_BASE=https://devad.io/api/v1/post
+DEVAD_POST_API_KEY=wsk_xxx
+DEVAD_POST_ALLOW_WRITES=0
+```
 
-The repo now includes the working n8n template used for:
+Compatibility aliases may work in local scripts:
 
-- reading queued rows from the `post` tab
-- resolving direct links, Google Drive files, and Google Drive folders
-- detecting `text`, `image`, `video`, and `carousel`
-- sending feed posts to POST.devad.io
-- optionally sending a separate FB/IG story request
-- writing `Action?` and `log` back into the same sheet row
+```bash
+DEVAD_POST_TOKEN
+DEVAD_WORKSPACE_API_KEY
+POST_API_BASE
+POST_API_TOKEN
+```
 
-Important for Google Drive video/file usage:
+## Scripts
 
-- after importing the template, open the node `Download Drive Media Asset`
-- set Authentication to `Predefined Credential Type`
-- choose `Google Drive OAuth2 API`
-- select your real Google Drive credential and save the workflow once
+Node:
 
-This one-time UI save is required because some n8n API/MCP updates do not persist the HTTP Request node's Drive credential binding.
+```bash
+node scripts/test_runner.js list-tests
+node scripts/test_runner.js facebook_image --print-payload
+node scripts/test_runner.js facebook_image --live --confirm
+```
 
-Start here:
+Python:
 
-- [n8n template guide](n8n-automation/README.md)
-- [Importable workflow JSON](n8n-automation/codex-post-sheet-to-social-full.workflow.json)
-- [Sanitized workflow source](n8n-automation/codex-post-sheet-to-social-full.sdk.js)
+```bash
+python scripts/test_runner.py list-tests
+python scripts/test_runner.py facebook_image --print-payload
+python scripts/test_runner.py facebook_image --live --confirm
+```
 
-### n8n benefits
+Without `--live --confirm` plus `DEVAD_POST_ALLOW_WRITES=1`, scripts stay in dry-run mode.
 
-- lower maintenance than building one branch per platform
-- one shared setup node for token, IDs, and defaults
-- one-row-per-run safety by default
-- easy to adapt for webhook fan-out or queue-based automation
+## Main Areas
 
-## Supported content types
+- `SKILL.md`: technical operating rules for AI agents and developers.
+- `MASTER_PROMPT.md`: concise prompt to give another assistant.
+- `payloads/`: provider examples and blocked/legacy fixtures.
+- `scripts/`: local dry-run/live-gated runners.
+- `google-sheet/`: Google Sheets publishing workflow reference.
+- `google-sheet/apps-script/`: Apps Script bundle from the old sheet workflow.
+- `n8n-automation/`: n8n workflow reference for row-based automation.
 
-- `text`
-- `image`
-- `video`
-- `carousel`
-- optional FB/IG first comment behavior
-- optional FB/IG story duplicate behavior
+## Provider Baseline
 
-## Supported channels in the current reference flow
+Always validate provider, channel, and variant before media:
 
-- TikTok
-- Instagram
-- Facebook
-- LinkedIn
-- YouTube
-- Pinterest
-- Telegram
-- Tumblr
-- Google Business Profile
+- Facebook Page: feed text/link, image feed, video feed, reel, story image/video, first comment where supported.
+- Instagram Business: image feed, video/reel shared to feed, story image/video; story comments and carousel require explicit CORE proof.
+- LinkedIn Page: text and single image only until video/carousel/document slices are implemented and proven.
+- Telegram channel/group: text, photo, video, document.
+- YouTube Channel: video upload only.
+- Pinterest Board: image Pin unless current CORE/API support proves more.
+- Google Business Profile: STANDARD local post only unless event/offer support is proven.
+- TikTok: fail closed unless creator-info, privacy, commercial disclosure, AIGC, and app-approval gates pass.
+- X, Reddit, OK, Threads, Instagram Unofficial: code-only unless live testing is explicitly re-approved.
 
-Channel behavior still depends on the account type, media type, and the capabilities available in your POST.devad.io integrations.
+## Google Sheet And n8n Notes
 
-## Recommended order for new users
+The included Sheet and n8n flows are useful for planning and automation, but they are not provider authorities.
 
-1. Read the Google Sheet guide if you want the sheet-first workflow.
-2. Read the n8n guide if you want the automation-first workflow.
-3. Import the n8n workflow JSON and relink Google credentials.
-4. Manually bind the Google Drive credential in `Download Drive Media Asset`.
-5. Add your POST.devad.io token and integration IDs.
-6. Test one Telegram or single-image row first.
-7. Test one Google Drive video row.
-8. Only then enable optional story or webhook branches.
+They should be adapted to:
 
-## Notes about private values
+- call CORE `/api/v1/post/*`
+- send stable idempotency/correlation IDs
+- process one row or one small batch by default
+- preserve warnings, blocking reasons, and `block_states`
+- avoid live writes unless explicitly enabled
 
-This repo is intended to be public-safe:
+## Private Values
 
-- no private API tokens should be committed
-- no personal integration IDs should be committed
-- no private Google credentials should be committed
+This repo must remain public-safe:
 
-Use placeholder values in public templates and fill real values only inside your own live environment.
+- no real API keys
+- no cookies or OAuth codes
+- no personal integration IDs
+- no raw provider logs
+- no private Google credentials
+
+Use placeholder values in public files and fill real values only in your private environment.
 
 ## Support
 
-- [POST.devad.io](https://post.devad.io)
-- [Docs and guides](https://devad.io/guides/topics/post-devad-io-docs/)
+- App: [devad.io](https://devad.io)
+- POST app path: `https://devad.io/workspaces/apps/post`
+- Docs and guides: [Devad POST docs](https://devad.io/guides/topics/post-devad-io-docs/)

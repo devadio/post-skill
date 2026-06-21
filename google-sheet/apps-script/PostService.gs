@@ -2,6 +2,12 @@
  * PostService.gs
  * Handles API interactions with POST.devad.io.
  * Fully aligned with the 'multi_channel.json' specification.
+ *
+ * LEGACY REFERENCE ONLY:
+ * This Apps Script still uses the old POST.devad.io public API and query-token
+ * compatibility path. Do not use it for current CORE live automation until it is
+ * migrated to https://devad.io/api/v1/post with bearer wsk_ auth, dry-run
+ * defaults, idempotency, block_states, and provider-first media rules.
  */
 
 function smartUpload(blob, token) {

@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-POST.devad.io test runner for Python 3.
+Devad CORE POST test runner for Python 3.
 
 This replaces the older PHP runner with the same goals as the updated Node.js
 version:
@@ -20,12 +20,19 @@ import sys
 import uuid
 from pathlib import Path
 from typing import Dict, List, Optional, Tuple
-from urllib.parse import urlencode, urlparse
+from urllib.parse import urlparse
 from urllib.request import Request, urlopen
 
 
-API_BASE = os.getenv("POST_API_BASE", "https://post.devad.io/api/public/v1")
-API_TOKEN = os.getenv("POST_API_TOKEN", "")
+API_BASE = os.getenv("DEVAD_POST_API_BASE") or os.getenv("POST_API_BASE") or "https://devad.io/api/v1/post"
+API_TOKEN = (
+    os.getenv("DEVAD_POST_API_KEY")
+    or os.getenv("DEVAD_POST_TOKEN")
+    or os.getenv("DEVAD_WORKSPACE_API_KEY")
+    or os.getenv("POST_API_TOKEN")
+    or ""
+)
+ALLOW_WRITES = os.getenv("DEVAD_POST_ALLOW_WRITES") == "1"
 REQUEST_TIMEOUT_SECONDS = int(os.getenv("POST_API_TIMEOUT_MS", "30000")) / 1000
 PINTEREST_BOARD_ID = os.getenv("POST_PINTEREST_BOARD_ID", "")
 
@@ -223,7 +230,7 @@ def build_test_payload(test_name: str) -> Dict[str, object]:
     return tests[test_name]()
 
 
-def validate_payload(payload: Dict[str, object]) -> None:
+def validate_payload(payload: Dict[str, object], require_integration_ids: bool = True) -> None:
     posts = payload.get("posts")
     if not isinstance(posts, list) or not posts:
         raise RuntimeError("Payload must include a non-empty posts array.")
@@ -231,7 +238,7 @@ def validate_payload(payload: Dict[str, object]) -> None:
     for index, post in enumerate(posts):
         label = f"posts[{index}]"
         integration_id = str(post.get("integration", {}).get("id", "")).strip()
-        if not integration_id or integration_id == "FILL_ME":
+        if require_integration_ids and (not integration_id or integration_id == "FILL_ME"):
             raise RuntimeError(f"{label} is missing a valid integration ID.")
 
         values = post.get("value")
@@ -261,12 +268,20 @@ def validate_payload(payload: Dict[str, object]) -> None:
 
 def assert_token_present(command_name: str) -> None:
     if not API_TOKEN:
-        raise RuntimeError(f"POST_API_TOKEN is required for '{command_name}'.")
+        raise RuntimeError(f"A DEVAD_POST_API_KEY, DEVAD_POST_TOKEN, DEVAD_WORKSPACE_API_KEY, or POST_API_TOKEN value is required for '{command_name}'.")
+    if not API_TOKEN.startswith("wsk_"):
+        raise RuntimeError("CORE POST live requests require a workspace API key with the wsk_ prefix.")
+
+
+def assert_live_allowed(command_name: str, confirmed: bool) -> None:
+    if not ALLOW_WRITES:
+        raise RuntimeError(f"Live '{command_name}' is blocked. Set DEVAD_POST_ALLOW_WRITES=1 and pass --live --confirm.")
+    if not confirmed:
+        raise RuntimeError(f"Live '{command_name}' requires --confirm.")
 
 
 def build_api_url(path_name: str) -> str:
-    separator = "&" if "?" in path_name else "?"
-    return f"{API_BASE}{path_name}{separator}{urlencode({'api_token': API_TOKEN})}" if API_TOKEN else f"{API_BASE}{path_name}"
+    return f"{API_BASE}{path_name}"
 
 
 def try_parse_json(raw_text: str):
@@ -283,7 +298,6 @@ def api_request_json(method: str, path_name: str, body: Optional[Dict[str, objec
     }
     if API_TOKEN:
         headers["Authorization"] = f"Bearer {API_TOKEN}"
-        headers["X-Api-Token"] = API_TOKEN
     if request_body is not None:
         headers["Content-Type"] = "application/json"
 
@@ -304,7 +318,7 @@ def api_request_json(method: str, path_name: str, body: Optional[Dict[str, objec
         if hasattr(exc, "read"):
             response_text = exc.read().decode("utf-8", errors="replace")
         if response_code in {401, 403} or "do_login" in response_text or "login" in response_text.lower():
-            raise ResponseAwareError("Authentication failed. Check POST_API_TOKEN.", response_code, response_text) from exc
+            raise ResponseAwareError("Authentication failed. Check the CORE workspace API key.", response_code, response_text) from exc
         if response_text:
             parsed_json = try_parse_json(response_text)
             message = parsed_json.get("message") if isinstance(parsed_json, dict) and parsed_json.get("message") else response_text
@@ -366,7 +380,6 @@ def upload_source(source: str, dry_run: bool) -> str:
     headers = {
         "Accept": "application/json",
         "Authorization": f"Bearer {API_TOKEN}",
-        "X-Api-Token": API_TOKEN,
         "Content-Type": f"multipart/form-data; boundary={boundary}",
     }
 
@@ -384,7 +397,7 @@ def upload_source(source: str, dry_run: bool) -> str:
         if hasattr(exc, "read"):
             response_text = exc.read().decode("utf-8", errors="replace")
         if response_code in {401, 403} or "do_login" in response_text or "login" in response_text.lower():
-            raise ResponseAwareError("Authentication failed. Check POST_API_TOKEN.", response_code, response_text) from exc
+            raise ResponseAwareError("Authentication failed. Check the CORE workspace API key.", response_code, response_text) from exc
         raise
 
 
@@ -399,11 +412,13 @@ def print_usage() -> None:
         "  python scripts/test_runner.py list-tests",
         "  python scripts/test_runner.py accounts",
         "  python scripts/test_runner.py health",
-        "  python scripts/test_runner.py facebook_image --dry-run --print-payload",
-        "  python scripts/test_runner.py upload <path-or-url>",
+        "  python scripts/test_runner.py facebook_image --print-payload",
+        "  python scripts/test_runner.py facebook_image --live --confirm",
+        "  python scripts/test_runner.py upload <path-or-url> --live --confirm",
         "",
         "Required env for live requests:",
-        "  POST_API_TOKEN",
+        "  DEVAD_POST_API_KEY or DEVAD_POST_TOKEN or DEVAD_WORKSPACE_API_KEY",
+        "  DEVAD_POST_ALLOW_WRITES=1",
     ]
     print("\n".join(lines))
 
@@ -413,6 +428,8 @@ def parse_args(argv: List[str]) -> argparse.Namespace:
     parser.add_argument("command", nargs="?")
     parser.add_argument("extra", nargs="*")
     parser.add_argument("--dry-run", action="store_true")
+    parser.add_argument("--live", action="store_true")
+    parser.add_argument("--confirm", action="store_true")
     parser.add_argument("--print-payload", action="store_true")
     parser.add_argument("--help", "-h", action="store_true")
     return parser.parse_args(argv)
@@ -465,22 +482,25 @@ def main(argv: List[str]) -> int:
     if args.command == "upload":
         if not args.extra:
             raise RuntimeError("Missing upload source. Use: python scripts/test_runner.py upload <path-or-url>")
-        if not args.dry_run:
+        if args.live:
+            assert_live_allowed("upload", args.confirm)
             assert_token_present("upload")
-        print(upload_source(args.extra[0], args.dry_run))
+        print(upload_source(args.extra[0], not args.live))
         return 0
 
     payload = build_test_payload(args.command)
-    validate_payload(payload)
+    if args.live:
+        assert_live_allowed(args.command, args.confirm)
+        assert_token_present(args.command)
+    validate_payload(payload, require_integration_ids=args.live)
 
-    if args.print_payload or args.dry_run:
+    if args.print_payload or not args.live:
         print(json.dumps(payload, indent=2))
 
-    if args.dry_run:
+    if not args.live:
         print("\nDry run passed. No live request was sent.")
         return 0
 
-    assert_token_present(args.command)
     print_response(args.command, api_request_json("POST", "/posts", payload))
     return 0
 

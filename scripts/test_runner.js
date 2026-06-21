@@ -2,7 +2,7 @@
 "use strict";
 
 /**
- * POST.devad.io test runner for Node.js 18+.
+ * Devad CORE POST test runner for Node.js 18+.
  *
  * Goals:
  * - keep secrets out of source files
@@ -15,8 +15,9 @@ const fs = require("fs");
 const path = require("path");
 const { URL } = require("url");
 
-const API_BASE = process.env.POST_API_BASE || "https://post.devad.io/api/public/v1";
-const API_TOKEN = process.env.POST_API_TOKEN || "";
+const API_BASE = process.env.DEVAD_POST_API_BASE || process.env.POST_API_BASE || "https://devad.io/api/v1/post";
+const API_TOKEN = process.env.DEVAD_POST_API_KEY || process.env.DEVAD_POST_TOKEN || process.env.DEVAD_WORKSPACE_API_KEY || process.env.POST_API_TOKEN || "";
+const ALLOW_WRITES = process.env.DEVAD_POST_ALLOW_WRITES === "1";
 const REQUEST_TIMEOUT_MS = parseIntegerEnv_("POST_API_TIMEOUT_MS", 30000);
 const PINTEREST_BOARD_ID = process.env.POST_PINTEREST_BOARD_ID || "";
 
@@ -94,38 +95,46 @@ async function main() {
     if (!source) {
       throw new Error("Missing upload source. Use: node test_runner.js upload <path-or-url>");
     }
-    if (!options.dryRun) {
+    if (options.live) {
+      assertLiveAllowed_("upload", options.confirm);
       assertTokenPresent_("upload");
     }
-    const uploadedUrl = await uploadSource_(source, options.dryRun);
+    const uploadedUrl = await uploadSource_(source, !options.live);
     console.log(uploadedUrl);
     return;
   }
 
   const payload = buildPayloadForCommand_(command);
-  validatePayload_(payload);
+  if (options.live) {
+    assertLiveAllowed_(command, options.confirm);
+    assertTokenPresent_(command);
+  }
+  validatePayload_(payload, { requireIntegrationIds: options.live });
 
-  if (options.printPayload || options.dryRun) {
+  if (options.printPayload || !options.live) {
     console.log(JSON.stringify(payload, null, 2));
   }
 
-  if (options.dryRun) {
+  if (!options.live) {
     console.log("\nDry run passed. No live request was sent.");
     return;
   }
 
-  assertTokenPresent_(command);
   const result = await apiRequestJson_("POST", "/posts", payload);
   printResponse_(command, result);
 }
 
 function parseCli_(argv) {
-  const options = { dryRun: false, printPayload: false, help: false };
+  const options = { live: false, confirm: false, printPayload: false, help: false };
   const positional = [];
 
   argv.forEach(arg => {
     if (arg === "--dry-run") {
-      options.dryRun = true;
+      options.live = false;
+    } else if (arg === "--live") {
+      options.live = true;
+    } else if (arg === "--confirm") {
+      options.confirm = true;
     } else if (arg === "--print-payload") {
       options.printPayload = true;
     } else if (arg === "--help" || arg === "-h") {
@@ -148,13 +157,16 @@ function printUsage_() {
     "  node scripts/test_runner.js list-tests",
     "  node scripts/test_runner.js accounts",
     "  node scripts/test_runner.js health",
-    "  node scripts/test_runner.js facebook_image --dry-run --print-payload",
-    "  node scripts/test_runner.js upload <path-or-url>",
+    "  node scripts/test_runner.js facebook_image --print-payload",
+    "  node scripts/test_runner.js facebook_image --live --confirm",
+    "  node scripts/test_runner.js upload <path-or-url> --live --confirm",
     "",
     "Required env for live requests:",
-    "  POST_API_TOKEN",
+    "  DEVAD_POST_API_KEY or DEVAD_POST_TOKEN or DEVAD_WORKSPACE_API_KEY",
+    "  DEVAD_POST_ALLOW_WRITES=1",
     "",
     "Optional env:",
+    "  DEVAD_POST_API_BASE",
     "  POST_API_BASE",
     "  POST_ACCOUNT_IDS_JSON",
     "  POST_ACCOUNT_FACEBOOK",
@@ -334,7 +346,9 @@ function buildPlatformSettings_(providerKey, detectedType, content) {
   return settings;
 }
 
-function validatePayload_(payload) {
+function validatePayload_(payload, options = {}) {
+  const requireIntegrationIds = options.requireIntegrationIds !== false;
+
   if (!payload || !Array.isArray(payload.posts) || payload.posts.length === 0) {
     throw new Error("Payload must include a non-empty posts array.");
   }
@@ -342,7 +356,7 @@ function validatePayload_(payload) {
   payload.posts.forEach((post, index) => {
     const label = "posts[" + index + "]";
     const integrationId = post && post.integration ? String(post.integration.id || "").trim() : "";
-    if (!integrationId || integrationId === "FILL_ME") {
+    if (requireIntegrationIds && (!integrationId || integrationId === "FILL_ME")) {
       throw new Error(label + " is missing a valid integration ID.");
     }
 
@@ -386,7 +400,19 @@ function validatePayload_(payload) {
 
 function assertTokenPresent_(commandName) {
   if (!API_TOKEN) {
-    throw new Error("POST_API_TOKEN is required for '" + commandName + "'.");
+    throw new Error("A DEVAD_POST_API_KEY, DEVAD_POST_TOKEN, DEVAD_WORKSPACE_API_KEY, or POST_API_TOKEN value is required for '" + commandName + "'.");
+  }
+  if (!API_TOKEN.startsWith("wsk_")) {
+    throw new Error("CORE POST live requests require a workspace API key with the wsk_ prefix.");
+  }
+}
+
+function assertLiveAllowed_(commandName, confirmed) {
+  if (!ALLOW_WRITES) {
+    throw new Error("Live '" + commandName + "' is blocked. Set DEVAD_POST_ALLOW_WRITES=1 and pass --live --confirm.");
+  }
+  if (!confirmed) {
+    throw new Error("Live '" + commandName + "' requires --confirm.");
   }
 }
 
@@ -411,7 +437,6 @@ async function apiRequestRaw_(method, pathName, body = null, extraOptions = {}) 
     };
     if (API_TOKEN) {
       headers.Authorization = "Bearer " + API_TOKEN;
-      headers["X-Api-Token"] = API_TOKEN;
     }
     const options = {
       method,
@@ -432,7 +457,7 @@ async function apiRequestRaw_(method, pathName, body = null, extraOptions = {}) 
     const locationHeader = response.headers.get("location") || "";
 
     if (response.status === 401 || response.status === 403 || /login/i.test(locationHeader) || /do_login/i.test(text)) {
-      throw createResponseAwareError_("Authentication failed. Check POST_API_TOKEN.", response.status, text);
+      throw createResponseAwareError_("Authentication failed. Check the CORE workspace API key.", response.status, text);
     }
 
     if (!response.ok) {
@@ -454,8 +479,7 @@ async function apiRequestRaw_(method, pathName, body = null, extraOptions = {}) 
 }
 
 function buildApiUrl_(pathName) {
-  const separator = pathName.includes("?") ? "&" : "?";
-  return API_BASE + pathName + (API_TOKEN ? separator + "api_token=" + encodeURIComponent(API_TOKEN) : "");
+  return API_BASE + pathName;
 }
 
 function tryParseJson_(text) {

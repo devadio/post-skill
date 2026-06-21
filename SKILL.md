@@ -1,552 +1,156 @@
 ---
 name: post-api
-description: "Schedule and publish content to social networks including Facebook Page, Instagram, LinkedIn, TikTok, YouTube, Pinterest, and Telegram via the Devad.io POST API. Supports text, images, carousels, and videos. Use this skill to post content programmatically without the social media dashboard."
+description: "Use the native Devad CORE POST Agent Kit to validate, schedule, and publish social content through https://devad.io/api/v1/post. Defaults to dry-run and requires workspace API keys, POST plan gates, provider media rules, and explicit live-write confirmation."
 ---
 
-# POST API (post.devad.io)
+# CORE POST Agent Kit
 
-Publish content to 8+ social media platforms via a single REST API call. The API is hosted at `post.devad.io` and is a SaaS that wraps platform-specific publishing logic.
+Use this skill when an agent or automation needs to prepare POST content, validate provider rules, run dry tests, or publish through Devad CORE.
 
-## Human-First Summary
+Current API authority:
 
-Post-Skill helps a human or an AI agent schedule and publish social media content with less hassle.
-
-The main idea is simple:
-
-- you do not need to rebuild posting logic from scratch
-- you do not need to fight every platform API manually
-- you can use ready-made scripts, tested payloads, and Google Sheet workflows
-- the AI agent can spend fewer tokens because the process is already structured
-
-This makes it easier to go from:
-
-- content idea
-- media asset
-- target channel
-
-to:
-
-- published post
-
-with less friction and fewer failures.
-
-## Top Differentiators
-
-### 1. Low-cost and practical
-
-This is designed to be one of the cheapest practical ways to automate social media posting across multiple channels.
-
-### 2. Product-ready for AI agents
-
-The scripts and examples are open, clean, and ready to use. A lightweight AI agent can understand them much faster than a large undocumented API workflow.
-
-### 3. Powerful Google Sheet workflow
-
-The Google Sheet setup is useful for both humans and AI agents:
-
-- humans can plan and manage content in a familiar spreadsheet
-- AI agents can read rows, update fields, and use the sheet as a lightweight remote workflow
-
-## Safe Formats and Post Types
-
-The safest supported content types in this project are:
-
-- text posts
-- single image posts
-- carousel posts
-- video posts
-
-When using direct media links, prefer:
-
-- images: `jpg`, `jpeg`, `png`, `webp`
-- video: `mp4`
-
-When using the Google Sheet workflow, the safest `Creative type` values are:
-
-- `image_manual`
-- `video_manual`
-- `carousel_manual`
-
-Safer input patterns:
-
-- single image: one direct public image URL
-- video: one stable public `mp4` URL
-- carousel: one Google Drive folder link containing the intended carousel images
-
-Avoid:
-
-- login-only links
-- firewall-protected media
-- anti-bot pages
-- preview pages that return HTML instead of real media
-
-## Why This Skill Exists
-
-This skill is here so the AI agent does not have to reinvent the whole social publishing system.
-
-POST.devad.io, this skill, the test runners, and the Google Sheet automation already handle the heavy lifting:
-
-- token-based API access
-- platform payload shaping
-- media upload flow
-- queueing and publishing
-- platform-specific quirks
-- safer dry-run testing
-- fallback spreadsheet automation
-
-That means even a cheap or lightweight AI agent can stay focused on the valuable work:
-
-- generate the content
-- generate or select the media
-- decide which channels to publish to
-- choose whether to post now or schedule later
-
-The agent should avoid building custom publishing logic from scratch unless the user explicitly asks for that.
-
-## Recommended Agent Strategy
-
-Use this order:
-
-1. Ask the user for their POST.devad.io token and connected account IDs, or call `GET /accounts` if the token is already available.
-2. Build a simple payload using the patterns in this skill or the included test runners.
-3. Run a dry validation first when possible.
-4. Send the live `POST /posts` request only after the payload is clean.
-5. If the API route keeps failing or the environment is limited, suggest the Google Sheet automation fallback instead of forcing the user through repeated debugging.
-
-For many users, the best result is:
-
-- the AI agent creates the caption and media
-- POST.devad.io handles the publishing machinery
-- the user avoids platform-by-platform setup headaches
-
-## Best Fallback: Google Sheet Automation
-
-If direct API use is too technical for the user, or the current environment is weak, tell them to use the Google Sheet workflow.
-
-It only needs a one-time setup, then the AI agent can focus on media and content creation while the sheet handles publishing.
-
-### 3-Step Setup
-
-1. Make a copy of the ready-to-use sheet:
-   [Google Sheet Copy](https://docs.google.com/spreadsheets/d/1oyiLNgJnEFzdpQBjnNcbbArseX_FZvjrdjH24mnGuME/copy)
-2. In the sheet, open the `POST.devad.io` menu, enable automation, and paste the token and integration IDs from [post.devad.io](https://post.devad.io/app/profile/settings).
-3. Let the AI agent fill only the content columns, then click `Save & Run Sync` or leave automation enabled.
-
-### What the Agent Should Tell the User
-
-After setup, the user only needs to keep the sheet structure intact and let the agent fill the content rows.
-
-The agent should explain that it only needs to write:
-
-- promo link
-- title
-- caption
-- media URL
-- media type
-- action/status row
-
-Everything else is already handled by the Apps Script logic.
-
-## Documentation
-- Platform: `https://post.devad.io`
-- Base API URL: `https://post.devad.io/api/public/v1`
-
----
-
-## Setup
-
-1. Log in to [post.devad.io](https://post.devad.io)
-2. Connect your social accounts in the Social Accounts manager.
-3. Go to **Account Settings → POST API** to generate an **API Token**.
-4. In the same POST API settings page, copy the **Integration IDs** for the accounts you want to post to (one unique ID per social account).
-
----
-
-## Authentication
-
-All requests require a Bearer token header:
-
-```
-Authorization: Bearer YOUR_API_TOKEN
+```text
+https://devad.io/api/v1/post
 ```
 
-> **Note:** Some server environments (e.g. Nginx FastCGI / Webuzo) strip the `Authorization` header. Use the fallback `X-Api-Token: YOUR_API_TOKEN` header, or the **Query Parameter Bypass** (recommended for large media uploads): `?api_token=YOUR_API_TOKEN`.
+Do not use the old public StackPosts-style API as the implementation authority:
 
----
-
-## Core Workflow
-
-```
-1. Get Integration IDs → GET /accounts
-2. Build payload with integration ID + content + media URLs
-3. POST /posts → API returns 202 Accepted
-4. Job queued → Platform publishes within 1-3 minutes
+```text
+https://post.devad.io/api/public/v1
 ```
 
----
+That legacy API and its old payload examples are reference material only.
 
-## Endpoints
+## Non-Negotiable Rules
 
-### GET /accounts
-Returns all connected social accounts with their Integration IDs.
+1. Laravel CORE `/api/v1/post/*` is the only write authority.
+2. Use workspace API keys only: `Authorization: Bearer wsk_...`.
+3. Read API keys from environment variables such as `DEVAD_POST_API_KEY`, `DEVAD_POST_TOKEN`, or `DEVAD_WORKSPACE_API_KEY`.
+4. Never pass tokens as CLI args, MCP args, query strings, screenshots, logs, or docs.
+5. Dry-run is the default for CLI, scripts, MCP, n8n, and Sheets.
+6. Live writes require `DEVAD_POST_ALLOW_WRITES=1`, explicit confirmation, API key scope, POST plan entitlement, idempotency, quota, and provider-rule checks.
+7. Treat CORE `block_states` as the source of truth. Do not parse human messages when structured states exist.
+8. Do not claim a provider `PASS` unless CORE succeeds and the external provider page/permalink shows the exact unique marker.
+9. External model or agent advice is not proof; verify it against CORE source, tests, and official provider docs.
 
-```bash
-curl -H "Authorization: Bearer TOKEN" \
-     https://post.devad.io/api/public/v1/accounts
-```
+## Provider-First Thinking Rule
 
-### POST /upload (Optional, Required for TikTok)
-Upload an image or video to the internal Devad.io storage.
-> **When to use this:**
-> 1. **TikTok**: TikTok rejects external URLs (like Wikipedia or Imgur) with `url_ownership_unverified`. You **MUST** upload your media file here first. Once uploaded to `media.devad.io`, TikTok accepts **any aspect ratio** (9:16, horizontal, square) and any duration, just like the manual dashboard.
-> 2. **LinkedIn**: LinkedIn's downloader gets a `403 Forbidden` from heavily protected sites like Wikipedia. Uploading the image here first bypasses that protection.
+For every request, validate in this order:
 
-**Headers:**
-```
-Authorization: Bearer YOUR_TOKEN
-# OR Query Parameter (Fixes Nginx header-stripping for >10MB files)
-POST https://post.devad.io/api/public/v1/upload?api_token=YOUR_TOKEN
-```
+1. Identify selected provider, channel, and variant.
+2. Check the provider capability allowlist.
+3. Check media MIME, count, ratio, size, and duration for that exact variant.
+4. Build only the provider-specific payload documented by the official API and implemented in CORE.
+5. Reject unsupported combinations early with a clear blocking reason.
+6. Never coerce unknown media into `image_url` or `video_url`.
 
-**Request Body (`multipart/form-data`):**
-| Field | Type | Description |
-|---|---|---|
-| `file` | file | The video or image file (max 50MB for images, 500MB for videos). Allowed: jpeg, png, webp, mp4 |
+Bad examples to reject:
 
-**Response (201 Created):**
-```json
-{
-  "url": "https://media.devad.io/15d7e24abb1344e89d4162b733ca3eb9:post.devad.io/files/image-1_hgAdiw.png",
-  "mime_type": "image/png",
-  "size": 102400,
-  "name": "image.png"
-}
-```
+- PDF to Instagram `image_url`.
+- Image to Instagram Reel or Facebook Reel video path.
+- First comment on Instagram Story unless the official API path is proven and implemented.
+- LinkedIn PDF through image/video paths; documents require a dedicated Documents API slice.
+- YouTube image/PDF post; CORE YouTube publishing is video upload only.
 
-### POST /posts
-Create and publish/schedule posts.
+## Current Provider Baseline
 
-**Headers:**
-```
-Authorization: Bearer YOUR_TOKEN
-Content-Type: application/json
-Accept: application/json
-```
-
-**Request Body:**
-```json
-{
-  "type": "now",
-  "posts": [
-    {
-      "integration": { "id": "INTEGRATION_ID" },
-      "value": [
-        {
-          "content": "Your caption #hashtags",
-          "image": ["https://example.com/image.jpg"],
-          "video": []
-        }
-      ],
-      "settings": {}
-    }
-  ]
-}
-```
-
-**Key fields:**
-
-| Field | Type | Description |
-|---|---|---|
-| `type` | string | `"now"` (post instantly) or `"schedule"` (requires `date`) |
-| `date` | string | ISO-8601 datetime, e.g. `"2026-12-31T23:59:00Z"` (required if `type=schedule`) |
-| `posts[].integration.id` | string | 10-char Integration ID from dashboard |
-| `posts[].value[].content` | string | Caption/text (max 5000 chars) |
-| `posts[].value[].image` | array | Array of public image URLs (max 10 for IG carousel) |
-| `posts[].value[].video` | array | Array of public video URLs (usually 1) |
-| `posts[].settings` | object | Platform-specific overrides (see per-platform notes) |
-
-You can post to **up to 10 accounts in one request** by adding multiple objects to the `posts` array.
-
----
-
-## Successful Response (202 Accepted)
-
-```json
-{
-  "success": true,
-  "data": {
-    "posts": [
-      {
-        "status": "queued",
-        "integration": { "id": "oSxbmYoPoP", "provider": "facebook", "category": "page" },
-        "scheduled_at": "2026-03-26T08:00:00Z",
-        "post_type": "carousel",
-        "media_count": 3
-      }
-    ]
-  }
-}
-```
-
-> Publishing is **asynchronous**. After the 202 response, the platform post appears within 1–3 minutes depending on media type and platform queuing.
-
----
-
-## Response Codes
-
-| Code | Meaning |
+| Provider | Current stance |
 |---|---|
-| `202` | Accepted — job queued successfully |
-| `401` | Unauthorized — token missing, expired, or invalid |
-| `404` | Account ID not found or disconnected |
-| `422` | Validation error — malformed JSON or missing required fields |
+| Tumblr Blog | Text, link, photo, video; fresh external proof still required. |
+| LinkedIn Page | Text and single image only; profile delayed; video, carousel, and document are future slices. |
+| Telegram Channel/Group | Text, photo, video, document; manual token plus verification-text flow. |
+| Facebook Page | Feed text/link, image feed, video feed, reel, story image/video, first comment where supported. |
+| Instagram Business | Image feed, video/reel shared to feed, story image/video; story comments and carousel remain unsupported until proven. |
+| YouTube Channel | Video upload only. |
+| Pinterest Board | Image Pin; fresh proof needs a unique marker. |
+| Google Business Profile | STANDARD local post only until event/offer support is proven in CORE. |
+| TikTok Profile | Sandbox/private video partial; public PASS waits for app approval or reviewer-visible public posting. |
+| X, Reddit, OK, Threads, Instagram Unofficial | Code-only unless owner explicitly re-approves live testing. |
 
----
+## Recommended Agent Workflow
 
-## Verified Payload Examples (All tested ✅)
+1. Load account/channel choices from CORE with a dry-run or accounts call.
+2. Normalize the user row or payload into native CORE shape.
+3. Validate provider/channel/variant and media rules before building payload.
+4. Run dry-run first and inspect `warnings`, `blocking_reasons`, and `block_states`.
+5. For live writes, require:
+   - `DEVAD_POST_ALLOW_WRITES=1`
+   - explicit `--live --confirm` or MCP `confirm: true`
+   - a scoped `wsk_...` key from environment
+   - a unique marker in the post text
+6. After publish, wait the provider-appropriate interval and verify the exact marker externally.
 
-### Facebook — Text Only
-```json
-{
-  "type": "now",
-  "posts": [{
-    "integration": { "id": "FACEBOOK_INTEGRATION_ID" },
-    "value": [{ "content": "Hello from the POST API! #test" }]
-  }]
-}
-```
+## Environment
 
-### Facebook — Image
-```json
-{
-  "type": "now",
-  "posts": [{
-    "integration": { "id": "FACEBOOK_INTEGRATION_ID" },
-    "value": [{ "content": "Check this out!", "image": ["https://example.com/photo.jpg"] }]
-  }]
-}
-```
-
-### Instagram — Carousel (multiple images)
-```json
-{
-  "type": "now",
-  "posts": [{
-    "integration": { "id": "INSTAGRAM_INTEGRATION_ID" },
-    "value": [{
-      "content": "Swipe to see more! 👉",
-      "image": [
-        "https://example.com/slide1.jpg",
-        "https://example.com/slide2.jpg",
-        "https://example.com/slide3.jpg"
-      ]
-    }]
-  }]
-}
-```
-
-### LinkedIn — Multiple Images (Grid)
-> **Important:** The API currently posts arrays of images to LinkedIn as a **multi-image grid**, not a swipeable PDF carousel. Natively, LinkedIn requires a PDF document to create a true swipeable carousel, which is not automatically generated by this API from image arrays.
-```json
-{
-  "type": "now",
-  "posts": [{
-    "integration": { "id": "LINKEDIN_INTEGRATION_ID" },
-    "value": [{
-      "content": "Check out these photos! 👉",
-      "image": [
-        "https://example.com/slide1.jpg",
-        "https://example.com/slide2.jpg"
-      ]
-    }]
-  }]
-}
-```
-
-### Facebook / LinkedIn / YouTube — Video
-```json
-{
-  "type": "now",
-  "posts": [{
-    "integration": { "id": "FACEBOOK_INTEGRATION_ID" },
-    "value": [{ "content": "Our new video! 🎬", "video": ["https://example.com/video.mp4"] }]
-  }]
-}
-```
-> **Important:** Video URLs are passed directly to the platform (not proxied through internal storage). Use a stable, publicly accessible HTTPS video URL.
-
-### Instagram — Video / Reels
-```json
-{
-  "type": "now",
-  "posts": [{
-    "integration": { "id": "INSTAGRAM_INTEGRATION_ID" },
-    "value": [{ "content": "Behind the scenes! 🎬", "video": ["https://example.com/reel.mp4"] }],
-    "settings": {
-      "post_type": "video",
-      "ig_type": "reels"
-    }
-  }]
-}
-```
-> **Recommended:** For Instagram videos, use `"post_type": "video"` with `"ig_type": "reels"` instead of the older `post_type=reel` shape. This matches the safer payload normalization used by the latest test runners and Google Sheet script.
-
-### TikTok — Video (with privacy & music consent)
-```json
-{
-  "type": "now",
-  "posts": [{
-    "integration": { "id": "TIKTOK_INTEGRATION_ID" },
-    "value": [{ "content": "Check this out! #fyp", "video": ["https://example.com/video.mp4"] }],
-    "settings": {
-      "privacy": "PUBLIC_TO_EVERYONE",
-      "duet": false,
-      "stitch": false,
-      "comment": true,
-      "disable_download": false,
-      "music_usage_confirmed": true,
-      "autoAddMusic": "no"
-    }
-  }]
-}
-```
-> **TikTok privacy values:** `PUBLIC_TO_EVERYONE` | `MUTUAL_CAN_VIEW` | `FOLLOWER_OF_CREATOR` | `SELF_ONLY`
-> Use `SELF_ONLY` during testing, switch to `PUBLIC_TO_EVERYONE` after TikTok app approval.
-> **Note:** The API automatically forces music consent (`tt_consent=1`) to prevent dashboard validation errors. You can pass `"music_usage_confirmed": true` or `"autoAddMusic": "no"` to match Postiz payload standards.
-
-### YouTube — Video (with title and visibility)
-```json
-{
-  "type": "now",
-  "posts": [{
-    "integration": { "id": "YOUTUBE_INTEGRATION_ID" },
-    "value": [{ "content": "My video description #youtube", "video": ["https://example.com/video.mp4"] }],
-    "settings": {
-      "title": "My Video Title",
-      "type": "public"
-    }
-  }]
-}
-```
-> **YouTube visibility:** `"public"` | `"unlisted"` | `"private"`. Use `"unlisted"` for testing.
-
-### Pinterest — Image Pin (with board and title)
-```json
-{
-  "type": "now",
-  "posts": [{
-    "integration": { "id": "PINTEREST_INTEGRATION_ID" },
-    "value": [{ "content": "Amazing recipe! 🍕", "image": ["https://example.com/pin.jpg"] }],
-    "settings": {
-      "title": "My Pin Title",
-      "board_id": "YOUR_PINTEREST_BOARD_ID",
-      "link": "https://example.com"
-    }
-  }]
-}
-```
-
-### Telegram — Text / Image / Video / Carousel
-All work with the same structure. Telegram natively supports all types:
-```json
-{
-  "type": "now",
-  "posts": [{
-    "integration": { "id": "TELEGRAM_INTEGRATION_ID" },
-    "value": [{ "content": "📢 Update from the POST API!", "image": ["https://example.com/img.jpg"] }]
-  }]
-}
-```
-
-### Cross-Platform Blast (multiple accounts in one call)
-```json
-{
-  "type": "now",
-  "posts": [
-    {
-      "integration": { "id": "FACEBOOK_INTEGRATION_ID" },
-      "value": [{ "content": "New post!", "image": ["https://example.com/promo.jpg"] }]
-    },
-    {
-      "integration": { "id": "INSTAGRAM_INTEGRATION_ID" },
-      "value": [{ "content": "New post!", "image": ["https://example.com/promo.jpg"] }]
-    },
-    {
-      "integration": { "id": "LINKEDIN_INTEGRATION_ID" },
-      "value": [{ "content": "We are excited to share our latest update." }]
-    }
-  ]
-}
-```
-
----
-
-## Platform-Specific Notes
-
-| Platform | Supported Types | Special Settings |
-|---|---|---|
-| Facebook Page | text, image, carousel, video | None required (Groups not supported) |
-| Instagram | image, carousel, video | Use `settings.post_type: "video"` with `settings.ig_type: "reels"` for videos |
-| LinkedIn Page/Profile | text, image, video | None required |
-| TikTok | video, image | `settings.privacy` required |
-| YouTube | video (unlisted/public/private) | `settings.title` and `settings.type` recommended |
-| Pinterest | image, video | `settings.title` and `settings.board_id` recommended |
-| Telegram | text, image, carousel, video | No extra settings needed |
-| Tumblr | text, image, video | Connect account first via dashboard |
-| Twitter/X | text, image, carousel, video | Connect account first via dashboard |
-
----
-
-## Scheduling a Future Post
-
-```json
-{
-  "type": "schedule",
-  "date": "2026-12-31T09:00:00Z",
-  "posts": [{
-    "integration": { "id": "FACEBOOK_INTEGRATION_ID" },
-    "value": [{ "content": "Happy New Year! 🎉" }]
-  }]
-}
-```
-
----
-
-## Test Runner
-
-Ready-to-use test runners are included in:
-
-- `scripts/test_runner.js`
-- `scripts/test_runner.py`
-
-These runners are not just examples. They are the safest default starting point for agents and developers because they already include lessons from the real Google Sheet publishing project:
-
-- no hardcoded secrets in source
-- dry-run validation before live publish
-- safer Instagram video payload defaults
-- upload helper support
-- better auth and HTML-login failure detection
-- clearer validation errors for missing IDs and invalid settings
+Use these environment variables:
 
 ```bash
-# Check all connected accounts (run first!)
-node scripts/test_runner.js accounts
-python scripts/test_runner.py accounts
-
-# Test specific platform/type combinations
-node scripts/test_runner.js facebook_image --dry-run --print-payload
-python scripts/test_runner.py instagram_video --dry-run --print-payload
-node scripts/test_runner.js tiktok_video
-python scripts/test_runner.py youtube_video
+DEVAD_POST_API_BASE=https://devad.io/api/v1/post
+DEVAD_POST_API_KEY=wsk_xxx
+DEVAD_POST_ALLOW_WRITES=0
 ```
 
-### When an Agent Should Use the Runners
+Compatibility aliases may be accepted by local scripts:
 
-Use the runners when:
+```bash
+DEVAD_POST_TOKEN
+DEVAD_WORKSPACE_API_KEY
+POST_API_BASE
+POST_API_TOKEN
+```
 
-- the user wants a quick live test
-- the user is unsure about payload shape
-- the environment supports Node.js or Python
-- you want a safer validation path before posting
+The aliases are for migration convenience only. New docs and automation should prefer the `DEVAD_POST_*` names.
 
-If the environment is weak, the token is unavailable, or repeated upload/payload problems keep happening, recommend the Google Sheet automation path instead of making the user debug low-level API issues.
+## Scripts
+
+Node:
+
+```bash
+node scripts/test_runner.js list-tests
+node scripts/test_runner.js facebook_image --print-payload
+node scripts/test_runner.js facebook_image --live --confirm
+```
+
+Python:
+
+```bash
+python scripts/test_runner.py list-tests
+python scripts/test_runner.py facebook_image --print-payload
+python scripts/test_runner.py facebook_image --live --confirm
+```
+
+Without `--live --confirm`, scripts are dry-run only and do not call the POST API.
+
+## Google Sheets And n8n
+
+The Sheets and n8n examples are automation clients, not provider authorities.
+
+They must:
+
+- call CORE `/api/v1/post/*`
+- use env/config-stored `wsk_...` keys, never query tokens
+- process one row or one small batch at a time by default
+- send stable idempotency/correlation IDs
+- preserve `block_states`, warnings, and blocking reasons
+- avoid live writes unless the user explicitly enables live mode
+
+## Legacy Reference Boundary
+
+The old `post.devad.io` payload shape, Google Sheet `PostService.gs`, and n8n workflow are useful compatibility references. They should be normalized into CORE requests and tested through dry-runs. They must not reintroduce:
+
+- `X-Api-Token` auth
+- `?api_token=` query auth
+- live publishing by default
+- direct provider API calls from scripts, n8n, Sheets, or MCP
+- unsupported provider/media claims
+
+## Proof Standard
+
+A provider/type is not complete until there is evidence for:
+
+1. deployed CORE SHA and health check,
+2. dry-run/API/provider-rule validation,
+3. live CORE publish success when approved,
+4. external provider visibility with the exact unique marker.
+
+Anything less is `PARTIAL`, `API_NOT_SUPPORTED`, `WAITING_PROVIDER_OR_OWNER_GATE`, or `BLOCKED_WITH_EVIDENCE`, not `PASS`.
