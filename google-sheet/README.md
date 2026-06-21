@@ -37,11 +37,12 @@ Before using the Sheet workflow with CORE:
 5. Add a live-write gate requiring explicit user confirmation.
 6. Generate stable idempotency/correlation IDs per row.
 7. Use Agent Kit `provider-rules` / MCP `post_provider_rules_get` to inspect current provider variants when available.
-8. Validate provider, channel, variant, media MIME/count/ratio/duration before payload build.
-9. If you add embedded CORE preflight maps, keep them aligned with [../TEMPLATE_PREFLIGHT_DRIFT.md](../TEMPLATE_PREFLIGHT_DRIFT.md).
-10. Write CORE `block_states`, warnings, and blocking reasons back to the sheet.
-11. Process one row or one small batch at a time by default.
-12. Verify exact external provider markers before marking a row as passed.
+8. Use Agent Kit `provider-matrix` / MCP `post_provider_matrix_run` before provider chunks when available.
+9. Validate provider, channel, variant, media MIME/count/ratio/duration before payload build.
+10. If you add embedded CORE preflight maps, keep them aligned with [../TEMPLATE_PREFLIGHT_DRIFT.md](../TEMPLATE_PREFLIGHT_DRIFT.md).
+11. Write CORE `block_states`, warnings, and blocking reasons back to the sheet.
+12. Process one row or one small batch at a time by default.
+13. Verify exact external provider markers before marking a row as passed.
 
 ## Safe Use Today
 

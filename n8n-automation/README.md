@@ -35,10 +35,11 @@ Before using this workflow with CORE:
 6. Send one row or one small batch per run by default.
 7. Add an idempotency or correlation key derived from the sheet row id and campaign id.
 8. Use Agent Kit `provider-rules` / MCP `post_provider_rules_get` to inspect current provider variants when available.
-9. Validate provider, channel, variant, media MIME/count/ratio/duration before building payload.
-10. If you add embedded CORE preflight maps, keep them aligned with [../TEMPLATE_PREFLIGHT_DRIFT.md](../TEMPLATE_PREFLIGHT_DRIFT.md).
-11. Preserve `block_states`, warnings, and blocking reasons in the Sheet log column.
-12. Do not claim provider PASS from n8n success alone; verify the exact marker on the external provider URL.
+9. Use Agent Kit `provider-matrix` / MCP `post_provider_matrix_run` before provider chunks when available.
+10. Validate provider, channel, variant, media MIME/count/ratio/duration before building payload.
+11. If you add embedded CORE preflight maps, keep them aligned with [../TEMPLATE_PREFLIGHT_DRIFT.md](../TEMPLATE_PREFLIGHT_DRIFT.md).
+12. Preserve `block_states`, warnings, and blocking reasons in the Sheet log column.
+13. Do not claim provider PASS from n8n success alone; verify the exact marker on the external provider URL.
 
 ## Provider Rule Reminder
 

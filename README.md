@@ -77,14 +77,17 @@ When the CORE Agent Kit package is available, run one of these before live write
 
 ```bash
 devad-post provider-rules --provider facebook_page
+devad-post provider-matrix --provider youtube_channel
 devad-post validate --input payload.json
 devad-post posts:create --dry-run --input payload.json
 ```
 
 Use `provider-rules` to inspect the current local provider variant/media matrix before constructing Sheet, n8n, or agent payloads.
+Use `provider-matrix` to dry-sweep implemented and intentionally unsupported variants and catch fixture-vs-validator mismatches before provider-specific chunks.
 
 MCP agents should call `post_dry_run_validate` before `post_posts_create`. The current Agent Kit also runs validation inside `posts:create` / `post_posts_create`: a `BLOCKED` provider media-rule result returns structured `ok:false` output and stops before writes; warning-only payloads continue with validation evidence.
 MCP agents can call `post_provider_rules_get` first to inspect supported variants without API keys, live-write permission, or provider calls.
+MCP agents can call `post_provider_matrix_run` for a deterministic provider media matrix without API keys, live-write permission, or provider calls.
 
 ## Main Areas
 
@@ -95,6 +98,7 @@ MCP agents can call `post_provider_rules_get` first to inspect supported variant
 - `google-sheet/`: Google Sheets publishing workflow reference.
 - `google-sheet/apps-script/`: Apps Script bundle from the old sheet workflow.
 - `n8n-automation/`: n8n workflow reference for row-based automation.
+- `PROVIDER_MATRIX.md`: CORE Agent Kit provider matrix command/tool contract.
 - `TEMPLATE_PREFLIGHT_DRIFT.md`: CORE command to keep Sheet/n8n embedded preflight maps aligned with Agent Kit provider rules.
 
 ## Provider Baseline
