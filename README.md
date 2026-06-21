@@ -81,6 +81,7 @@ devad-post provider-rules:compare --file saved-automation-response.json
 devad-post provider-proof:queue
 devad-post provider-proof:ledger --exclude-delayed --exclude-code-only
 devad-post provider-proof:ledger:update --exclude-delayed --exclude-code-only --file provider-proof-updates.json
+devad-post provider-proof:progress --exclude-delayed --exclude-code-only --file provider-proof-updates.json
 devad-post provider-proof:chunk --provider pinterest_board
 devad-post provider-proof:packet --provider pinterest_board
 devad-post provider-matrix --provider youtube_channel
@@ -93,6 +94,7 @@ Use `provider-rules:compare` to compare local Agent Kit rules with a saved or li
 Use `provider-proof:queue` before multi-provider work to get the ready/delayed/code-only provider order and avoid jumping to unapproved channels. Keep its `result_rows` as the proof ledger scaffold.
 Use `provider-proof:ledger` when a handoff or agent run needs the required proof table rendered as deterministic Markdown from local result rows.
 Use `provider-proof:ledger:update` to merge proof outcomes into local rows and render an updated table. A `PASS` update must include `core_status`, `external_url`, and the exact unique `marker`; ambiguous rows such as Telegram channel/group must include `channel`.
+Use `provider-proof:progress` after queue or ledger updates to classify each provider as ready, waiting, investigate, closed, delayed, or code-only and select the next safe provider chunk.
 Use `provider-proof:chunk` before a provider chunk to compose the secret-safe packet, local matrix, variant statuses, safe commands, proof steps, result-table columns, and initial result rows.
 Use `provider-proof:packet` before a provider chunk to build a secret-safe variant/media/acceptance-gate packet from local CORE rules.
 Use `provider-matrix` to dry-sweep implemented and intentionally unsupported variants and catch fixture-vs-validator mismatches before provider-specific chunks.
@@ -103,6 +105,7 @@ MCP agents can call `post_provider_rules_compare` with a `provider_rules` object
 MCP agents can call `post_provider_proof_queue_plan` to get the deterministic provider-by-provider queue and initial result rows without API keys, provider calls, browser data, or credential reads.
 MCP agents can call `post_provider_proof_ledger_render` to render the required Markdown proof table without API keys, provider calls, browser data, credential reads, or live writes.
 MCP agents can call `post_provider_proof_ledger_update` to merge proof outcomes into local rows without API keys, provider calls, browser data, credential reads, live writes, or persistence.
+MCP agents can call `post_provider_proof_progress_report` to summarize queue plus optional ledger updates and pick the next safe provider chunk without API keys, provider calls, browser data, credential reads, live writes, or persistence.
 MCP agents can call `post_provider_proof_chunk_plan` to prepare the full provider chunk execution plan and result rows without API keys, provider calls, browser data, or credential reads.
 MCP agents can call `post_provider_proof_packet_build` to prepare a provider chunk packet without API keys, provider calls, or credential reads.
 MCP agents can call `post_provider_matrix_run` for a deterministic provider media matrix without API keys, live-write permission, or provider calls.

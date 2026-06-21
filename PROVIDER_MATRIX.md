@@ -12,6 +12,7 @@ pnpm --filter @devad/post-agent dry:provider-matrix -- --provider facebook_page
 pnpm --filter @devad/post-agent dry:provider-proof:queue
 pnpm --filter @devad/post-agent dry:provider-proof:ledger -- --exclude-delayed --exclude-code-only
 pnpm --filter @devad/post-agent dry:provider-proof:ledger:update -- --exclude-delayed --exclude-code-only --file provider-proof-updates.json
+pnpm --filter @devad/post-agent dry:provider-proof:progress -- --exclude-delayed --exclude-code-only --file provider-proof-updates.json
 pnpm --filter @devad/post-agent dry:provider-proof:chunk -- --provider pinterest_board
 pnpm --filter @devad/post-agent dry:provider-proof:packet -- --provider pinterest_board
 pnpm --filter @devad/post-agent dry:provider-matrix -- --provider youtube_channel --include-payloads
@@ -25,6 +26,7 @@ node packages\devad-post-agent\dist\cli.js provider-matrix --dry-run --provider 
 node packages\devad-post-agent\dist\cli.js provider-proof:queue --dry-run
 node packages\devad-post-agent\dist\cli.js provider-proof:ledger --dry-run --exclude-delayed --exclude-code-only
 node packages\devad-post-agent\dist\cli.js provider-proof:ledger:update --dry-run --exclude-delayed --exclude-code-only --file provider-proof-updates.json
+node packages\devad-post-agent\dist\cli.js provider-proof:progress --dry-run --exclude-delayed --exclude-code-only --file provider-proof-updates.json
 node packages\devad-post-agent\dist\cli.js provider-proof:chunk --dry-run --provider pinterest_board
 node packages\devad-post-agent\dist\cli.js provider-proof:packet --dry-run --provider pinterest_board
 node packages\devad-post-agent\dist\cli.js provider-rules:compare --dry-run --file saved-automation-response.json
@@ -37,6 +39,7 @@ post_provider_matrix_run
 post_provider_proof_queue_plan
 post_provider_proof_ledger_render
 post_provider_proof_ledger_update
+post_provider_proof_progress_report
 post_provider_proof_chunk_plan
 post_provider_proof_packet_build
 post_provider_rules_compare
@@ -48,6 +51,7 @@ post_provider_rules_compare
 - `provider-proof:queue` can return the ready/delayed/code-only provider order and initial result rows without provider calls.
 - `provider-proof:ledger` can render the required Markdown proof table from local result rows without provider calls.
 - `provider-proof:ledger:update` can merge result updates into local rows while rejecting weak `PASS` evidence and ambiguous channel matches.
+- `provider-proof:progress` can classify providers as ready, waiting, investigate, closed, delayed, or code-only and select the next safe chunk.
 - `provider-proof:chunk` can compose a secret-safe provider chunk execution plan from the packet, matrix, gates, commands, result-table columns, and initial result rows.
 - `provider-proof:packet` can build a secret-safe provider chunk packet from local CORE provider rules before live proof.
 - Implemented variants return expected `PASS` rows.
