@@ -1,30 +1,30 @@
 {
-  "_comment": "CORE POST proof template: Linkedin Image Image",
-  "_provider": "linkedin",
-  "_channel": "linkedin_page",
-  "_variant": "image",
+  "_comment": "CORE POST proof template: Tumblr Photo Image",
+  "_provider": "tumblr",
+  "_channel": "tumblr_blog",
+  "_variant": "photo",
   "_media_kind": "image",
-  "_requires_public_url": false,
+  "_requires_public_url": true,
   "_marker_placeholder": "{{MARKER}}",
   "_instructions": "Replace ACCOUNT_ID and MEDIA_ID_OR_PUBLIC_URL placeholders only in a private copy.",
   "posts": [
     {
       "integration": {
-        "id": "LINKEDIN_PAGE_INTEGRATION_ID",
-        "provider": "linkedin"
+        "id": "TUMBLR_BLOG_INTEGRATION_ID",
+        "provider": "tumblr"
       },
-      "content": "Devad POST API proof - linkedin image - {{MARKER}}",
+      "content": "Devad POST API proof - tumblr photo - {{MARKER}}",
       "status": "queued",
       "media_ids": [
         "MEDIA_ID"
       ],
       "settings": {
-        "channel": "linkedin_page",
+        "channel": "tumblr_blog",
         "media_type": "image",
         "mime_type": "image/jpeg",
         "post_type": "image",
-        "provider": "linkedin",
-        "variant": "image",
+        "provider": "tumblr",
+        "variant": "photo",
         "marker": "{{MARKER}}"
       }
     }

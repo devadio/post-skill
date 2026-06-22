@@ -1,9 +1,9 @@
 {
-  "_comment": "CORE POST proof template: Linkedin Image Image",
+  "_comment": "CORE POST proof template: Linkedin Video Video",
   "_provider": "linkedin",
   "_channel": "linkedin_page",
-  "_variant": "image",
-  "_media_kind": "image",
+  "_variant": "video",
+  "_media_kind": "video",
   "_requires_public_url": false,
   "_marker_placeholder": "{{MARKER}}",
   "_instructions": "Replace ACCOUNT_ID and MEDIA_ID_OR_PUBLIC_URL placeholders only in a private copy.",
@@ -13,18 +13,18 @@
         "id": "LINKEDIN_PAGE_INTEGRATION_ID",
         "provider": "linkedin"
       },
-      "content": "Devad POST API proof - linkedin image - {{MARKER}}",
+      "content": "Devad POST API proof - linkedin video - {{MARKER}}",
       "status": "queued",
       "media_ids": [
         "MEDIA_ID"
       ],
       "settings": {
         "channel": "linkedin_page",
-        "media_type": "image",
-        "mime_type": "image/jpeg",
-        "post_type": "image",
+        "media_type": "video",
+        "mime_type": "video/mp4",
+        "post_type": "video",
         "provider": "linkedin",
-        "variant": "image",
+        "variant": "video",
         "marker": "{{MARKER}}"
       }
     }

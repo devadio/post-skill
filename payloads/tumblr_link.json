@@ -1,0 +1,29 @@
+{
+  "_comment": "CORE POST proof template: Tumblr Link None",
+  "_provider": "tumblr",
+  "_channel": "tumblr_blog",
+  "_variant": "link",
+  "_media_kind": "none",
+  "_requires_public_url": false,
+  "_marker_placeholder": "{{MARKER}}",
+  "_instructions": "Replace ACCOUNT_ID and MEDIA_ID_OR_PUBLIC_URL placeholders only in a private copy.",
+  "posts": [
+    {
+      "integration": {
+        "id": "TUMBLR_BLOG_INTEGRATION_ID",
+        "provider": "tumblr"
+      },
+      "content": "Devad POST API proof - tumblr link - {{MARKER}}",
+      "status": "queued",
+      "media_ids": [],
+      "settings": {
+        "channel": "tumblr_blog",
+        "media_type": "none",
+        "post_type": "link",
+        "provider": "tumblr",
+        "variant": "link",
+        "marker": "{{MARKER}}"
+      }
+    }
+  ]
+}

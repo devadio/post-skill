@@ -1,0 +1,32 @@
+{
+  "_comment": "CORE POST proof template: Telegram Document Document",
+  "_provider": "telegram",
+  "_channel": "telegram_group",
+  "_variant": "document",
+  "_media_kind": "document",
+  "_requires_public_url": true,
+  "_marker_placeholder": "{{MARKER}}",
+  "_instructions": "Replace ACCOUNT_ID and MEDIA_ID_OR_PUBLIC_URL placeholders only in a private copy.",
+  "posts": [
+    {
+      "integration": {
+        "id": "TELEGRAM_GROUP_INTEGRATION_ID",
+        "provider": "telegram"
+      },
+      "content": "Devad POST API proof - telegram document - {{MARKER}}",
+      "status": "queued",
+      "media_ids": [
+        "MEDIA_ID"
+      ],
+      "settings": {
+        "channel": "telegram_group",
+        "media_type": "document",
+        "mime_type": "application/pdf",
+        "post_type": "document",
+        "provider": "telegram",
+        "variant": "document",
+        "marker": "{{MARKER}}"
+      }
+    }
+  ]
+}

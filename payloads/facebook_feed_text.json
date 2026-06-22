@@ -1,8 +1,8 @@
 {
-  "_comment": "CORE POST proof template: Linkedin Text None",
-  "_provider": "linkedin",
-  "_channel": "linkedin_page",
-  "_variant": "text",
+  "_comment": "CORE POST proof template: Facebook Feed Text None",
+  "_provider": "facebook",
+  "_channel": "facebook_page",
+  "_variant": "feed_text",
   "_media_kind": "none",
   "_requires_public_url": false,
   "_marker_placeholder": "{{MARKER}}",
@@ -10,18 +10,18 @@
   "posts": [
     {
       "integration": {
-        "id": "LINKEDIN_PAGE_INTEGRATION_ID",
-        "provider": "linkedin"
+        "id": "FACEBOOK_PAGE_INTEGRATION_ID",
+        "provider": "facebook"
       },
-      "content": "Devad POST API proof - linkedin text - {{MARKER}}",
+      "content": "Devad POST API proof - facebook feed_text - {{MARKER}}",
       "status": "queued",
       "media_ids": [],
       "settings": {
-        "channel": "linkedin_page",
+        "channel": "facebook_page",
         "media_type": "none",
         "post_type": "post",
-        "provider": "linkedin",
-        "variant": "text",
+        "provider": "facebook",
+        "variant": "feed_text",
         "marker": "{{MARKER}}"
       }
     }

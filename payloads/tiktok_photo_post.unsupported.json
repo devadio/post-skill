@@ -1,30 +1,30 @@
 {
-  "_comment": "CORE POST proof template: Linkedin Image Image",
-  "_provider": "linkedin",
-  "_channel": "linkedin_page",
-  "_variant": "image",
+  "_comment": "CORE POST proof template: Tiktok Photo Post Image",
+  "_provider": "tiktok",
+  "_channel": "tiktok_profile",
+  "_variant": "photo_post",
   "_media_kind": "image",
-  "_requires_public_url": false,
+  "_requires_public_url": true,
   "_marker_placeholder": "{{MARKER}}",
   "_instructions": "Replace ACCOUNT_ID and MEDIA_ID_OR_PUBLIC_URL placeholders only in a private copy.",
   "posts": [
     {
       "integration": {
-        "id": "LINKEDIN_PAGE_INTEGRATION_ID",
-        "provider": "linkedin"
+        "id": "TIKTOK_PROFILE_INTEGRATION_ID",
+        "provider": "tiktok"
       },
-      "content": "Devad POST API proof - linkedin image - {{MARKER}}",
+      "content": "Devad POST API proof - tiktok photo_post - {{MARKER}}",
       "status": "queued",
       "media_ids": [
         "MEDIA_ID"
       ],
       "settings": {
-        "channel": "linkedin_page",
+        "channel": "tiktok_profile",
         "media_type": "image",
         "mime_type": "image/jpeg",
         "post_type": "image",
-        "provider": "linkedin",
-        "variant": "image",
+        "provider": "tiktok",
+        "variant": "photo_post",
         "marker": "{{MARKER}}"
       }
     }

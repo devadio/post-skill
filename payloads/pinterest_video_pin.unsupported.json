@@ -1,0 +1,32 @@
+{
+  "_comment": "CORE POST proof template: Pinterest Video Pin Video",
+  "_provider": "pinterest",
+  "_channel": "pinterest_board",
+  "_variant": "video_pin",
+  "_media_kind": "video",
+  "_requires_public_url": true,
+  "_marker_placeholder": "{{MARKER}}",
+  "_instructions": "Replace ACCOUNT_ID and MEDIA_ID_OR_PUBLIC_URL placeholders only in a private copy.",
+  "posts": [
+    {
+      "integration": {
+        "id": "PINTEREST_BOARD_INTEGRATION_ID",
+        "provider": "pinterest"
+      },
+      "content": "Devad POST API proof - pinterest video_pin - {{MARKER}}",
+      "status": "queued",
+      "media_ids": [
+        "MEDIA_ID"
+      ],
+      "settings": {
+        "channel": "pinterest_board",
+        "media_type": "video",
+        "mime_type": "video/mp4",
+        "post_type": "video",
+        "provider": "pinterest",
+        "variant": "video_pin",
+        "marker": "{{MARKER}}"
+      }
+    }
+  ]
+}

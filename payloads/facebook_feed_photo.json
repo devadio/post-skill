@@ -1,30 +1,30 @@
 {
-  "_comment": "CORE POST proof template: Linkedin Image Image",
-  "_provider": "linkedin",
-  "_channel": "linkedin_page",
-  "_variant": "image",
+  "_comment": "CORE POST proof template: Facebook Feed Photo Image",
+  "_provider": "facebook",
+  "_channel": "facebook_page",
+  "_variant": "feed_photo",
   "_media_kind": "image",
-  "_requires_public_url": false,
+  "_requires_public_url": true,
   "_marker_placeholder": "{{MARKER}}",
   "_instructions": "Replace ACCOUNT_ID and MEDIA_ID_OR_PUBLIC_URL placeholders only in a private copy.",
   "posts": [
     {
       "integration": {
-        "id": "LINKEDIN_PAGE_INTEGRATION_ID",
-        "provider": "linkedin"
+        "id": "FACEBOOK_PAGE_INTEGRATION_ID",
+        "provider": "facebook"
       },
-      "content": "Devad POST API proof - linkedin image - {{MARKER}}",
+      "content": "Devad POST API proof - facebook feed_photo - {{MARKER}}",
       "status": "queued",
       "media_ids": [
         "MEDIA_ID"
       ],
       "settings": {
-        "channel": "linkedin_page",
+        "channel": "facebook_page",
         "media_type": "image",
         "mime_type": "image/jpeg",
         "post_type": "image",
-        "provider": "linkedin",
-        "variant": "image",
+        "provider": "facebook",
+        "variant": "feed_photo",
         "marker": "{{MARKER}}"
       }
     }

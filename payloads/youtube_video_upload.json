@@ -1,0 +1,32 @@
+{
+  "_comment": "CORE POST proof template: Youtube Video Upload Binary",
+  "_provider": "youtube",
+  "_channel": "youtube_channel",
+  "_variant": "video_upload",
+  "_media_kind": "binary",
+  "_requires_public_url": false,
+  "_marker_placeholder": "{{MARKER}}",
+  "_instructions": "Replace ACCOUNT_ID and MEDIA_ID_OR_PUBLIC_URL placeholders only in a private copy.",
+  "posts": [
+    {
+      "integration": {
+        "id": "YOUTUBE_CHANNEL_INTEGRATION_ID",
+        "provider": "youtube"
+      },
+      "content": "Devad POST API proof - youtube video_upload - {{MARKER}}",
+      "status": "queued",
+      "media_ids": [
+        "MEDIA_ID"
+      ],
+      "settings": {
+        "channel": "youtube_channel",
+        "media_type": "binary",
+        "mime_type": "application/octet-stream",
+        "post_type": "video",
+        "provider": "youtube",
+        "variant": "video_upload",
+        "marker": "{{MARKER}}"
+      }
+    }
+  ]
+}

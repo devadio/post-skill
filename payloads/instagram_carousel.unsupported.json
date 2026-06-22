@@ -1,0 +1,33 @@
+{
+  "_comment": "CORE POST proof template: Instagram Carousel Video",
+  "_provider": "instagram",
+  "_channel": "instagram_business",
+  "_variant": "carousel",
+  "_media_kind": "video",
+  "_requires_public_url": true,
+  "_marker_placeholder": "{{MARKER}}",
+  "_instructions": "Replace ACCOUNT_ID and MEDIA_ID_OR_PUBLIC_URL placeholders only in a private copy.",
+  "posts": [
+    {
+      "integration": {
+        "id": "INSTAGRAM_BUSINESS_INTEGRATION_ID",
+        "provider": "instagram"
+      },
+      "content": "Devad POST API proof - instagram carousel - {{MARKER}}",
+      "status": "queued",
+      "media_ids": [
+        "MEDIA_ID_1",
+        "MEDIA_ID_2"
+      ],
+      "settings": {
+        "channel": "instagram_business",
+        "media_type": "video",
+        "mime_type": "video/mp4",
+        "post_type": "carousel",
+        "provider": "instagram",
+        "variant": "carousel",
+        "marker": "{{MARKER}}"
+      }
+    }
+  ]
+}

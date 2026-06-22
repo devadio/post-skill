@@ -1,7 +1,7 @@
 {
-  "_comment": "CORE POST proof template: Linkedin Text None",
-  "_provider": "linkedin",
-  "_channel": "linkedin_page",
+  "_comment": "CORE POST proof template: Telegram Text None",
+  "_provider": "telegram",
+  "_channel": "telegram_group",
   "_variant": "text",
   "_media_kind": "none",
   "_requires_public_url": false,
@@ -10,17 +10,17 @@
   "posts": [
     {
       "integration": {
-        "id": "LINKEDIN_PAGE_INTEGRATION_ID",
-        "provider": "linkedin"
+        "id": "TELEGRAM_GROUP_INTEGRATION_ID",
+        "provider": "telegram"
       },
-      "content": "Devad POST API proof - linkedin text - {{MARKER}}",
+      "content": "Devad POST API proof - telegram text - {{MARKER}}",
       "status": "queued",
       "media_ids": [],
       "settings": {
-        "channel": "linkedin_page",
+        "channel": "telegram_group",
         "media_type": "none",
         "post_type": "post",
-        "provider": "linkedin",
+        "provider": "telegram",
         "variant": "text",
         "marker": "{{MARKER}}"
       }

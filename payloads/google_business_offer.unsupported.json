@@ -1,0 +1,29 @@
+{
+  "_comment": "CORE POST proof template: Google Business Offer None",
+  "_provider": "google_business",
+  "_channel": "google_business_profile",
+  "_variant": "offer",
+  "_media_kind": "none",
+  "_requires_public_url": true,
+  "_marker_placeholder": "{{MARKER}}",
+  "_instructions": "Replace ACCOUNT_ID and MEDIA_ID_OR_PUBLIC_URL placeholders only in a private copy.",
+  "posts": [
+    {
+      "integration": {
+        "id": "GOOGLE_BUSINESS_PROFILE_INTEGRATION_ID",
+        "provider": "google_business"
+      },
+      "content": "Devad POST API proof - google_business offer - {{MARKER}}",
+      "status": "queued",
+      "media_ids": [],
+      "settings": {
+        "channel": "google_business_profile",
+        "media_type": "none",
+        "post_type": "offer",
+        "provider": "google_business",
+        "variant": "offer",
+        "marker": "{{MARKER}}"
+      }
+    }
+  ]
+}

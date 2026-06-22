@@ -1,0 +1,24 @@
+﻿{
+    "posts":  [
+                  {
+                      "integration":  {
+                                          "id":  "0EF9YfxUSD",
+                                          "provider":  "telegram"
+                                      },
+                      "content":  "Devad POST API proof - telegram - document - 20260622-101109",
+                      "status":  "queued",
+                      "media_ids":  [
+                                        "MEDIA_ID"
+                                    ],
+                      "settings":  {
+                                       "channel":  "telegram_channel",
+                                       "media_type":  "document",
+                                       "post_type":  "document",
+                                       "provider":  "telegram",
+                                       "variant":  "document",
+                                       "marker":  "Devad POST API proof - telegram - document - 20260622-101109",
+                                       "mime_type":  "application/pdf"
+                                   }
+                  }
+              ]
+}

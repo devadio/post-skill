@@ -1,8 +1,8 @@
 {
-  "_comment": "CORE POST proof template: Linkedin Image Image",
+  "_comment": "CORE POST proof template: Linkedin Multi Image Image",
   "_provider": "linkedin",
   "_channel": "linkedin_page",
-  "_variant": "image",
+  "_variant": "multi_image",
   "_media_kind": "image",
   "_requires_public_url": false,
   "_marker_placeholder": "{{MARKER}}",
@@ -13,18 +13,19 @@
         "id": "LINKEDIN_PAGE_INTEGRATION_ID",
         "provider": "linkedin"
       },
-      "content": "Devad POST API proof - linkedin image - {{MARKER}}",
+      "content": "Devad POST API proof - linkedin multi_image - {{MARKER}}",
       "status": "queued",
       "media_ids": [
-        "MEDIA_ID"
+        "MEDIA_ID_1",
+        "MEDIA_ID_2"
       ],
       "settings": {
         "channel": "linkedin_page",
         "media_type": "image",
         "mime_type": "image/jpeg",
-        "post_type": "image",
+        "post_type": "multi_image",
         "provider": "linkedin",
-        "variant": "image",
+        "variant": "multi_image",
         "marker": "{{MARKER}}"
       }
     }

@@ -1,0 +1,28 @@
+{
+  "_comment": "Private ignored proof copy for Google Business standard live API run after OAuth reconnect.",
+  "_provider": "google_business",
+  "_channel": "google_business_profile",
+  "_variant": "standard",
+  "_media_kind": "none",
+  "_requires_public_url": true,
+  "_marker_placeholder": "{{MARKER}}",
+  "posts": [
+    {
+      "integration": {
+        "id": "UeXhX9V1J6",
+        "provider": "google_business"
+      },
+      "content": "Devad POST API proof - google_business - standard - 20260622-114331",
+      "status": "queued",
+      "media_ids": [],
+      "settings": {
+        "channel": "google_business_profile",
+        "media_type": "none",
+        "post_type": "post",
+        "provider": "google_business",
+        "variant": "standard",
+        "marker": "{{MARKER}}"
+      }
+    }
+  ]
+}

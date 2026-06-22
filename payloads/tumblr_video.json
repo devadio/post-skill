@@ -1,0 +1,32 @@
+{
+  "_comment": "CORE POST proof template: Tumblr Video Video",
+  "_provider": "tumblr",
+  "_channel": "tumblr_blog",
+  "_variant": "video",
+  "_media_kind": "video",
+  "_requires_public_url": true,
+  "_marker_placeholder": "{{MARKER}}",
+  "_instructions": "Replace ACCOUNT_ID and MEDIA_ID_OR_PUBLIC_URL placeholders only in a private copy.",
+  "posts": [
+    {
+      "integration": {
+        "id": "TUMBLR_BLOG_INTEGRATION_ID",
+        "provider": "tumblr"
+      },
+      "content": "Devad POST API proof - tumblr video - {{MARKER}}",
+      "status": "queued",
+      "media_ids": [
+        "MEDIA_ID"
+      ],
+      "settings": {
+        "channel": "tumblr_blog",
+        "media_type": "video",
+        "mime_type": "video/mp4",
+        "post_type": "video",
+        "provider": "tumblr",
+        "variant": "video",
+        "marker": "{{MARKER}}"
+      }
+    }
+  ]
+}

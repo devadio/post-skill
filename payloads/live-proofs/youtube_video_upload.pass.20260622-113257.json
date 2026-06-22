@@ -1,0 +1,36 @@
+{
+  "_comment": "Private ignored proof copy for YouTube video upload live API run after OAuth reconnect.",
+  "_provider": "youtube",
+  "_channel": "youtube_channel",
+  "_variant": "video_upload",
+  "_media_kind": "video",
+  "_requires_public_url": false,
+  "_marker_placeholder": "{{MARKER}}",
+  "posts": [
+    {
+      "integration": {
+        "id": "FTY79yVr7N",
+        "provider": "youtube"
+      },
+      "content": "Devad POST API proof - youtube - video_upload - 20260622-113257",
+      "status": "queued",
+      "media_ids": [
+        "MEDIA_ID"
+      ],
+      "settings": {
+        "channel": "youtube_channel",
+        "media_type": "video",
+        "mime_type": "video/mp4",
+        "post_type": "video",
+        "provider": "youtube",
+        "variant": "video_upload",
+        "marker": "{{MARKER}}",
+        "provider_options": {
+          "title": "Devad POST API proof - youtube - video_upload - 20260622-113257",
+          "category_id": "22",
+          "privacy_status": "public"
+        }
+      }
+    }
+  ]
+}

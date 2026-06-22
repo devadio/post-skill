@@ -1,0 +1,32 @@
+{
+  "_comment": "CORE POST proof template: Tiktok Video Direct Video",
+  "_provider": "tiktok",
+  "_channel": "tiktok_profile",
+  "_variant": "video_direct",
+  "_media_kind": "video",
+  "_requires_public_url": true,
+  "_marker_placeholder": "{{MARKER}}",
+  "_instructions": "Replace ACCOUNT_ID and MEDIA_ID_OR_PUBLIC_URL placeholders only in a private copy.",
+  "posts": [
+    {
+      "integration": {
+        "id": "TIKTOK_PROFILE_INTEGRATION_ID",
+        "provider": "tiktok"
+      },
+      "content": "Devad POST API proof - tiktok video_direct - {{MARKER}}",
+      "status": "queued",
+      "media_ids": [
+        "MEDIA_ID"
+      ],
+      "settings": {
+        "channel": "tiktok_profile",
+        "media_type": "video",
+        "mime_type": "video/mp4",
+        "post_type": "video",
+        "provider": "tiktok",
+        "variant": "video_direct",
+        "marker": "{{MARKER}}"
+      }
+    }
+  ]
+}
