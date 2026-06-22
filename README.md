@@ -133,7 +133,7 @@ Always validate provider, channel, and variant before media:
 
 - Facebook Page: feed text/link, image feed, video feed, reel, story image/video, first comment where supported.
 - Instagram Business: image feed, video/reel shared to feed, story image/video; story comments and carousel require explicit CORE proof.
-- LinkedIn Page: text and single image only until video/carousel/document slices are implemented and proven.
+- LinkedIn Page: text, single image, and document/PDF via CORE Documents API; video and multi-image still require future proof.
 - Telegram channel/group: text, photo, video, document.
 - YouTube Channel: video upload only.
 - Pinterest Board: image Pin unless current CORE/API support proves more.

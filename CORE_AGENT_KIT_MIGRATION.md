@@ -54,7 +54,7 @@ This repo used to describe the old POST.devad.io public API flow. Current Devad 
 |---|---|
 | Facebook Page | feed text/link, image feed, video feed, reel, story image/video, first comment where supported |
 | Instagram Business | image feed, video/reel shared to feed, story image/video; story comments/carousel need current CORE proof |
-| LinkedIn Page | text and single image only until future slices prove more |
+| LinkedIn Page | text, single image, and document/PDF via CORE Documents API; video and multi-image still require future proof |
 | Telegram | text, photo, video, document |
 | YouTube | video upload only |
 | Pinterest | image Pin unless current CORE/API proof says more |

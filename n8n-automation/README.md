@@ -47,7 +47,7 @@ Always identify provider + channel + variant first:
 
 - YouTube is video-only.
 - Pinterest is image Pin unless current CORE/API proof says more.
-- LinkedIn Page is text/single-image only until future slices prove video, carousel, or document support.
+- LinkedIn Page supports text, single image, and document/PDF via CORE Documents API; video and multi-image still require future proof.
 - TikTok fails closed without creator-info, privacy, commercial disclosure, AIGC, and app approval gates.
 - Disabled providers stay code-only unless explicitly re-approved.
 

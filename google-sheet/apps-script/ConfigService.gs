@@ -16,7 +16,7 @@ const SUPPORTED_PLATFORMS = [
   { handle: "fb_page",    name: "Facebook Page",     help: "Images, Videos, Carousels." },
   { handle: "ig_profile",  name: "Instagram Profile", help: "Images, Videos, Carousels." },
   { handle: "gbp_loc",     name: "Google Profile",    help: "Images, Multi-Images." },
-  { handle: "li_page",     name: "LinkedIn Page",     help: "Images, Videos, Carousels." },
+  { handle: "li_page",     name: "LinkedIn Page",     help: "Text, images, documents/PDF. Video and multi-image require future proof." },
   { handle: "li_profile",  name: "LinkedIn Profile",  help: "Images, Videos, Carousels." },
   { handle: "pinterest",   name: "Pinterest",         help: "Images, Multi-Images (Req Board ID)." },
   { handle: "tg_channel",  name: "Telegram Channel",  help: "Images, Videos, Carousels." },

@@ -34,7 +34,7 @@ Provider workflow:
 Current conservative provider baseline:
 - Facebook Page: feed text/link, image feed, video feed, reel, story image/video, first comment where supported.
 - Instagram Business: image feed, video/reel shared to feed, story image/video. Do not use story comments or carousel unless CORE proves support.
-- LinkedIn Page: text and single image only until more slices are proven.
+- LinkedIn Page: text, single image, and document/PDF via CORE Documents API; video and multi-image still require future proof.
 - Telegram: text, photo, video, document.
 - YouTube: video upload only.
 - Pinterest: image Pin unless current CORE proof says more.

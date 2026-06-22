@@ -63,7 +63,7 @@ Bad examples to reject:
 - PDF to Instagram `image_url`.
 - Image to Instagram Reel or Facebook Reel video path.
 - First comment on Instagram Story unless the official API path is proven and implemented.
-- LinkedIn PDF through image/video paths; documents require a dedicated Documents API slice.
+- LinkedIn PDF through image/video paths; use the dedicated document post type and Documents API path.
 - YouTube image/PDF post; CORE YouTube publishing is video upload only.
 
 ## Current Provider Baseline
@@ -71,7 +71,7 @@ Bad examples to reject:
 | Provider | Current stance |
 |---|---|
 | Tumblr Blog | Text, link, photo, video; fresh external proof still required. |
-| LinkedIn Page | Text and single image only; profile delayed; video, carousel, and document are future slices. |
+| LinkedIn Page | Text, single image, and document/PDF via the Documents API; profile delayed; video and multi-image remain future slices. |
 | Telegram Channel/Group | Text, photo, video, document; manual token plus verification-text flow. |
 | Facebook Page | Feed text/link, image feed, video feed, reel, story image/video, first comment where supported. |
 | Instagram Business | Image feed, video/reel shared to feed, story image/video; story comments and carousel remain unsupported until proven. |
