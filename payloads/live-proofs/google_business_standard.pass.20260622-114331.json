@@ -1,5 +1,5 @@
 {
-  "_comment": "Private ignored proof copy for Google Business standard live API run after OAuth reconnect.",
+  "_comment": "Sanitized PASS proof payload for Google Business standard live API run after OAuth reconnect.",
   "_provider": "google_business",
   "_channel": "google_business_profile",
   "_variant": "standard",
