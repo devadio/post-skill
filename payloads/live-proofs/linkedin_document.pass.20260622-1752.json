@@ -1,0 +1,24 @@
+{
+  "posts": [
+    {
+      "integration": {
+        "id": "OvfE10jptn",
+        "provider": "linkedin"
+      },
+      "content": "Devad POST API proof - linkedin document - 20260622-1752",
+      "status": "queued",
+      "media_ids": [
+        "MEDIA_ID"
+      ],
+      "settings": {
+        "channel": "linkedin_page",
+        "media_type": "document",
+        "post_type": "document",
+        "provider": "linkedin",
+        "variant": "document",
+        "marker": "Devad POST API proof - linkedin document - 20260622-1752",
+        "mime_type": "application/pdf"
+      }
+    }
+  ]
+}

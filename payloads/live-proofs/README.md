@@ -11,6 +11,8 @@ Use these only when comparing a known proof shape.
 | `telegram_channel_document.pass.20260622-101109.json` | PASS | CORE published post `68`; external marker visible in Telegram Web. |
 | `youtube_video_upload.pass.20260622-113257.json` | PASS | CORE published post `74`; external marker visible on YouTube. |
 | `google_business_standard.pass.20260622-114331.json` | PASS | CORE published post `75`; exact marker visible in owner Google Search Updates tab after hard refresh. |
+| `linkedin_document.pass.20260622-1752.json` | PASS | CORE published post `76`; exact marker visible on LinkedIn Page admin published posts after hard refresh. |
+| `tumblr_text.pass.20260622-1758.json` | PASS | CORE published post `77`; exact marker visible on Tumblr blog after hard refresh. |
 | `linkedin_text.blocked-auth.20260622-103909.json` | Blocked | API create reached CORE, provider failed with revoked LinkedIn OAuth. |
 | `linkedin_image.blocked-auth.20260622-103909.json` | Blocked | API media/create reached CORE, provider failed with revoked LinkedIn OAuth. |
 

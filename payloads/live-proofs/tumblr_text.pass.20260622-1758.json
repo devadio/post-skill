@@ -1,0 +1,21 @@
+{
+  "posts": [
+    {
+      "integration": {
+        "id": "maRL67eLE6",
+        "provider": "tumblr"
+      },
+      "content": "Devad POST API proof - tumblr text - 20260622-1758",
+      "status": "queued",
+      "media_ids": [],
+      "settings": {
+        "channel": "tumblr_blog",
+        "media_type": "none",
+        "post_type": "post",
+        "provider": "tumblr",
+        "variant": "text",
+        "marker": "Devad POST API proof - tumblr text - 20260622-1758"
+      }
+    }
+  ]
+}
