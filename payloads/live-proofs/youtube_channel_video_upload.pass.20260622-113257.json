@@ -1,0 +1,37 @@
+{
+  "_comment": "Sanitized PASS proof payload for youtube youtube_channel video_upload.",
+  "_provider": "youtube",
+  "_channel": "youtube_channel",
+  "_variant": "video_upload",
+  "_media_kind": "video",
+  "_core_publication_id": 74,
+  "_provider_post_id": "S4FJQNWw7sw",
+  "_external_verification": "Exact marker visible at https://www.youtube.com/watch?v=S4FJQNWw7sw after hard refresh.",
+  "posts": [
+    {
+      "integration": {
+        "id": "FTY79yVr7N",
+        "provider": "youtube"
+      },
+      "content": "Devad POST API proof - youtube - video_upload - 20260622-113257",
+      "status": "queued",
+      "media_ids": [
+        34
+      ],
+      "settings": {
+        "channel": "youtube_channel",
+        "media_type": "video",
+        "post_type": "video",
+        "provider": "youtube",
+        "variant": "video_upload",
+        "marker": "Devad POST API proof - youtube - video_upload - 20260622-113257",
+        "mime_type": "video/mp4",
+        "provider_options": {
+          "title": "Devad POST API proof - youtube - video_upload - 20260622-113257",
+          "category_id": "22",
+          "privacy_status": "public"
+        }
+      }
+    }
+  ]
+}

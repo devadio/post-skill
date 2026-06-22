@@ -1,20 +1,28 @@
 # Live Proof Payload Examples
 
-These files are exact or normalized private proof payload copies from the CORE
-POST API proof run. They are examples, not reusable templates.
+This folder contains sanitized private proof payload copies from the CORE POST
+API proof runs.
 
-Use the reusable placeholder templates from `payloads/*.json` for new runs.
-Use these only when comparing a known proof shape.
+Use `MANIFEST.md` as the complete index. It is generated from production POST
+API publication summaries and includes the current PASS/API_ONLY result, core
+publication id, provider, variant, and payload filename.
 
-| File | Result | Notes |
-| --- | --- | --- |
-| `telegram_channel_document.pass.20260622-101109.json` | PASS | CORE published post `68`; external marker visible in Telegram Web. |
-| `youtube_video_upload.pass.20260622-113257.json` | PASS | CORE published post `74`; external marker visible on YouTube. |
-| `google_business_standard.pass.20260622-114331.json` | PASS | CORE published post `75`; exact marker visible in owner Google Search Updates tab after hard refresh. |
-| `linkedin_document.pass.20260622-1752.json` | PASS | CORE published post `76`; exact marker visible on LinkedIn Page admin published posts after hard refresh. |
-| `tumblr_text.pass.20260622-1758.json` | PASS | CORE published post `77`; exact marker visible on Tumblr blog after hard refresh. |
-| `linkedin_text.blocked-auth.20260622-103909.json` | Blocked | API create reached CORE, provider failed with revoked LinkedIn OAuth. |
-| `linkedin_image.blocked-auth.20260622-103909.json` | Blocked | API media/create reached CORE, provider failed with revoked LinkedIn OAuth. |
+Highlights:
 
-No API keys, OAuth tokens, cookies, or raw provider responses belong in this
-folder.
+- Facebook first-comment proof passed as core post `98`; both the post marker
+  and first-comment marker were visible on the Facebook post page.
+- Instagram feed image first-comment proof passed as core post `99`; both the
+  caption marker and first-comment marker were visible on the Instagram post.
+- Earlier successful payloads were backfilled from production POST API
+  summaries and `.tmp` proof state so the archive covers Facebook, Instagram,
+  Telegram Channel, Telegram Group, Pinterest, TikTok, YouTube, Google
+  Business, LinkedIn, and Tumblr proof formats.
+- Instagram Story image/video are saved as `API_ONLY`, not `PASS`, because CORE
+  published them but external visual marker capture was not possible with the
+  available browser tooling.
+
+These files are examples, not reusable templates. Use the placeholder templates
+from `payloads/*.json` for new runs.
+
+No API keys, OAuth tokens, cookies, access tokens, or raw provider responses
+belong in this folder.

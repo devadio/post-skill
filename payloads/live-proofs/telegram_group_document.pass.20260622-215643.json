@@ -1,0 +1,35 @@
+{
+  "_comment": "Sanitized PASS proof payload for telegram telegram_group document.",
+  "_provider": "telegram",
+  "_channel": "telegram_group",
+  "_variant": "document",
+  "_media_kind": "document",
+  "_core_publication_id": 96,
+  "_provider_post_id": "44",
+  "_external_verification": "Exact marker and PDF attachment visible in Telegram Web Devad.io Group > Offers after hard refresh.",
+  "posts": [
+    {
+      "integration": {
+        "id": "acr12QIShS",
+        "provider": "telegram"
+      },
+      "content": "Devad POST API proof - telegram_group - pdf - 20260622-215643",
+      "status": "queued",
+      "media_ids": [
+        49
+      ],
+      "settings": {
+        "channel": "telegram_group",
+        "media_type": "document",
+        "post_type": "document",
+        "provider": "telegram",
+        "variant": "document",
+        "marker": "Devad POST API proof - telegram_group - pdf - 20260622-215643",
+        "mime_type": "application/pdf",
+        "provider_options": {
+          "message_thread_id": 5
+        }
+      }
+    }
+  ]
+}

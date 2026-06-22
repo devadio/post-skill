@@ -1,24 +1,32 @@
-﻿{
-    "posts":  [
-                  {
-                      "integration":  {
-                                          "id":  "0EF9YfxUSD",
-                                          "provider":  "telegram"
-                                      },
-                      "content":  "Devad POST API proof - telegram - document - 20260622-101109",
-                      "status":  "queued",
-                      "media_ids":  [
-                                        "MEDIA_ID"
-                                    ],
-                      "settings":  {
-                                       "channel":  "telegram_channel",
-                                       "media_type":  "document",
-                                       "post_type":  "document",
-                                       "provider":  "telegram",
-                                       "variant":  "document",
-                                       "marker":  "Devad POST API proof - telegram - document - 20260622-101109",
-                                       "mime_type":  "application/pdf"
-                                   }
-                  }
-              ]
+{
+  "_comment": "Sanitized PASS proof payload for telegram telegram_channel document.",
+  "_provider": "telegram",
+  "_channel": "telegram_channel",
+  "_variant": "document",
+  "_media_kind": "document",
+  "_core_publication_id": 68,
+  "_provider_post_id": "125",
+  "_external_verification": "Exact marker visible in authenticated Telegram Web on a PDF document card.",
+  "posts": [
+    {
+      "integration": {
+        "id": "0EF9YfxUSD",
+        "provider": "telegram"
+      },
+      "content": "Devad POST API proof - telegram - document - 20260622-101109",
+      "status": "queued",
+      "media_ids": [
+        30
+      ],
+      "settings": {
+        "channel": "telegram_channel",
+        "media_type": "document",
+        "post_type": "document",
+        "provider": "telegram",
+        "variant": "document",
+        "marker": "Devad POST API proof - telegram - document - 20260622-101109",
+        "mime_type": "application/pdf"
+      }
+    }
+  ]
 }

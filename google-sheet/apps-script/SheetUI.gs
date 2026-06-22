@@ -210,25 +210,26 @@ function processSheetRows(limitToOne = false) {
         caption: data[i][3],    // Column D
         mediaLink: data[i][4],  // Column E
         mediaType: data[i][5],  // Column F
-        promoLink: data[i][1]   // Column B
+        promoLink: data[i][1],  // Column B
+        extra: data[i][7]       // Column H
       };
 
       try {
         const mediaSpec = fetchMediaAssets(rowData.mediaLink, rowData.mediaType);
         const mediaBlobs = mediaSpec.blobs;
-        const mediaUrls = [];
+        const mediaIds = [];
 
         if (mediaBlobs.length > 0) {
           updateLog(sheet, rowNum, "☁️ Uploading to POST...");
           mediaBlobs.forEach(blob => {
-            mediaUrls.push(smartUpload(blob, config.token));
+            mediaIds.push(smartUpload(blob, config.token));
           });
         } else {
           updateLog(sheet, rowNum, "✍️ Text-only post detected...");
         }
         
         updateLog(sheet, rowNum, "🚀 Dispatching Multi-Channel Post...");
-        const sendResult = sendPost(rowData, config, mediaUrls, mediaSpec);
+        const sendResult = sendPost(rowData, config, mediaIds, mediaSpec);
 
         let finalLog = "✅ Posted successfully: " + new Date().toLocaleString();
         if (sendResult.skippedPlatforms && sendResult.skippedPlatforms.length > 0) {
@@ -326,8 +327,10 @@ function detectMediaType_(blobs, mediaTypeHint) {
 
   if (contentType.indexOf("video/") === 0) return "video";
   if (contentType.indexOf("image/") === 0) return "image";
+  if (contentType === "application/pdf") return "document";
   if (/\.(mp4|mov|avi|mkv|webm)$/i.test(fileName)) return "video";
   if (/\.(jpg|jpeg|png|gif|webp|bmp)$/i.test(fileName)) return "image";
+  if (/\.pdf$/i.test(fileName)) return "document";
 
   return normalizedHint || "image";
 }
@@ -442,6 +445,5 @@ function isQueuedStatus_(status) {
   const normalized = String(status || "").trim().toLowerCase();
   return normalized === "not yet" || normalized === "to do";
 }
-
 
 

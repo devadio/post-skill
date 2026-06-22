@@ -1,0 +1,43 @@
+{
+  "_comment": "Sanitized PASS proof payload for tiktok tiktok_profile video_direct_private.",
+  "_provider": "tiktok",
+  "_channel": "tiktok_profile",
+  "_variant": "video_direct_private",
+  "_media_kind": "video",
+  "_core_publication_id": 54,
+  "_provider_post_id": "v_pub_url~v2-1.7654093343407851540",
+  "_external_verification": "Exact marker visible in logged-in owner TikTok session; privacy stayed SELF_ONLY.",
+  "posts": [
+    {
+      "integration": {
+        "id": "XEeCyLVaOr",
+        "provider": "tiktok"
+      },
+      "content": "Devad POST API proof - tiktok video_direct private - Devad POST API proof - tiktok - video_direct - 20260622-090300",
+      "status": "queued",
+      "media_ids": [
+        16
+      ],
+      "settings": {
+        "channel": "tiktok_profile",
+        "media_type": "video",
+        "post_type": "video",
+        "provider": "tiktok",
+        "variant": "video_direct_private",
+        "marker": "Devad POST API proof - tiktok video_direct private - Devad POST API proof - tiktok - video_direct - 20260622-090300",
+        "mime_type": "video/mp4",
+        "provider_options": {
+          "privacy_level": "SELF_ONLY",
+          "allow_comment": false,
+          "allow_duet": false,
+          "allow_stitch": false,
+          "commercial_content_disclosure": false,
+          "brand_organic_toggle": false,
+          "brand_content_toggle": false,
+          "music_consent": true,
+          "is_aigc": false
+        }
+      }
+    }
+  ]
+}

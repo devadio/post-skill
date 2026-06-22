@@ -1,0 +1,32 @@
+{
+  "_comment": "Sanitized PASS proof payload for pinterest pinterest_board image_pin.",
+  "_provider": "pinterest",
+  "_channel": "pinterest_board",
+  "_variant": "image_pin",
+  "_media_kind": "image",
+  "_core_publication_id": 49,
+  "_provider_post_id": "1007328641672614909",
+  "_external_verification": "Exact marker visible at https://tr.pinterest.com/pin/1007328641672614909/.",
+  "posts": [
+    {
+      "integration": {
+        "id": "AVqSLKeZj6",
+        "provider": "pinterest"
+      },
+      "content": "Devad POST API proof - pinterest image_pin - Devad POST API proof - pinterest - image_pin - 20260622-082000",
+      "status": "queued",
+      "media_ids": [
+        11
+      ],
+      "settings": {
+        "channel": "pinterest_board",
+        "media_type": "image",
+        "post_type": "image",
+        "provider": "pinterest",
+        "variant": "image_pin",
+        "marker": "Devad POST API proof - pinterest image_pin - Devad POST API proof - pinterest - image_pin - 20260622-082000",
+        "mime_type": "image/jpeg"
+      }
+    }
+  ]
+}

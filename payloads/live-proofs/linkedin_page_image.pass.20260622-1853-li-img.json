@@ -1,0 +1,32 @@
+{
+  "_comment": "Sanitized PASS proof payload for linkedin linkedin_page image.",
+  "_provider": "linkedin",
+  "_channel": "linkedin_page",
+  "_variant": "image",
+  "_media_kind": "image",
+  "_core_publication_id": 78,
+  "_provider_post_id": "urn:li:share:7474854740019920896",
+  "_external_verification": "Exact marker visible on LinkedIn Page admin published posts after hard refresh; image card loaded.",
+  "posts": [
+    {
+      "integration": {
+        "id": "OvfE10jptn",
+        "provider": "linkedin"
+      },
+      "content": "Devad POST API proof - linkedin image - 20260622-1853-li-img",
+      "status": "queued",
+      "media_ids": [
+        37
+      ],
+      "settings": {
+        "channel": "linkedin_page",
+        "media_type": "image",
+        "post_type": "image",
+        "provider": "linkedin",
+        "variant": "image",
+        "marker": "Devad POST API proof - linkedin image - 20260622-1853-li-img",
+        "mime_type": "image/jpeg"
+      }
+    }
+  ]
+}

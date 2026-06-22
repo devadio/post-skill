@@ -1,0 +1,21 @@
+{
+  "posts": [
+    {
+      "integration": {
+        "id": "acr12QIShS",
+        "provider": "telegram"
+      },
+      "content": "Devad POST API proof - telegram_group - text - 202606221952-tg-group-general",
+      "status": "queued",
+      "media_ids": [],
+      "settings": {
+        "channel": "telegram_group",
+        "media_type": "none",
+        "post_type": "post",
+        "provider": "telegram",
+        "variant": "text",
+        "marker": "Devad POST API proof - telegram_group - text - 202606221952-tg-group-general"
+      }
+    }
+  ]
+}

@@ -25,7 +25,7 @@ The current script is designed to be simple:
 
 Generate your token and platform IDs here:
 
-[POST.devad.io Settings](https://post.devad.io/app/profile/settings)
+[Devad POST Agent](https://devad.io/workspaces/apps/post/agent)
 
 ## Sheet Rules
 

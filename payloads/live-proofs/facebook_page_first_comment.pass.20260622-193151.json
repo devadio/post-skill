@@ -1,0 +1,33 @@
+{
+  "_comment": "Sanitized PASS proof payload for facebook facebook_page first_comment.",
+  "_provider": "facebook",
+  "_channel": "facebook_page",
+  "_variant": "first_comment",
+  "_media_kind": "none",
+  "_core_publication_id": 98,
+  "_provider_post_id": "668993836307818_122224608644968911",
+  "_external_verification": "Exact post marker and first-comment marker visible at https://www.facebook.com/61579067357299/posts/122224608644968911/.",
+  "posts": [
+    {
+      "integration": {
+        "id": "jSmfqQPHn4",
+        "provider": "facebook"
+      },
+      "content": "Devad POST API proof - facebook - first_comment - 20260622-193151",
+      "status": "queued",
+      "media_ids": [],
+      "settings": {
+        "channel": "facebook_page",
+        "media_type": "none",
+        "post_type": "post",
+        "provider": "facebook",
+        "variant": "first_comment",
+        "marker": "Devad POST API proof - facebook - first_comment - 20260622-193151",
+        "provider_options": {
+          "post_to": "feed",
+          "first_comment": "Devad POST API first comment proof - facebook - 20260622-193151"
+        }
+      }
+    }
+  ]
+}

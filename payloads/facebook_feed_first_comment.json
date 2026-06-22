@@ -1,0 +1,33 @@
+{
+  "_comment": "CORE POST proof template: Facebook feed text with first comment",
+  "_provider": "facebook",
+  "_channel": "facebook_page",
+  "_variant": "feed_first_comment",
+  "_media_kind": "none",
+  "_requires_public_url": false,
+  "_marker_placeholder": "{{MARKER}}",
+  "_instructions": "Replace FACEBOOK_PAGE_INTEGRATION_ID and {{MARKER}} in a private copy. First comments are supported on Facebook feed posts, not stories.",
+  "posts": [
+    {
+      "integration": {
+        "id": "FACEBOOK_PAGE_INTEGRATION_ID",
+        "provider": "facebook"
+      },
+      "content": "Devad POST API proof - facebook - first_comment - {{MARKER}}",
+      "status": "queued",
+      "media_ids": [],
+      "settings": {
+        "channel": "facebook_page",
+        "media_type": "none",
+        "post_type": "post",
+        "provider": "facebook",
+        "variant": "feed_first_comment",
+        "marker": "Devad POST API proof - facebook - first_comment - {{MARKER}}",
+        "provider_options": {
+          "post_to": "feed",
+          "first_comment": "Devad POST API first comment proof - facebook - {{MARKER}}"
+        }
+      }
+    }
+  ]
+}

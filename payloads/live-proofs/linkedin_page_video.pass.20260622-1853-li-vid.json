@@ -1,0 +1,32 @@
+{
+  "_comment": "Sanitized PASS proof payload for linkedin linkedin_page video.",
+  "_provider": "linkedin",
+  "_channel": "linkedin_page",
+  "_variant": "video",
+  "_media_kind": "video",
+  "_core_publication_id": 79,
+  "_provider_post_id": "urn:li:ugcPost:7474854760643219457",
+  "_external_verification": "Exact marker visible on LinkedIn Page admin published posts after hard refresh; native video player loaded.",
+  "posts": [
+    {
+      "integration": {
+        "id": "OvfE10jptn",
+        "provider": "linkedin"
+      },
+      "content": "Devad POST API proof - linkedin video - 20260622-1853-li-vid",
+      "status": "queued",
+      "media_ids": [
+        38
+      ],
+      "settings": {
+        "channel": "linkedin_page",
+        "media_type": "video",
+        "post_type": "video",
+        "provider": "linkedin",
+        "variant": "video",
+        "marker": "Devad POST API proof - linkedin video - 20260622-1853-li-vid",
+        "mime_type": "video/mp4"
+      }
+    }
+  ]
+}

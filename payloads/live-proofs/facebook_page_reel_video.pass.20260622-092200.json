@@ -1,0 +1,35 @@
+{
+  "_comment": "Sanitized PASS proof payload for facebook facebook_page reel_video.",
+  "_provider": "facebook",
+  "_channel": "facebook_page",
+  "_variant": "reel_video",
+  "_media_kind": "video",
+  "_core_publication_id": 57,
+  "_provider_post_id": "1121212104417275",
+  "_external_verification": "Exact marker visible at https://www.facebook.com/reel/1121212104417275 after hard refresh.",
+  "posts": [
+    {
+      "integration": {
+        "id": "jSmfqQPHn4",
+        "provider": "facebook"
+      },
+      "content": "Devad POST API proof - facebook reel - Devad POST API proof - facebook - reel - 20260622-092200",
+      "status": "queued",
+      "media_ids": [
+        19
+      ],
+      "settings": {
+        "channel": "facebook_page",
+        "media_type": "video",
+        "post_type": "reel",
+        "provider": "facebook",
+        "variant": "reel_video",
+        "marker": "Devad POST API proof - facebook reel - Devad POST API proof - facebook - reel - 20260622-092200",
+        "mime_type": "video/mp4",
+        "provider_options": {
+          "post_to": "reels"
+        }
+      }
+    }
+  ]
+}

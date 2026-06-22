@@ -1,0 +1,35 @@
+{
+  "_comment": "Sanitized PASS proof payload for Google Business Profile standard image live API run after OAuth reconnect.",
+  "_provider": "google_business",
+  "_channel": "google_business_profile",
+  "_variant": "standard",
+  "_media_kind": "image",
+  "_requires_public_url": true,
+  "_core_publication_id": 97,
+  "_provider_post_id": "accounts/116813026964557688128/locations/1761629288000176519/localPosts/7298080284249273991",
+  "_external_verification": "Owner Google Search Updates tab showed the exact marker after hard refresh.",
+  "posts": [
+    {
+      "integration": {
+        "id": "UeXhX9V1J6",
+        "provider": "google_business"
+      },
+      "content": "Devad POST API proof - google_business - image - 20260622-215643",
+      "status": "queued",
+      "media_ids": [
+        47
+      ],
+      "settings": {
+        "channel": "google_business_profile",
+        "media_type": "image",
+        "post_type": "post",
+        "provider": "google_business",
+        "variant": "standard",
+        "marker": "Devad POST API proof - google_business - image - 20260622-215643",
+        "provider_options": {
+          "topic_type": "STANDARD"
+        }
+      }
+    }
+  ]
+}

@@ -1,0 +1,35 @@
+{
+  "_comment": "Sanitized PASS proof payload for google_business google_business_profile image.",
+  "_provider": "google_business",
+  "_channel": "google_business_profile",
+  "_variant": "image",
+  "_media_kind": "image",
+  "_core_publication_id": 97,
+  "_provider_post_id": "accounts/116813026964557688128/locations/1761629288000176519/localPosts/7298080284249273991",
+  "_external_verification": "Exact marker visible in owner Google Search Updates tab after hard refresh.",
+  "posts": [
+    {
+      "integration": {
+        "id": "UeXhX9V1J6",
+        "provider": "google_business"
+      },
+      "content": "Devad POST API proof - google_business - image - 20260622-215643",
+      "status": "queued",
+      "media_ids": [
+        47
+      ],
+      "settings": {
+        "channel": "google_business_profile",
+        "media_type": "image",
+        "post_type": "post",
+        "provider": "google_business",
+        "variant": "image",
+        "marker": "Devad POST API proof - google_business - image - 20260622-215643",
+        "mime_type": "image/jpeg",
+        "provider_options": {
+          "topic_type": "STANDARD"
+        }
+      }
+    }
+  ]
+}

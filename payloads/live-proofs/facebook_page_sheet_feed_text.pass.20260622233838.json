@@ -1,0 +1,42 @@
+{
+  "_comment": "Sanitized PASS proof payload for Google Sheet -> CORE POST API -> Facebook Page feed text.",
+  "_source": "google-sheet/apps-script",
+  "_provider": "facebook",
+  "_channel": "facebook_page",
+  "_variant": "sheet_feed_text",
+  "_media_kind": "none",
+  "_core_publication_id": 100,
+  "_core_status": "published",
+  "_core_created_at": "2026-06-22T23:52:01+00:00",
+  "_core_published_at": "2026-06-22T23:55:07+00:00",
+  "_provider_post_id": "668993836307818_122224623800968911",
+  "_external_verification": "Exact marker visible at https://www.facebook.com/61579067357299/posts/122224623800968911/.",
+  "_sheet_row": {
+    "row": 12,
+    "title": "POST Sheet Proof",
+    "creative_type": "text",
+    "action": "Done",
+    "extra_field": "only=fb_page"
+  },
+  "posts": [
+    {
+      "integration": {
+        "id": "jSmfqQPHn4"
+      },
+      "content": "Devad POST sheet proof - facebook - text - 20260622233838",
+      "status": "queued",
+      "media_ids": [],
+      "settings": {
+        "channel": "facebook_page",
+        "media_type": "none",
+        "post_type": "post",
+        "provider": "facebook",
+        "variant": "feed_text",
+        "provider_options": {
+          "post_to": "feed"
+        }
+      }
+    }
+  ],
+  "correlation_id": "post-sheet-<generated-at-runtime>"
+}

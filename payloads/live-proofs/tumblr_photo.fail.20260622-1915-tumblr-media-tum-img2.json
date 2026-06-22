@@ -1,0 +1,24 @@
+{
+  "posts": [
+    {
+      "integration": {
+        "id": "maRL67eLE6",
+        "provider": "tumblr"
+      },
+      "content": "Devad POST API proof - tumblr image - 20260622-1915-tumblr-media-tum-img2",
+      "status": "queued",
+      "media_ids": [
+        41
+      ],
+      "settings": {
+        "channel": "tumblr_blog",
+        "media_type": "image",
+        "post_type": "image",
+        "provider": "tumblr",
+        "variant": "photo",
+        "marker": "Devad POST API proof - tumblr image - 20260622-1915-tumblr-media-tum-img2",
+        "mime_type": "image/jpeg"
+      }
+    }
+  ]
+}

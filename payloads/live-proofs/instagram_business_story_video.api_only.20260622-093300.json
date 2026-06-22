@@ -1,0 +1,35 @@
+{
+  "_comment": "Sanitized API_ONLY proof payload for instagram instagram_business story_video.",
+  "_provider": "instagram",
+  "_channel": "instagram_business",
+  "_variant": "story_video",
+  "_media_kind": "video",
+  "_core_publication_id": 67,
+  "_provider_post_id": "18084628679547737",
+  "_external_verification": "API published with provider id; visual marker capture was not possible with available browser tooling.",
+  "posts": [
+    {
+      "integration": {
+        "id": "AUgoX18zPp",
+        "provider": "instagram"
+      },
+      "content": "Devad POST API proof - instagram - story_video - 20260622-093300",
+      "status": "queued",
+      "media_ids": [
+        29
+      ],
+      "settings": {
+        "channel": "instagram_business",
+        "media_type": "video",
+        "post_type": "story",
+        "provider": "instagram",
+        "variant": "story_video",
+        "marker": "Devad POST API proof - instagram - story_video - 20260622-093300",
+        "mime_type": "video/mp4",
+        "provider_options": {
+          "post_to": "stories"
+        }
+      }
+    }
+  ]
+}

@@ -1,0 +1,32 @@
+{
+  "_comment": "Sanitized PASS proof payload for tumblr tumblr_blog photo.",
+  "_provider": "tumblr",
+  "_channel": "tumblr_blog",
+  "_variant": "photo",
+  "_media_kind": "image",
+  "_core_publication_id": 86,
+  "_provider_post_id": "820140325554225152",
+  "_external_verification": "Exact marker visible on https://www.tumblr.com/devadio after hard refresh.",
+  "posts": [
+    {
+      "integration": {
+        "id": "maRL67eLE6",
+        "provider": "tumblr"
+      },
+      "content": "Devad POST API proof - tumblr image - 20260622-1931-tumblr-refresh-tum-img4",
+      "status": "queued",
+      "media_ids": [
+        45
+      ],
+      "settings": {
+        "channel": "tumblr_blog",
+        "media_type": "image",
+        "post_type": "image",
+        "provider": "tumblr",
+        "variant": "photo",
+        "marker": "Devad POST API proof - tumblr image - 20260622-1931-tumblr-refresh-tum-img4",
+        "mime_type": "image/jpeg"
+      }
+    }
+  ]
+}

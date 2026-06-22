@@ -1,0 +1,35 @@
+{
+  "_comment": "Sanitized PASS proof payload for facebook facebook_page story_image.",
+  "_provider": "facebook",
+  "_channel": "facebook_page",
+  "_variant": "story_image",
+  "_media_kind": "image",
+  "_core_publication_id": 64,
+  "_provider_post_id": "2160676468181646",
+  "_external_verification": "Marker-burned image text visible in authenticated Facebook Stories viewer.",
+  "posts": [
+    {
+      "integration": {
+        "id": "jSmfqQPHn4",
+        "provider": "facebook"
+      },
+      "content": "Devad POST API proof - facebook - story_image - 20260622-093000",
+      "status": "queued",
+      "media_ids": [
+        26
+      ],
+      "settings": {
+        "channel": "facebook_page",
+        "media_type": "image",
+        "post_type": "story",
+        "provider": "facebook",
+        "variant": "story_image",
+        "marker": "Devad POST API proof - facebook - story_image - 20260622-093000",
+        "mime_type": "image/jpeg",
+        "provider_options": {
+          "post_to": "stories"
+        }
+      }
+    }
+  ]
+}

@@ -1,0 +1,37 @@
+{
+  "_comment": "Sanitized PASS proof payload for instagram instagram_business feed_image_first_comment.",
+  "_provider": "instagram",
+  "_channel": "instagram_business",
+  "_variant": "feed_image_first_comment",
+  "_media_kind": "image",
+  "_core_publication_id": 99,
+  "_provider_post_id": "18094282946205684",
+  "_external_verification": "Exact post marker and first-comment marker visible at https://www.instagram.com/devad.io/p/DZ5nlOlFlcA/.",
+  "posts": [
+    {
+      "integration": {
+        "id": "AUgoX18zPp",
+        "provider": "instagram"
+      },
+      "content": "Devad POST API proof - instagram - first_comment - 20260622-193151",
+      "status": "queued",
+      "media_ids": [
+        47
+      ],
+      "settings": {
+        "channel": "instagram_business",
+        "media_type": "image",
+        "post_type": "image",
+        "provider": "instagram",
+        "variant": "feed_image_first_comment",
+        "marker": "Devad POST API proof - instagram - first_comment - 20260622-193151",
+        "mime_type": "image/jpeg",
+        "provider_options": {
+          "post_to": "feed",
+          "alt_text": "Devad POST API image first-comment proof 20260622-193151",
+          "first_comment": "Devad POST API first comment proof - instagram - 20260622-193151"
+        }
+      }
+    }
+  ]
+}

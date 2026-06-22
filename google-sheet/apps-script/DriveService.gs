@@ -8,7 +8,8 @@ const SUPPORTED_UPLOAD_MIMES = new Set([
   "image/jpeg",
   "image/png",
   "image/webp",
-  "video/mp4"
+  "video/mp4",
+  "application/pdf"
 ]);
 
 function isSupportedUploadMime_(mimeType) {
@@ -23,6 +24,7 @@ function inferUploadMimeType_(fileName, contentType) {
   if (loweredType === "image/jpeg" || /\.jpe?g$/i.test(loweredName)) return "image/jpeg";
   if (loweredType === "image/webp" || /\.webp$/i.test(loweredName)) return "image/webp";
   if (loweredType === "video/mp4" || /\.mp4$/i.test(loweredName)) return "video/mp4";
+  if (loweredType === "application/pdf" || /\.pdf$/i.test(loweredName)) return "application/pdf";
   return loweredType || "application/octet-stream";
 }
 
@@ -37,6 +39,7 @@ function normalizeUploadBlob_(blob, originalName) {
     else if (mimeType === "image/jpeg") fileName += ".jpg";
     else if (mimeType === "image/webp") fileName += ".webp";
     else if (mimeType === "video/mp4") fileName += ".mp4";
+    else if (mimeType === "application/pdf") fileName += ".pdf";
   }
 
   if (!fileName) {
@@ -44,6 +47,7 @@ function normalizeUploadBlob_(blob, originalName) {
     else if (mimeType === "image/jpeg") fileName = "upload.jpg";
     else if (mimeType === "image/webp") fileName = "upload.webp";
     else if (mimeType === "video/mp4") fileName = "upload.mp4";
+    else if (mimeType === "application/pdf") fileName = "upload.pdf";
     else fileName = "upload.bin";
   }
 
@@ -106,7 +110,7 @@ function processMedia(url, mediaType) {
         throw new Error("The specified Drive folder is empty.");
       }
     } else if (!isSupportedUploadMime_(mimeType)) {
-      throw new Error("Invalid media file type: " + mimeType + ". Use jpeg, jpg, png, webp, or mp4.");
+      throw new Error("Invalid media file type: " + mimeType + ". Use jpeg, jpg, png, webp, mp4, or pdf.");
     } else {
       blobs.push(normalizeUploadBlob_(file.getBlob(), file.getName()));
     }

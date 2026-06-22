@@ -1,0 +1,24 @@
+{
+  "posts": [
+    {
+      "integration": {
+        "id": "OvfE10jptn",
+        "provider": "linkedin"
+      },
+      "content": "Devad POST API proof - linkedin video - 20260622-1853-li-vid",
+      "status": "queued",
+      "media_ids": [
+        38
+      ],
+      "settings": {
+        "channel": "linkedin_page",
+        "media_type": "video",
+        "post_type": "video",
+        "provider": "linkedin",
+        "variant": "video",
+        "marker": "Devad POST API proof - linkedin video - 20260622-1853-li-vid",
+        "mime_type": "video/mp4"
+      }
+    }
+  ]
+}

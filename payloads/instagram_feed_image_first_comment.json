@@ -1,0 +1,37 @@
+{
+  "_comment": "CORE POST proof template: Instagram feed image with first comment",
+  "_provider": "instagram",
+  "_channel": "instagram_business",
+  "_variant": "feed_image_first_comment",
+  "_media_kind": "image",
+  "_requires_public_url": true,
+  "_marker_placeholder": "{{MARKER}}",
+  "_instructions": "Replace INSTAGRAM_BUSINESS_INTEGRATION_ID, MEDIA_ID, and {{MARKER}} in a private copy. First comments are supported on Instagram feed/reel posts, not stories.",
+  "posts": [
+    {
+      "integration": {
+        "id": "INSTAGRAM_BUSINESS_INTEGRATION_ID",
+        "provider": "instagram"
+      },
+      "content": "Devad POST API proof - instagram - first_comment - {{MARKER}}",
+      "status": "queued",
+      "media_ids": [
+        "MEDIA_ID"
+      ],
+      "settings": {
+        "channel": "instagram_business",
+        "media_type": "image",
+        "mime_type": "image/jpeg",
+        "post_type": "image",
+        "provider": "instagram",
+        "variant": "feed_image_first_comment",
+        "marker": "Devad POST API proof - instagram - first_comment - {{MARKER}}",
+        "provider_options": {
+          "post_to": "feed",
+          "alt_text": "Devad POST API image first-comment proof {{MARKER}}",
+          "first_comment": "Devad POST API first comment proof - instagram - {{MARKER}}"
+        }
+      }
+    }
+  ]
+}

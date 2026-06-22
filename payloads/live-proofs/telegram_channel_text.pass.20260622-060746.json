@@ -1,0 +1,29 @@
+{
+  "_comment": "Sanitized PASS proof payload for telegram telegram_channel text.",
+  "_provider": "telegram",
+  "_channel": "telegram_channel",
+  "_variant": "text",
+  "_media_kind": "none",
+  "_core_publication_id": 43,
+  "_provider_post_id": "122",
+  "_external_verification": "Exact marker visible at https://t.me/devad_io/122.",
+  "posts": [
+    {
+      "integration": {
+        "id": "0EF9YfxUSD",
+        "provider": "telegram"
+      },
+      "content": "Devad POST API proof - telegram text - Devad POST API proof - telegram - text - 20260622-060746",
+      "status": "queued",
+      "media_ids": [],
+      "settings": {
+        "channel": "telegram_channel",
+        "media_type": "none",
+        "post_type": "text",
+        "provider": "telegram",
+        "variant": "text",
+        "marker": "Devad POST API proof - telegram text - Devad POST API proof - telegram - text - 20260622-060746"
+      }
+    }
+  ]
+}

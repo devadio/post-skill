@@ -1,0 +1,35 @@
+{
+  "_comment": "Sanitized PASS proof payload for instagram instagram_business reel_video.",
+  "_provider": "instagram",
+  "_channel": "instagram_business",
+  "_variant": "reel_video",
+  "_media_kind": "video",
+  "_core_publication_id": 58,
+  "_provider_post_id": "18102184588906544",
+  "_external_verification": "Exact marker visible at https://www.instagram.com/devad.io/reel/DZ4KOkzmhyj/ after hard refresh.",
+  "posts": [
+    {
+      "integration": {
+        "id": "AUgoX18zPp",
+        "provider": "instagram"
+      },
+      "content": "Devad POST API proof - instagram reel - Devad POST API proof - instagram - reel - 20260622-092300",
+      "status": "queued",
+      "media_ids": [
+        20
+      ],
+      "settings": {
+        "channel": "instagram_business",
+        "media_type": "video",
+        "post_type": "reel",
+        "provider": "instagram",
+        "variant": "reel_video",
+        "marker": "Devad POST API proof - instagram reel - Devad POST API proof - instagram - reel - 20260622-092300",
+        "mime_type": "video/mp4",
+        "provider_options": {
+          "post_to": "reels"
+        }
+      }
+    }
+  ]
+}

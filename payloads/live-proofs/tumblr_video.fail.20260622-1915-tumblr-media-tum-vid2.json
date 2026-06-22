@@ -1,0 +1,24 @@
+{
+  "posts": [
+    {
+      "integration": {
+        "id": "maRL67eLE6",
+        "provider": "tumblr"
+      },
+      "content": "Devad POST API proof - tumblr video - 20260622-1915-tumblr-media-tum-vid2",
+      "status": "queued",
+      "media_ids": [
+        42
+      ],
+      "settings": {
+        "channel": "tumblr_blog",
+        "media_type": "video",
+        "post_type": "video",
+        "provider": "tumblr",
+        "variant": "video",
+        "marker": "Devad POST API proof - tumblr video - 20260622-1915-tumblr-media-tum-vid2",
+        "mime_type": "video/mp4"
+      }
+    }
+  ]
+}
