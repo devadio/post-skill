@@ -36,6 +36,7 @@ Local checkout: `D:\CDX-3\core-aio\post-skill`
 - Ran `git diff --check`.
 - Searched repo for the retired host string; no matches remain outside `.git`.
 - Pulled the live Apps Script project back with `npx clasp pull` after the push and searched `google-sheet/apps-script`; no retired host string matches remain.
+- Refreshed the live Google Sheet in Chrome, reopened `Devad.io/POST` -> `Publication Manager`, and verified the visible sidebar shows `Devad.io/POST`, `Generate your workspace API key and account IDs at:`, and `Paste workspace API key here...`; no visible retired host string remained.
 
 ## Known Notes
 
@@ -49,6 +50,5 @@ Open a fresh chat to validate the updated repo branch/PR only:
 
 1. Confirm the GitHub branch and PR from this handoff.
 2. Review the Apps Script diff for live sheet compatibility.
-3. Reopen the Google Sheet sidebar after a browser refresh to confirm the new `Devad.io/POST` sidebar text is visible.
-4. Reimport the n8n workflow in a sandbox n8n instance and run a dry test only.
-5. Do not create live social posts until the user explicitly approves a new proof run.
+3. Reimport the n8n workflow in a sandbox n8n instance and run a dry test only.
+4. Do not create live social posts until the user explicitly approves a new proof run.
