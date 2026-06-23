@@ -1,6 +1,6 @@
 {
   "_comment": "TEST: Facebook — Video post",
-  "_instructions": "Replace ACCOUNT_ID_SECURE and VIDEO_URL. Upload video first via /upload endpoint then use returned path here.",
+  "_instructions": "Replace ACCOUNT_ID_SECURE and VIDEO_URL or media_ids. Upload video first via CORE /media, then use the returned media.id in media_ids for native CORE publishing.",
   "posts": [
     {
       "integration": { "id": "FACEBOOK_ACCOUNT_ID_SECURE" },

@@ -1,6 +1,6 @@
 # Google Sheet Automation Reference
 
-This folder is a legacy reference for the old POST.devad.io Google Sheet workflow.
+This folder is a legacy reference for the old Google Sheet workflow.
 
 Do not run the included Apps Script bundle as current CORE live automation until it is migrated and retested.
 
@@ -24,7 +24,7 @@ Do not run the included Apps Script bundle as current CORE live automation until
 - `google-sheet/apps-script/WebAppApi.gs`
 - supporting HTML and setup files
 
-These files may still contain old public API names, old token property names, and query-token compatibility code. Treat them as row/UI/workflow references only.
+These files now use the native CORE API names and bearer workspace API key pattern. Treat them as row/UI/workflow references until they are retested against a live Google Sheet deployment.
 
 ## Migration Checklist
 

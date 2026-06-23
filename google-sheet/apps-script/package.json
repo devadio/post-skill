@@ -1,7 +1,7 @@
 {
   "name": "appsscript_postapi",
   "version": "1.0.0",
-  "description": "Apps Script source for POST.devad.io Google Sheets automation",
+  "description": "Apps Script source for Devad.io/POST Google Sheets automation",
   "main": "index.js",
   "scripts": {
     "clasp:login": "clasp login",

@@ -1,5 +1,5 @@
 {
-  "name": "CODEX - POST.devad.io - Sheet To Social Full",
+  "name": "CODEX - Devad.io/POST - Sheet To Social Full",
   "nodes": [
     {
       "id": "0f15b0ec-b1be-4707-a5b6-11b63b82b2f8",
@@ -11,7 +11,7 @@
         -280
       ],
       "parameters": {
-        "content": "## POST.devad.io -> Google Sheet -> Social\n\n1. Edit only the node named add-HERE-your-token-and-ids.\n2. Reads the post tab directly from Google Sheets.\n3. Expands Google Drive folder links and file links.\n4. Supports direct links, text/image/video/carousel, comments, and FB/IG story duplicates.\n5. Writes status back to Action? and log.\n6. If Google Sheets or Google Drive nodes fail auth, relink them in n8n.\n7. After import, manually bind the credential in Download Drive Media Asset once.",
+        "content": "## Devad.io/POST -> Google Sheet -> Social\n\n1. Edit only the node named add-HERE-your-token-and-ids.\n2. Reads the post tab directly from Google Sheets.\n3. Expands Google Drive folder links and file links.\n4. Supports direct links, text/image/video/carousel, comments, and FB/IG story duplicates.\n5. Writes status back to Action? and log.\n6. If Google Sheets or Google Drive nodes fail auth, relink them in n8n.\n7. After import, manually bind the credential in Download Drive Media Asset once.",
         "width": 540,
         "height": 320
       }
@@ -58,7 +58,7 @@
             {
               "id": "cfg-base-url",
               "name": "base_url",
-              "value": "https://post.devad.io/api/public/v1",
+              "value": "https://devad.io/api/v1/post",
               "type": "string"
             },
             {
@@ -75,8 +75,8 @@
             },
             {
               "id": "cfg-token",
-              "name": "post_devad_io_token",
-              "value": "ADD_HERE_YOUR_POST_DEVD_IO_TOKEN",
+              "name": "devad_post_api_key",
+              "value": "ADD_HERE_YOUR_DEVAD_POST_API_KEY",
               "type": "string"
             },
             {
@@ -216,21 +216,25 @@
       "parameters": {
         "method": "GET",
         "url": "={{ $json.base_url + \"/accounts\" }}",
-        "sendQuery": true,
-        "queryParameters": {
-          "parameters": [
-            {
-              "name": "api_token",
-              "value": "={{ $json.post_devad_io_token }}"
-            }
-          ]
-        },
         "options": {
           "response": {
             "response": {
               "responseFormat": "json"
             }
           }
+        },
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Accept",
+              "value": "application/json"
+            },
+            {
+              "name": "Authorization",
+              "value": "={{ \"Bearer \" + $json.devad_post_api_key }}"
+            }
+          ]
         }
       }
     },
@@ -460,7 +464,7 @@
     },
     {
       "id": "3ffa8285-9c24-47af-9c4f-0a706f66d874",
-      "name": "Upload Binary To POST.devad.io",
+      "name": "Upload Binary To Devad.io/POST",
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.4,
       "position": [
@@ -469,16 +473,7 @@
       ],
       "parameters": {
         "method": "POST",
-        "url": "={{ $(\"add-HERE-your-token-and-ids\").item.json.base_url + \"/upload\" }}",
-        "sendQuery": true,
-        "queryParameters": {
-          "parameters": [
-            {
-              "name": "api_token",
-              "value": "={{ $(\"add-HERE-your-token-and-ids\").item.json.post_devad_io_token }}"
-            }
-          ]
-        },
+        "url": "={{ $(\"add-HERE-your-token-and-ids\").item.json.base_url + \"/media\" }}",
         "sendHeaders": true,
         "headerParameters": {
           "parameters": [
@@ -488,11 +483,7 @@
             },
             {
               "name": "Authorization",
-              "value": "={{ \"Bearer \" + $(\"add-HERE-your-token-and-ids\").item.json.post_devad_io_token }}"
-            },
-            {
-              "name": "X-Api-Token",
-              "value": "={{ $(\"add-HERE-your-token-and-ids\").item.json.post_devad_io_token }}"
+              "value": "={{ \"Bearer \" + $(\"add-HERE-your-token-and-ids\").item.json.devad_post_api_key }}"
             }
           ]
         },
@@ -518,7 +509,7 @@
     },
     {
       "id": "40ad7485-33ad-4c99-a1b6-0c38d08ae0fd",
-      "name": "Collect Uploaded Media URLs",
+      "name": "Collect Uploaded Media IDs",
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
@@ -528,7 +519,7 @@
       "parameters": {
         "mode": "runOnceForAllItems",
         "language": "javaScript",
-        "jsCode": "const base=$('Expand Media Upload Items').first().json;\nconst uploadedMediaUrls=$input.all()\n  .map(item => item.json || {})\n  .map(item => item.url || item.body?.url || '')\n  .filter(Boolean);\nif (!uploadedMediaUrls.length) {\n  throw new Error('No uploaded media URLs were returned from POST.devad.io /upload');\n}\nreturn [{json:{...base,uploadedMediaUrls}}];"
+        "jsCode": "const base=$('Expand Media Upload Items').first().json;\nconst uploadedMedia=$input.all()\n  .map(item => item.json || {})\n  .map(item => item.media || item.body?.media || item.data || item)\n  .filter(item => item && item.id)\n  .map(item => ({ id: Number(item.id) }));\nif (!uploadedMedia.length) {\n  throw new Error('No uploaded media IDs were returned from Devad.io/POST /media');\n}\nreturn [{json:{...base,uploadedMedia}}];"
       }
     },
     {
@@ -543,7 +534,7 @@
       "parameters": {
         "mode": "runOnceForAllItems",
         "language": "javaScript",
-        "jsCode": "function s(v){return String(v||'').trim().toLowerCase().replace(/[^a-z0-9]+/g,'_').replace(/^_+|_+$/g,'');}\nfunction rv(row, aliases){const m={}; for(const [k,v] of Object.entries(row||{})) m[s(k)] = v; for(const a of aliases){const hit=m[s(a)]; if(hit!==undefined && String(hit).trim()!=='') return String(hit).trim();} return '';}\nfunction yes(v,d=false){if(v===undefined||v===null||v==='') return d; return ['1','true','yes','y','on','ok','done'].includes(String(v).trim().toLowerCase());}\nfunction list(v){const raw=String(v||''); const nl=String.fromCharCode(10); return raw.split(nl).flatMap(i=>i.split(',')).flatMap(i=>i.split('|')).map(i=>i.trim()).filter(Boolean);}\nfunction alias(v){return String(v||'').trim().toLowerCase().replace(/[^a-z0-9]+/g,'');}\nfunction ttPrivacy(v){const n=String(v||'PUBLIC_TO_EVERYONE').trim().toUpperCase(); if(['PUBLIC','EVERYONE','PUBLIC_TO_EVERYONE'].includes(n)) return 'PUBLIC_TO_EVERYONE'; if(['FRIENDS','FRIEND','MUTUAL_FOLLOW_FRIENDS'].includes(n)) return 'MUTUAL_FOLLOW_FRIENDS'; if(['FOLLOWERS','FOLLOWER','FOLLOWER_OF_CREATOR'].includes(n)) return 'FOLLOWER_OF_CREATOR'; if(['PRIVATE','ONLY_ME','SELF_ONLY'].includes(n)) return 'SELF_ONLY'; return n;}\nfunction ytPrivacy(v){const n=String(v||'public').trim().toLowerCase(); return ['private','unlisted','public'].includes(n)?n:'public';}\nfunction configured(cfg){return {facebook:cfg.facebook_id,instagram:cfg.instagram_id,youtube:cfg.youtube_id,tiktok:cfg.tiktok_id,pinterest:cfg.pinterest_id,telegram:cfg.telegram_id,linkedin_page:cfg.linkedin_page_id,linkedin_profile:cfg.linkedin_profile_id,tumblr:cfg.tumblr_id,google_business_profile:cfg.google_business_profile_id};}\nfunction defaultKeys(type){if(type==='video') return ['facebook','instagram','youtube','tiktok','linkedin_profile','linkedin_page','telegram','tumblr']; if(type==='carousel') return ['facebook','instagram','linkedin_profile','linkedin_page']; if(type==='text') return ['facebook','linkedin_profile','linkedin_page','telegram','tumblr','google_business_profile']; return ['facebook','instagram','linkedin_profile','linkedin_page','pinterest','telegram','tumblr','google_business_profile'];}\nfunction bucketAccounts(accounts){const buckets={}; for(const a of accounts){const provider=String(a.provider||'').toLowerCase(); const category=String(a.category||'').toLowerCase(); const key=provider+'::'+category; if(!buckets[key]) buckets[key]=[]; buckets[key].push(a);} return buckets;}\nfunction desiredCategories(key){if(key==='facebook') return ['page']; if(key==='instagram') return ['profile']; if(key==='youtube') return ['channel']; if(key==='tiktok') return ['profile']; if(key==='pinterest') return ['board']; if(key==='telegram') return ['channel']; if(key==='linkedin_page') return ['page']; if(key==='linkedin_profile') return ['profile']; if(key==='tumblr') return ['blog']; if(key==='google_business_profile') return ['location']; return [];}\nfunction desiredProvider(key){if(key==='linkedin_page'||key==='linkedin_profile') return 'linkedin'; return key;}\nfunction resolveIntegrationId(key, configuredId, accountMap, accountBuckets){if(configuredId && accountMap.has(configuredId)) return configuredId; const provider=desiredProvider(key); const categories=desiredCategories(key); for(const category of categories){const match=(accountBuckets[provider+'::'+category]||[])[0]; if(match && match.id) return match.id;} return '';}\nfunction choose(row,cfg,type,accountMap,accounts){const req=list(rv(row,['channels','channel','social channels','networks'])).map(alias); const conf=configured(cfg); const keys=req.length?Object.keys(conf).filter(k=>req.includes(alias(k))||req.includes(alias(k.replace('_profile','').replace('_page','')))):defaultKeys(type); const out=[]; const usedIds=new Set(); const accountBuckets=bucketAccounts(accounts); for(const key of keys){const integrationId=resolveIntegrationId(key, conf[key], accountMap, accountBuckets); if(!integrationId||!accountMap.has(integrationId)||usedIds.has(integrationId)) continue; usedIds.add(integrationId); out.push({key,integrationId,account:accountMap.get(integrationId)});} return out;}\nfunction promoMode(targetKey,row,cfg){const fromRow=rv(row,[targetKey+' promo link mode',targetKey.replace('_',' ')+' promo link mode','promo link mode']); if(fromRow) return fromRow.toLowerCase(); if(targetKey==='facebook') return String(cfg.facebook_promo_link_mode||'comment').toLowerCase(); if(targetKey==='instagram') return String(cfg.instagram_promo_link_mode||'comment').toLowerCase(); return String(cfg.default_promo_link_mode||'caption').toLowerCase();}\nfunction caption(base,link,mode){const c=String(base||'').trim(); const l=String(link||'').trim(); const nl=String.fromCharCode(10); if(mode!=='caption'||!l) return c; if(c.includes(l)) return c; return c?c+nl+nl+l:l;}\nfunction settingsFor(target,row,type,link,title,content,cfg){const l=String(link||'').trim(); const mode=promoMode(target.key,row,cfg); const settings={};\n  if(target.key==='facebook'){settings.post_type=type; settings.fb_type=type==='video'?'reels':'feed'; if(mode==='comment'&&l) settings.fb_comment=l; return settings;}\n  if(target.key==='instagram'){if(type==='text') return null; settings.post_type=type; settings.ig_type=type==='video'?'reels':'feed'; if(mode==='comment'&&l) settings.ig_comment=l; return settings;}\n  if(target.key==='linkedin_page'||target.key==='linkedin_profile'){settings.post_type=type; return settings;}\n  if(target.key==='telegram'){if(type==='carousel') return null; settings.post_type=type; return settings;}\n  if(target.key==='tiktok'){if(type==='text'||type==='carousel') return null; settings.post_type=type; settings.tt_privacy=ttPrivacy(rv(row,['tiktok privacy','privacy','privacy level'])); settings.tt_consent=yes(rv(row,['tiktok consent','music usage confirmation','consent']),true)?1:0; settings.tt_allow_comment=yes(rv(row,['tiktok allow comment','allow comment']),true)?1:0; settings.tt_allow_duet=yes(rv(row,['tiktok allow duet','allow duet']),false)?1:0; settings.tt_allow_stitch=yes(rv(row,['tiktok allow stitch','allow stitch']),false)?1:0; return settings;}\n  if(target.key==='youtube'){if(type!=='video') return null; settings.post_type='video'; settings.youtube_title=rv(row,['youtube title'])||title||String(content||'').slice(0,95)||'POST.devad.io upload'; settings.youtube_privacy=ytPrivacy(rv(row,['youtube privacy','privacy'])); settings.youtube_category=Number(rv(row,['youtube category','category'])||22); return settings;}\n  if(target.key==='pinterest'){if(type!=='image') return null; settings.post_type='image'; settings.pinterest_title=rv(row,['pinterest title'])||title||'POST.devad.io pin'; settings.pinterest_link=l||''; const board=rv(row,['pinterest board id','board id'])||cfg.pinterest_board_id; settings.pinterest_board=board; settings.pinterest_board_id=board; return settings;}\n  if(target.key==='google_business_profile'){if(type==='video'||type==='carousel') return null; settings.post_type=type==='text'?'text':'image'; if(l){settings.gbp_action='LEARN_MORE'; settings.gbp_link=l;} return settings;}\n  if(target.key==='tumblr'){if(type==='carousel') return null; settings.post_type=type; return settings;}\n  settings.post_type=type; return settings;\n}\nfunction addStory(key,type,cfg){if(type!=='image'&&type!=='video') return false; if(key==='facebook') return yes(cfg.facebook_plus_story,false); if(key==='instagram') return yes(cfg.instagram_plus_story,false); return false;}\nconst cfg=$('add-HERE-your-token-and-ids').item.json; const raw=$('Fetch PostApi Accounts').item.json||{}; const accounts=Array.isArray(raw.data)?raw.data:(Array.isArray(raw.body?.data)?raw.body.data:[]); const accountMap=new Map(accounts.map(a=>[a.id,a]));\nconst row=$input.first().json; const src=row.sourceRow||{}; const mediaUrls=Array.isArray(row.uploadedMediaUrls)?row.uploadedMediaUrls.filter(Boolean):(Array.isArray(row.mediaUrls)?row.mediaUrls.filter(Boolean):[]); const type=row.postType||row.postTypeHint||(mediaUrls.length?'image':'text'); const title=row.title||rv(src,['title']); const promo=row.promoLink||rv(src,['promotional link','link']); const base=row.captionBase||rv(src,['social media summary (caption)','caption','summary']);\nconst targets=choose(src,cfg,type,accountMap,accounts); const feedPosts=[]; const storyPosts=[]; const selectedTargets=[];\nfor(const target of targets){const content=caption(base,promo,promoMode(target.key,src,cfg)); const settings=settingsFor(target,src,type,promo,title,content,cfg); if(!settings) continue; const post={integration:{id:target.integrationId},value:[{content}],media:mediaUrls,settings}; feedPosts.push(post); selectedTargets.push({key:target.key,id:target.integrationId,provider:target.account.provider,category:target.account.category}); if(addStory(target.key,type,cfg)){const story=JSON.parse(JSON.stringify(post)); story.settings.post_type='story'; if(target.key==='facebook') story.settings.fb_type='story'; if(target.key==='instagram') story.settings.ig_type='story'; storyPosts.push(story);}}\nif(!feedPosts.length) return [];\nconst feedPostApiBody=row.scheduleAt?{type:'schedule',date:row.scheduleAt,posts:feedPosts}:{posts:feedPosts};\nconst storyPostApiBody=storyPosts.length?(row.scheduleAt?{type:'schedule',date:row.scheduleAt,posts:storyPosts}:{posts:storyPosts}):null;\nreturn [{json:{...row,postType:type,mediaUrls,selectedTargets,feedPostApiBody,storyPostApiBody,webhookBody:{source:'n8n-post-devad-sheet',row_number:row.rowNumber,title,caption:base,promotional_link:promo,media:mediaUrls,post_type:type,channels:selectedTargets,feed_post_api_body:feedPostApiBody,story_post_api_body:storyPostApiBody}}}];"
+        "jsCode": "function s(v){return String(v||'').trim().toLowerCase().replace(/[^a-z0-9]+/g,'_').replace(/^_+|_+$/g,'');}\nfunction rv(row, aliases){const m={}; for(const [k,v] of Object.entries(row||{})) m[s(k)] = v; for(const a of aliases){const hit=m[s(a)]; if(hit!==undefined && String(hit).trim()!=='') return String(hit).trim();} return '';}\nfunction yes(v,d=false){if(v===undefined||v===null||v==='') return d; return ['1','true','yes','y','on','ok','done'].includes(String(v).trim().toLowerCase());}\nfunction list(v){const raw=String(v||''); const nl=String.fromCharCode(10); return raw.split(nl).flatMap(i=>i.split(',')).flatMap(i=>i.split('|')).map(i=>i.trim()).filter(Boolean);}\nfunction alias(v){return String(v||'').trim().toLowerCase().replace(/[^a-z0-9]+/g,'');}\nfunction ttPrivacy(v){const n=String(v||'PUBLIC_TO_EVERYONE').trim().toUpperCase(); if(['PUBLIC','EVERYONE','PUBLIC_TO_EVERYONE'].includes(n)) return 'PUBLIC_TO_EVERYONE'; if(['FRIENDS','FRIEND','MUTUAL_FOLLOW_FRIENDS'].includes(n)) return 'MUTUAL_FOLLOW_FRIENDS'; if(['FOLLOWERS','FOLLOWER','FOLLOWER_OF_CREATOR'].includes(n)) return 'FOLLOWER_OF_CREATOR'; if(['PRIVATE','ONLY_ME','SELF_ONLY'].includes(n)) return 'SELF_ONLY'; return n;}\nfunction ytPrivacy(v){const n=String(v||'public').trim().toLowerCase(); return ['private','unlisted','public'].includes(n)?n:'public';}\nfunction configured(cfg){return {facebook:cfg.facebook_id,instagram:cfg.instagram_id,youtube:cfg.youtube_id,tiktok:cfg.tiktok_id,pinterest:cfg.pinterest_id,telegram:cfg.telegram_id,linkedin_page:cfg.linkedin_page_id,linkedin_profile:cfg.linkedin_profile_id,tumblr:cfg.tumblr_id,google_business_profile:cfg.google_business_profile_id};}\nfunction defaultKeys(type){if(type==='video') return ['facebook','instagram','youtube','tiktok','linkedin_profile','linkedin_page','telegram','tumblr']; if(type==='carousel') return ['facebook','instagram','linkedin_profile','linkedin_page']; if(type==='text') return ['facebook','linkedin_profile','linkedin_page','telegram','tumblr','google_business_profile']; return ['facebook','instagram','linkedin_profile','linkedin_page','pinterest','telegram','tumblr','google_business_profile'];}\nfunction bucketAccounts(accounts){const buckets={}; for(const a of accounts){const provider=String(a.provider||'').toLowerCase(); const category=String(a.category||'').toLowerCase(); const key=provider+'::'+category; if(!buckets[key]) buckets[key]=[]; buckets[key].push(a);} return buckets;}\nfunction desiredCategories(key){if(key==='facebook') return ['page']; if(key==='instagram') return ['profile']; if(key==='youtube') return ['channel']; if(key==='tiktok') return ['profile']; if(key==='pinterest') return ['board']; if(key==='telegram') return ['channel']; if(key==='linkedin_page') return ['page']; if(key==='linkedin_profile') return ['profile']; if(key==='tumblr') return ['blog']; if(key==='google_business_profile') return ['location']; return [];}\nfunction desiredProvider(key){if(key==='linkedin_page'||key==='linkedin_profile') return 'linkedin'; return key;}\nfunction resolveIntegrationId(key, configuredId, accountMap, accountBuckets){if(configuredId && accountMap.has(configuredId)) return configuredId; const provider=desiredProvider(key); const categories=desiredCategories(key); for(const category of categories){const match=(accountBuckets[provider+'::'+category]||[])[0]; if(match && match.id) return match.id;} return '';}\nfunction choose(row,cfg,type,accountMap,accounts){const req=list(rv(row,['channels','channel','social channels','networks'])).map(alias); const conf=configured(cfg); const keys=req.length?Object.keys(conf).filter(k=>req.includes(alias(k))||req.includes(alias(k.replace('_profile','').replace('_page','')))):defaultKeys(type); const out=[]; const usedIds=new Set(); const accountBuckets=bucketAccounts(accounts); for(const key of keys){const integrationId=resolveIntegrationId(key, conf[key], accountMap, accountBuckets); if(!integrationId||!accountMap.has(integrationId)||usedIds.has(integrationId)) continue; usedIds.add(integrationId); out.push({key,integrationId,account:accountMap.get(integrationId)});} return out;}\nfunction promoMode(targetKey,row,cfg){const fromRow=rv(row,[targetKey+' promo link mode',targetKey.replace('_',' ')+' promo link mode','promo link mode']); if(fromRow) return fromRow.toLowerCase(); if(targetKey==='facebook') return String(cfg.facebook_promo_link_mode||'comment').toLowerCase(); if(targetKey==='instagram') return String(cfg.instagram_promo_link_mode||'comment').toLowerCase(); return String(cfg.default_promo_link_mode||'caption').toLowerCase();}\nfunction caption(base,link,mode){const c=String(base||'').trim(); const l=String(link||'').trim(); const nl=String.fromCharCode(10); if(mode!=='caption'||!l) return c; if(c.includes(l)) return c; return c?c+nl+nl+l:l;}\nfunction settingsFor(target,row,type,link,title,content,cfg){const l=String(link||'').trim(); const mode=promoMode(target.key,row,cfg); const settings={};\n  if(target.key==='facebook'){settings.post_type=type; settings.fb_type=type==='video'?'reels':'feed'; if(mode==='comment'&&l) settings.fb_comment=l; return settings;}\n  if(target.key==='instagram'){if(type==='text') return null; settings.post_type=type; settings.ig_type=type==='video'?'reels':'feed'; if(mode==='comment'&&l) settings.ig_comment=l; return settings;}\n  if(target.key==='linkedin_page'||target.key==='linkedin_profile'){settings.post_type=type; return settings;}\n  if(target.key==='telegram'){if(type==='carousel') return null; settings.post_type=type; return settings;}\n  if(target.key==='tiktok'){if(type==='text'||type==='carousel') return null; settings.post_type=type; settings.tt_privacy=ttPrivacy(rv(row,['tiktok privacy','privacy','privacy level'])); settings.tt_consent=yes(rv(row,['tiktok consent','music usage confirmation','consent']),true)?1:0; settings.tt_allow_comment=yes(rv(row,['tiktok allow comment','allow comment']),true)?1:0; settings.tt_allow_duet=yes(rv(row,['tiktok allow duet','allow duet']),false)?1:0; settings.tt_allow_stitch=yes(rv(row,['tiktok allow stitch','allow stitch']),false)?1:0; return settings;}\n  if(target.key==='youtube'){if(type!=='video') return null; settings.post_type='video'; settings.youtube_title=rv(row,['youtube title'])||title||String(content||'').slice(0,95)||'Devad.io/POST upload'; settings.youtube_privacy=ytPrivacy(rv(row,['youtube privacy','privacy'])); settings.youtube_category=Number(rv(row,['youtube category','category'])||22); return settings;}\n  if(target.key==='pinterest'){if(type!=='image') return null; settings.post_type='image'; settings.pinterest_title=rv(row,['pinterest title'])||title||'Devad.io/POST pin'; settings.pinterest_link=l||''; const board=rv(row,['pinterest board id','board id'])||cfg.pinterest_board_id; settings.pinterest_board=board; settings.pinterest_board_id=board; return settings;}\n  if(target.key==='google_business_profile'){if(type==='video'||type==='carousel') return null; settings.post_type=type==='text'?'text':'image'; if(l){settings.gbp_action='LEARN_MORE'; settings.gbp_link=l;} return settings;}\n  if(target.key==='tumblr'){if(type==='carousel') return null; settings.post_type=type; return settings;}\n  settings.post_type=type; return settings;\n}\nfunction addStory(key,type,cfg){if(type!=='image'&&type!=='video') return false; if(key==='facebook') return yes(cfg.facebook_plus_story,false); if(key==='instagram') return yes(cfg.instagram_plus_story,false); return false;}\nconst cfg=$('add-HERE-your-token-and-ids').item.json; const raw=$('Fetch PostApi Accounts').item.json||{}; const accounts=Array.isArray(raw.data)?raw.data:(Array.isArray(raw.body?.data)?raw.body.data:[]); const accountMap=new Map(accounts.map(a=>[a.id,a]));\nconst row=$input.first().json; const src=row.sourceRow||{}; const uploadedMedia=Array.isArray(row.uploadedMedia)?row.uploadedMedia.filter(item=>item&&item.id):[]; const mediaIds=Array.isArray(row.mediaIds)?row.mediaIds.filter(Boolean):uploadedMedia.map(item=>item.id).filter(Boolean); const type=row.postType||row.postTypeHint||(mediaIds.length?'image':'text'); const title=row.title||rv(src,['title']); const promo=row.promoLink||rv(src,['promotional link','link']); const base=row.captionBase||rv(src,['social media summary (caption)','caption','summary']);\nconst targets=choose(src,cfg,type,accountMap,accounts); const feedPosts=[]; const storyPosts=[]; const selectedTargets=[];\nfor(const target of targets){const content=caption(base,promo,promoMode(target.key,src,cfg)); const settings=settingsFor(target,src,type,promo,title,content,cfg); if(!settings) continue; const post={integration:{id:target.integrationId},value:[{content}],media_ids:mediaIds,settings}; feedPosts.push(post); selectedTargets.push({key:target.key,id:target.integrationId,provider:target.account.provider,category:target.account.category}); if(addStory(target.key,type,cfg)){const story=JSON.parse(JSON.stringify(post)); story.settings.post_type='story'; if(target.key==='facebook') story.settings.fb_type='story'; if(target.key==='instagram') story.settings.ig_type='story'; storyPosts.push(story);}}\nif(!feedPosts.length) return [];\nconst feedPostApiBody=row.scheduleAt?{type:'schedule',date:row.scheduleAt,posts:feedPosts}:{posts:feedPosts};\nconst storyPostApiBody=storyPosts.length?(row.scheduleAt?{type:'schedule',date:row.scheduleAt,posts:storyPosts}:{posts:storyPosts}):null;\nreturn [{json:{...row,postType:type,mediaIds,selectedTargets,feedPostApiBody,storyPostApiBody,webhookBody:{source:'n8n-post-devad-sheet',row_number:row.rowNumber,title,caption:base,promotional_link:promo,media_ids:mediaIds,post_type:type,channels:selectedTargets,feed_post_api_body:feedPostApiBody,story_post_api_body:storyPostApiBody}}}];"
       }
     },
     {
@@ -587,7 +578,7 @@
     },
     {
       "id": "40a88c89-71ba-4402-a4f0-adf8861ed89b",
-      "name": "Post Feed To POST.devad.io",
+      "name": "Post Feed To Devad.io/POST",
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.4,
       "position": [
@@ -597,15 +588,6 @@
       "parameters": {
         "method": "POST",
         "url": "={{ $(\"add-HERE-your-token-and-ids\").item.json.base_url + \"/posts\" }}",
-        "sendQuery": true,
-        "queryParameters": {
-          "parameters": [
-            {
-              "name": "api_token",
-              "value": "={{ $(\"add-HERE-your-token-and-ids\").item.json.post_devad_io_token }}"
-            }
-          ]
-        },
         "sendBody": true,
         "specifyBody": "json",
         "jsonBody": "={{ $(\"Build PostApi Payload\").item.json.feedPostApiBody }}",
@@ -615,6 +597,19 @@
               "responseFormat": "json"
             }
           }
+        },
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Accept",
+              "value": "application/json"
+            },
+            {
+              "name": "Authorization",
+              "value": "={{ \"Bearer \" + $(\"add-HERE-your-token-and-ids\").item.json.devad_post_api_key }}"
+            }
+          ]
         }
       }
     },
@@ -635,7 +630,7 @@
     },
     {
       "id": "c321a13e-a1bd-457c-b1c7-b0167360a551",
-      "name": "Post Story To POST.devad.io",
+      "name": "Post Story To Devad.io/POST",
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.4,
       "position": [
@@ -645,15 +640,6 @@
       "parameters": {
         "method": "POST",
         "url": "={{ $(\"add-HERE-your-token-and-ids\").item.json.base_url + \"/posts\" }}",
-        "sendQuery": true,
-        "queryParameters": {
-          "parameters": [
-            {
-              "name": "api_token",
-              "value": "={{ $(\"add-HERE-your-token-and-ids\").item.json.post_devad_io_token }}"
-            }
-          ]
-        },
         "sendBody": true,
         "specifyBody": "json",
         "jsonBody": "={{ $(\"Build PostApi Payload\").item.json.storyPostApiBody }}",
@@ -663,6 +649,19 @@
               "responseFormat": "json"
             }
           }
+        },
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Accept",
+              "value": "application/json"
+            },
+            {
+              "name": "Authorization",
+              "value": "={{ \"Bearer \" + $(\"add-HERE-your-token-and-ids\").item.json.devad_post_api_key }}"
+            }
+          ]
         }
       }
     },
@@ -678,7 +677,7 @@
       "parameters": {
         "mode": "runOnceForAllItems",
         "language": "javaScript",
-        "jsCode": "function compact(v){return typeof v==='string' ? v : JSON.stringify(v||{});}\nconst row=$('Build PostApi Payload').item.json; const feed=$('Post Feed To POST.devad.io').item.json; let story=null; try{story=$('Post Story To POST.devad.io').item.json;}catch(e){story=null;}\nconst okMark=String.fromCharCode(9989); const doneMark=String.fromCharCode(55357,57314)+' Done';\nlet log=okMark+' Posted successfully: '+new Date().toLocaleString(); log+=' | Channels: '+(Array.isArray(row.selectedTargets)?row.selectedTargets.map(t=>t.key).join(', '):''); log+=' | Feed response: '+compact(feed); if(story) log+=' | Story response: '+compact(story);\nreturn [{json:{row_number:String(row.rowNumber),'Action?':doneMark,log}}];"
+        "jsCode": "function compact(v){return typeof v==='string' ? v : JSON.stringify(v||{});}\nconst row=$('Build PostApi Payload').item.json; const feed=$('Post Feed To Devad.io/POST').item.json; let story=null; try{story=$('Post Story To Devad.io/POST').item.json;}catch(e){story=null;}\nconst okMark=String.fromCharCode(9989); const doneMark=String.fromCharCode(55357,57314)+' Done';\nlet log=okMark+' Posted successfully: '+new Date().toLocaleString(); log+=' | Channels: '+(Array.isArray(row.selectedTargets)?row.selectedTargets.map(t=>t.key).join(', '):''); log+=' | Feed response: '+compact(feed); if(story) log+=' | Story response: '+compact(story);\nreturn [{json:{row_number:String(row.rowNumber),'Action?':doneMark,log}}];"
       }
     },
     {
@@ -999,29 +998,18 @@
       "main": [
         [
           {
-            "node": "Upload Binary To POST.devad.io",
+            "node": "Upload Binary To Devad.io/POST",
             "type": "main",
             "index": 0
           }
         ]
       ]
     },
-    "Upload Binary To POST.devad.io": {
+    "Upload Binary To Devad.io/POST": {
       "main": [
         [
           {
-            "node": "Collect Uploaded Media URLs",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "Collect Uploaded Media URLs": {
-      "main": [
-        [
-          {
-            "node": "Build PostApi Payload",
+            "node": "Collect Uploaded Media IDs",
             "type": "main",
             "index": 0
           }
@@ -1050,7 +1038,7 @@
         ],
         [
           {
-            "node": "Post Feed To POST.devad.io",
+            "node": "Post Feed To Devad.io/POST",
             "type": "main",
             "index": 0
           }
@@ -1061,14 +1049,14 @@
       "main": [
         [
           {
-            "node": "Post Feed To POST.devad.io",
+            "node": "Post Feed To Devad.io/POST",
             "type": "main",
             "index": 0
           }
         ]
       ]
     },
-    "Post Feed To POST.devad.io": {
+    "Post Feed To Devad.io/POST": {
       "main": [
         [
           {
@@ -1083,7 +1071,7 @@
       "main": [
         [
           {
-            "node": "Post Story To POST.devad.io",
+            "node": "Post Story To Devad.io/POST",
             "type": "main",
             "index": 0
           }
@@ -1097,7 +1085,7 @@
         ]
       ]
     },
-    "Post Story To POST.devad.io": {
+    "Post Story To Devad.io/POST": {
       "main": [
         [
           {
@@ -1186,6 +1174,17 @@
         [
           {
             "node": "Route Upload Need",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Collect Uploaded Media IDs": {
+      "main": [
+        [
+          {
+            "node": "Build PostApi Payload",
             "type": "main",
             "index": 0
           }

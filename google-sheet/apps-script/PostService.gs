@@ -1,9 +1,18 @@
 /**
  * PostService.gs
- * Handles API interactions with the current Devad CORE POST API.
+ * Handles API interactions with Devad.io/POST.
+ *
+ * Uses the native CORE POST API:
+ * - POST /media for uploads
+ * - POST /posts for queued publications
+ * - Authorization: Bearer workspace API keys
  */
 
 const POST_API_BASE_URL = "https://devad.io/api/v1/post";
+
+function postApiUrl_(path) {
+  return POST_API_BASE_URL + path;
+}
 
 function postApiHeaders_(token, idempotencyPrefix) {
   const headers = {
@@ -19,7 +28,7 @@ function postApiHeaders_(token, idempotencyPrefix) {
 }
 
 function smartUpload(blob, token) {
-  const url = POST_API_BASE_URL + "/media";
+  const url = postApiUrl_("/media");
   const options = {
     method: "post",
     headers: postApiHeaders_(token, "post-sheet-media"),
@@ -43,8 +52,9 @@ function smartUpload(blob, token) {
     const locationHeader = headers.Location || headers.location || "";
     const json = parseJsonResponse_(responseText);
 
-    if ((responseCode === 200 || responseCode === 201) && json.media && json.media.id) {
-      return json.media.id;
+    const media = json.media || json.data || json;
+    if ((responseCode === 200 || responseCode === 201) && media && media.id) {
+      return Number(media.id);
     }
 
     if (responseCode === 429) {
@@ -55,7 +65,7 @@ function smartUpload(blob, token) {
 
     if (responseCode === 401 || responseCode === 403 || (responseCode >= 300 && responseCode < 400) || /do_login/i.test(responseText) || /login/i.test(String(locationHeader))) {
       throw createResponseAwareError_(
-        "Upload authentication failed. Please re-save your devad.io POST API token in the manager.",
+        "Upload authentication failed. Please re-save your Devad.io/POST workspace API key in the manager.",
         responseCode,
         responseText
       );
@@ -316,6 +326,10 @@ function shouldAddStoryDuplicate_(platform, mediaSpec) {
   return platform.handle === "fb_page" || platform.handle === "ig_profile";
 }
 
+/**
+ * Dispatches a Multi-Channel Post.
+ * Uses root-level integration IDs and media_ids returned by POST /media.
+ */
 function sendPost(rowData, config, mediaIds, mediaSpec) {
   const posts = [];
   const storyPosts = [];
@@ -358,7 +372,7 @@ function sendPost(rowData, config, mediaIds, mediaSpec) {
     throw new Error("No compatible platforms found for this row's media type.");
   }
 
-  const url = POST_API_BASE_URL + "/posts";
+  const url = postApiUrl_("/posts");
   const payload = {
     posts: posts,
     correlation_id: "post-sheet-" + new Date().toISOString()

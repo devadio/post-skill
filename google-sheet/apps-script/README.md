@@ -1,6 +1,6 @@
 # Sheet-Claw Apps Script
 
-This repo stores the Google Apps Script source for the POST.devad.io Google Sheet workflow.
+This repo stores the Google Apps Script source for the Devad.io/POST Google Sheet workflow.
 
 ## Local setup
 

@@ -1,10 +1,10 @@
-# POST.devad.io Google Sheet Automation Guide
+# Devad.io/POST Google Sheet Automation Guide
 
 This guide explains how to use the current Google Sheet automation setup step by step.
 
 ## What This Sheet Does
 
-This sheet lets you prepare social media posts in Google Sheets and publish them through `POST.devad.io` using Apps Script automation.
+This sheet lets you prepare social media posts in Google Sheets and publish them through `Devad.io/POST` using Apps Script automation.
 
 The current script is designed to be simple:
 
@@ -15,17 +15,17 @@ The current script is designed to be simple:
 ## First-Time Setup
 
 1. Open the Google Sheet.
-2. In the top menu, click `POST.devad.io`.
+2. In the top menu, click `Devad.io/POST`.
 3. Click `Publication Manager`.
-4. Paste your API token.
+4. Paste your Devad.io/POST workspace API key.
 5. Add the Integration ID for each platform you want to use.
 6. For Pinterest, also add the Board ID.
 7. Choose your automation frequency in the `Automation` section.
 8. Click `SAVE & RUN SYNC`.
 
-Generate your token and platform IDs here:
+Generate your workspace API key and platform IDs here:
 
-[Devad POST Agent](https://devad.io/workspaces/apps/post/agent)
+[Devad.io/POST Settings](https://devad.io/workspaces/apps/post/agent)
 
 ## Sheet Rules
 
@@ -123,11 +123,11 @@ Examples:
 
 Use the menu:
 
-- `POST.devad.io` -> `Publication Manager`
+- `Devad.io/POST` -> `Publication Manager`
 
 From there you can:
 
-- save your token
+- save your workspace API key
 - enable or disable platforms
 - control Pinterest board settings
 - set automation frequency

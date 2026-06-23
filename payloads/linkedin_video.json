@@ -1,6 +1,6 @@
 {
   "_comment": "TEST: LinkedIn — Video post",
-  "_instructions": "Upload video via /upload first. LinkedIn requires the video to be uploaded to a publicly accessible URL.",
+  "_instructions": "Upload video via CORE /media first. LinkedIn video still requires current CORE support and provider proof before live use.",
   "posts": [
     {
       "integration": { "id": "LINKEDIN_ACCOUNT_ID_SECURE" },
