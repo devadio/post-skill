@@ -1,6 +1,6 @@
 {
   "_comment": "TEST: Instagram - Video / Reels post",
-  "_instructions": "Upload your video via /upload first, then paste the returned path as the video URL here. Use post_type=video with ig_type=reels.",
+  "_instructions": "Upload your video via CORE /media first, then use the returned media.id in media_ids. Use post_type=video with ig_type=reels.",
   "posts": [
     {
       "integration": { "id": "INSTAGRAM_ACCOUNT_ID_SECURE" },

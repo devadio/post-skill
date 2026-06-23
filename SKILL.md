@@ -16,7 +16,7 @@ https://devad.io/api/v1/post
 Do not use the old public StackPosts-style API as the implementation authority:
 
 ```text
-https://post.devad.io/api/public/v1
+retired StackPosts-style /api/public/v1 host
 ```
 
 That legacy API and its old payload examples are reference material only.
@@ -163,7 +163,7 @@ If you are working inside the CORE monorepo and touch Sheet/n8n embedded preflig
 
 ## Legacy Reference Boundary
 
-The old `post.devad.io` payload shape, Google Sheet `PostService.gs`, and n8n workflow are useful compatibility references. They should be normalized into CORE requests and tested through dry-runs. They must not reintroduce:
+The old StackPosts-style payload shape, Google Sheet `PostService.gs`, and n8n workflow are useful compatibility references. They should be normalized into CORE requests and tested through dry-runs. They must not reintroduce:
 
 - `X-Api-Token` auth
 - `?api_token=` query auth

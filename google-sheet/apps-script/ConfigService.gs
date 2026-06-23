@@ -4,12 +4,12 @@
 
 /**
  * ConfigService.gs
- * 100% Sidebar-Managed Configuration - POST.devad.io
+ * 100% Sidebar-Managed Configuration - Devad.io/POST
  */
 
 /**
  * 📱 Supported Platforms Registry
- * Master list of all social media platforms supported by POST.devad.io.
+ * Master list of all social media platforms supported by Devad.io/POST.
  * The 'handle' is the persistent key used in ScriptProperties.
  */
 const SUPPORTED_PLATFORMS = [
@@ -42,7 +42,7 @@ function readJsonProperty_(rawValue, fallbackValue) {
  */
 function loadAccessConfig(throwOnError = true) {
   const scriptProps = PropertiesService.getScriptProperties();
-  const token = scriptProps.getProperty("POST_API_TOKEN") || "";
+  const token = scriptProps.getProperty("DEVAD_POST_API_KEY") || scriptProps.getProperty("POST_API_TOKEN") || "";
   const savedSettings = readJsonProperty_(scriptProps.getProperty("PLATFORM_SETTINGS"), {});
 
   const config = {
@@ -79,7 +79,7 @@ function loadAccessConfig(throwOnError = true) {
   // Final Validation for Actual Publishing
   if (throwOnError) {
     if (!config.token) {
-      throw new Error("POST.devad.io Token is missing. 🔑 Open the Manager and paste your token.");
+      throw new Error("Devad.io/POST workspace API key is missing. 🔑 Open the Manager and paste your key.");
     }
     if (config.platforms.length === 0) {
       throw new Error("No social platforms are active. 📱 Add your IDs in the Manager to enable posting.");

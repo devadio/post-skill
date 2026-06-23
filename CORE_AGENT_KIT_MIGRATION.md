@@ -1,6 +1,6 @@
 # CORE Agent Kit Migration
 
-This repo used to describe the old POST.devad.io public API flow. Current Devad POST automation should use the native CORE POST Agent Kit.
+This repo used to describe the old public API flow. Current Devad POST automation should use the native CORE POST Agent Kit.
 
 ## Current Target
 
@@ -20,7 +20,7 @@ This repo used to describe the old POST.devad.io public API flow. Current Devad 
 
 ## Do Not Reintroduce
 
-- `https://post.devad.io/api/public/v1` as the active API base
+- any retired public API host as the active API base
 - `X-Api-Token`
 - `?api_token=...`
 - tokens in prompts, URLs, screenshots, payload files, or logs

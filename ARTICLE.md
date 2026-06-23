@@ -77,7 +77,7 @@ to:
 
 ## How to Get Started in 3 Steps
 
-1. Connect your accounts at [post.devad.io](https://post.devad.io)
+1. Connect your accounts at [Devad.io/POST](https://devad.io/post)
 2. Generate your API token in **Account Settings -> POST API**
 3. Use the API, test runners, or Google Sheet workflow to start automating
 
@@ -87,5 +87,5 @@ to:
 
 - **Main documentation:** [SKILL.md](SKILL.md)
 - **Google Sheet workflow:** [google-sheet/README.md](google-sheet/README.md)
-- **Start here:** [post.devad.io](https://post.devad.io)
+- **Start here:** [Devad.io/POST](https://devad.io/post)
 - **Support:** [devad.io/guides/topics/post-devad-io-docs/](https://devad.io/guides/topics/post-devad-io-docs/)

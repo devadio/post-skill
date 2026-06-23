@@ -8,7 +8,7 @@ Current API authority:
 https://devad.io/api/v1/post
 ```
 
-The old `post.devad.io/api/public/v1` flow is legacy reference material only. New agents and automations should use CORE workspace API keys, dry-run first, and provider-specific media rules.
+The old public API flow is legacy reference material only. New agents and automations should use CORE workspace API keys, dry-run first, and provider-specific media rules.
 
 ## What This Repo Gives You
 
@@ -17,7 +17,7 @@ The old `post.devad.io/api/public/v1` flow is legacy reference material only. Ne
 - local Node and Python test runners
 - example payload fixtures
 - Google Sheets and n8n reference workflows
-- migration guidance for old POST.devad.io row/payload shapes
+- migration guidance for old Sheet row and payload shapes
 - CORE template preflight drift guidance for Sheet/n8n provider-rule sync
 
 ## Safety Model

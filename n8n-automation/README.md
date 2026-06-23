@@ -1,6 +1,6 @@
 # n8n Automation Reference
 
-This folder is a legacy n8n reference for the old POST.devad.io Sheet-to-social workflow.
+This folder is a legacy n8n reference for the old Sheet-to-social workflow.
 
 Do not import the included workflow as current CORE live automation until it is migrated and retested.
 
@@ -21,7 +21,7 @@ Do not import the included workflow as current CORE live automation until it is 
 - `codex-post-sheet-to-social-full.workflow.json`
 - `codex-post-sheet-to-social-full.sdk.js`
 
-These files may still contain legacy public API fields such as old base URLs, token config names, query-token compatibility, and old node labels. Treat them as workflow-shape examples only.
+These files now use the native CORE API base, bearer workspace API key naming, `/media`, and `/posts`. Treat them as workflow-shape examples until they are reimported and retested in n8n.
 
 ## Migration Checklist
 

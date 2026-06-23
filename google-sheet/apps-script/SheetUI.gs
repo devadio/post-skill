@@ -1,6 +1,6 @@
 /**
  * SheetUI.gs
- * Unified Publication Manager Backend - POST.devad.io
+ * Unified Publication Manager Backend - Devad.io/POST
  */
 
 const POST_SHEET_NAME = "post";
@@ -17,11 +17,11 @@ const AUTOMATION_OPTIONS = {
 /**
  * 🎨 Definitive Menu Setup
  * This is the primary onOpen function for the active project.
- * It strictly creates the POST.devad.io menu to avoid collisions.
+ * It strictly creates the Devad.io/POST menu to avoid collisions.
  */
 function onOpen() {
   const ui = SpreadsheetApp.getUi();
-  ui.createMenu("🚀 POST.devad.io")
+  ui.createMenu("🚀 Devad.io/POST")
     .addItem("📱 Publication Manager", "showSidebar")
     .addItem("🤖 AI Agent Token", "showAiAgentTokenDialog")
     .addSeparator()
@@ -34,7 +34,7 @@ function onOpen() {
  */
 function showSidebar() {
   const html = HtmlService.createTemplateFromFile("SettingsSidebar").evaluate()
-    .setTitle("POST.devad.io")
+    .setTitle("Devad.io/POST")
     .setWidth(450);
   SpreadsheetApp.getUi().showSidebar(html);
 }
@@ -45,7 +45,7 @@ function showSidebar() {
 function getUnifiedData() {
   try {
     const scriptProps = PropertiesService.getScriptProperties();
-    const token = scriptProps.getProperty("POST_API_TOKEN") || "";
+    const token = scriptProps.getProperty("DEVAD_POST_API_KEY") || scriptProps.getProperty("POST_API_TOKEN") || "";
     const platforms = getPlatformSettings();
     const selectedSchedule = scriptProps.getProperty("AUTOMATION_SCHEDULE") || "hour_1";
     const status = getAutomationStatus_(selectedSchedule);
@@ -77,7 +77,8 @@ function saveUnifiedData(payload) {
   validateUnifiedData_(payload);
   const scriptProps = PropertiesService.getScriptProperties();
   if (payload.token !== undefined) {
-    scriptProps.setProperty("POST_API_TOKEN", payload.token);
+    scriptProps.setProperty("DEVAD_POST_API_KEY", payload.token);
+    scriptProps.deleteProperty("POST_API_TOKEN");
   }
 
   const platformSettings = {};
@@ -103,6 +104,7 @@ function saveUnifiedData(payload) {
  */
 function wipeAllData() {
   const scriptProps = PropertiesService.getScriptProperties();
+  scriptProps.deleteProperty("DEVAD_POST_API_KEY");
   scriptProps.deleteProperty("POST_API_TOKEN");
   scriptProps.deleteProperty("PLATFORM_SETTINGS");
   scriptProps.deleteProperty("CONSECUTIVE_ERRORS");
@@ -206,6 +208,7 @@ function processSheetRows(limitToOne = false) {
       logResult(sheet, rowNum, "To do", "⏳ Initializing...");
 
       const rowData = {
+        rowNumber: rowNum,
         title: data[i][2],      // Column C
         caption: data[i][3],    // Column D
         mediaLink: data[i][4],  // Column E
@@ -220,7 +223,7 @@ function processSheetRows(limitToOne = false) {
         const mediaIds = [];
 
         if (mediaBlobs.length > 0) {
-          updateLog(sheet, rowNum, "☁️ Uploading to POST...");
+          updateLog(sheet, rowNum, "☁️ Uploading to Devad.io/POST...");
           mediaBlobs.forEach(blob => {
             mediaIds.push(smartUpload(blob, config.token));
           });
@@ -276,7 +279,7 @@ function fetchMediaAssets(url, mediaType) {
     : String(mediaType || "").toLowerCase().trim();
   
   // 🛡️ Filter common template placeholders
-  if (rawUrl.toLowerCase().includes("agent skill") || rawUrl.toLowerCase().includes("post.devad.io")) {
+  if (rawUrl.toLowerCase().includes("agent skill") || rawUrl.toLowerCase().includes("devad.io/post")) {
     throw new Error("Placeholder row detected. Please check Column E.");
   }
 
@@ -392,7 +395,7 @@ function showHelpDialog() {
   const html = HtmlService.createHtmlOutputFromFile("HelpDialog")
     .setWidth(420)
     .setHeight(360);
-  SpreadsheetApp.getUi().showModalDialog(html, "POST.devad.io");
+  SpreadsheetApp.getUi().showModalDialog(html, "Devad.io/POST");
 }
 
 /**

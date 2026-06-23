@@ -1,6 +1,6 @@
 {
   "_comment": "TEST: YouTube — Video post (requires title in settings)",
-  "_instructions": "Upload video via /upload first. YouTube REQUIRES title in settings.",
+  "_instructions": "Upload video via CORE /media first, then use the returned media.id in media_ids. YouTube requires title in settings.",
   "posts": [
     {
       "integration": { "id": "YOUTUBE_ACCOUNT_ID_SECURE" },

@@ -1,11 +1,11 @@
-﻿// Sanitized public template.
+// Sanitized public template.
 // Replace only the placeholder values in add-HERE-your-token-and-ids and relink Google credentials in n8n.
 // After import, manually open `Download Drive Media Asset`, select your Google Drive OAuth2 credential,
 // and save the workflow once. This is required because some n8n API/MCP imports do not persist that
 // HTTP Request node credential binding.
 import { workflow, node, trigger, sticky, newCredential, switchCase, splitInBatches, nextBatch, expr } from '@n8n/workflow-sdk';
 
-const overviewNote = sticky(`## POST.devad.io -> Google Sheet -> Social
+const overviewNote = sticky(`## Devad.io/POST -> Google Sheet -> Social
 
 1. Edit only the node named add-HERE-your-token-and-ids.
 2. Reads the post tab directly from Google Sheets.
@@ -50,10 +50,10 @@ const setupNode = node({
       mode: 'manual',
       assignments: {
         assignments: [
-          { id: 'cfg-base-url', name: 'base_url', value: 'https://post.devad.io/api/public/v1', type: 'string' },
+          { id: 'cfg-base-url', name: 'base_url', value: 'https://devad.io/api/v1/post', type: 'string' },
           { id: 'cfg-sheet-url', name: 'spreadsheet_url', value: 'https://docs.google.com/spreadsheets/d/YOUR_SHEET_ID/edit#gid=0', type: 'string' },
           { id: 'cfg-sheet-name', name: 'sheet_name', value: 'post', type: 'string' },
-          { id: 'cfg-token', name: 'post_devad_io_token', value: 'ADD_HERE_YOUR_POST_DEVD_IO_TOKEN', type: 'string' },
+          { id: 'cfg-token', name: 'devad_post_api_key', value: 'ADD_HERE_YOUR_DEVAD_POST_API_KEY', type: 'string' },
           { id: 'cfg-instagram', name: 'instagram_id', value: 'ADD_HERE_YOUR_INSTAGRAM_ID', type: 'string' },
           { id: 'cfg-youtube', name: 'youtube_id', value: 'ADD_HERE_YOUR_YOUTUBE_ID', type: 'string' },
           { id: 'cfg-tiktok', name: 'tiktok_id', value: 'ADD_HERE_YOUR_TIKTOK_ID', type: 'string' },
@@ -80,10 +80,10 @@ const setupNode = node({
     }
   },
   output: [{
-    base_url: 'https://post.devad.io/api/public/v1',
+    base_url: 'https://devad.io/api/v1/post',
     spreadsheet_url: 'https://docs.google.com/spreadsheets/d/YOUR_SHEET_ID/edit#gid=0',
     sheet_name: 'post',
-    post_devad_io_token: 'ADD_HERE_YOUR_POST_DEVD_IO_TOKEN',
+    devad_post_api_key: 'ADD_HERE_YOUR_DEVAD_POST_API_KEY',
     instagram_id: 'ADD_HERE_YOUR_INSTAGRAM_ID',
     youtube_id: 'ADD_HERE_YOUR_YOUTUBE_ID',
     tiktok_id: 'ADD_HERE_YOUR_TIKTOK_ID',
@@ -116,8 +116,13 @@ const fetchAccountsNode = node({
     parameters: {
       method: 'GET',
       url: expr('{{ $json.base_url + "/accounts" }}'),
-      sendQuery: true,
-      queryParameters: { parameters: [{ name: 'api_token', value: expr('{{ $json.post_devad_io_token }}') }] },
+      sendHeaders: true,
+      headerParameters: {
+        parameters: [
+          { name: 'Accept', value: 'application/json' },
+          { name: 'Authorization', value: expr('{{ "Bearer " + $json.devad_post_api_key }}') },
+        ],
+      },
       options: { response: { response: { responseFormat: 'json' } } },
     },
   },
@@ -473,19 +478,16 @@ const uploadBinaryNode = node({
   type: 'n8n-nodes-base.httpRequest',
   version: 4.4,
   config: {
-    name: 'Upload Binary To POST.devad.io',
+    name: 'Upload Binary To Devad.io/POST',
     position: [2110, -80],
     parameters: {
       method: 'POST',
-      url: expr('{{ $("add-HERE-your-token-and-ids").item.json.base_url + "/upload" }}'),
-      sendQuery: true,
-      queryParameters: { parameters: [{ name: 'api_token', value: expr('{{ $("add-HERE-your-token-and-ids").item.json.post_devad_io_token }}') }] },
+      url: expr('{{ $("add-HERE-your-token-and-ids").item.json.base_url + "/media" }}'),
       sendHeaders: true,
       headerParameters: {
         parameters: [
           { name: 'Accept', value: 'application/json' },
-          { name: 'Authorization', value: expr('{{ "Bearer " + $("add-HERE-your-token-and-ids").item.json.post_devad_io_token }}') },
-          { name: 'X-Api-Token', value: expr('{{ $("add-HERE-your-token-and-ids").item.json.post_devad_io_token }}') },
+          { name: 'Authorization', value: expr('{{ "Bearer " + $("add-HERE-your-token-and-ids").item.json.devad_post_api_key }}') },
         ],
       },
       sendBody: true,
@@ -500,30 +502,31 @@ const uploadBinaryNode = node({
       },
     },
   },
-  output: [{ url: 'https://post.devad.io/uploads/example.jpg', mime_type: 'image/jpeg', name: 'example.jpg' }],
+  output: [{ media: { id: 123, mime_type: 'image/jpeg', name: 'example.jpg' } }],
 });
 
 const collectUploadedMediaNode = node({
   type: 'n8n-nodes-base.code',
   version: 2,
   config: {
-    name: 'Collect Uploaded Media URLs',
+    name: 'Collect Uploaded Media IDs',
     position: [2240, -80],
     parameters: {
       mode: 'runOnceForAllItems',
       language: 'javaScript',
       jsCode: `const base=$('Expand Media Upload Items').first().json;
-const uploadedMediaUrls=$input.all()
+const uploadedMedia=$input.all()
   .map(item => item.json || {})
-  .map(item => item.url || item.body?.url || '')
-  .filter(Boolean);
-if (!uploadedMediaUrls.length) {
-  throw new Error('No uploaded media URLs were returned from POST.devad.io /upload');
+  .map(item => item.media || item.body?.media || item.data || item)
+  .filter(item => item && item.id)
+  .map(item => ({ id: Number(item.id) }));
+if (!uploadedMedia.length) {
+  throw new Error('No uploaded media IDs were returned from Devad.io/POST /media');
 }
-return [{json:{...base,uploadedMediaUrls}}];`,
+return [{json:{...base,uploadedMedia}}];`,
     },
   },
-  output: [{ rowNumber: 2, uploadedMediaUrls: ['https://post.devad.io/uploads/example.jpg'], postType: 'image' }],
+  output: [{ rowNumber: 2, uploadedMedia: [{ id: 123 }], postType: 'image' }],
 });
 
 const buildPayloadNode = node({
@@ -557,21 +560,21 @@ function settingsFor(target,row,type,link,title,content,cfg){const l=String(link
   if(target.key==='linkedin_page'||target.key==='linkedin_profile'){settings.post_type=type; return settings;}
   if(target.key==='telegram'){if(type==='carousel') return null; settings.post_type=type; return settings;}
   if(target.key==='tiktok'){if(type==='text'||type==='carousel') return null; settings.post_type=type; settings.tt_privacy=ttPrivacy(rv(row,['tiktok privacy','privacy','privacy level'])); settings.tt_consent=yes(rv(row,['tiktok consent','music usage confirmation','consent']),true)?1:0; settings.tt_allow_comment=yes(rv(row,['tiktok allow comment','allow comment']),true)?1:0; settings.tt_allow_duet=yes(rv(row,['tiktok allow duet','allow duet']),false)?1:0; settings.tt_allow_stitch=yes(rv(row,['tiktok allow stitch','allow stitch']),false)?1:0; return settings;}
-  if(target.key==='youtube'){if(type!=='video') return null; settings.post_type='video'; settings.youtube_title=rv(row,['youtube title'])||title||String(content||'').slice(0,95)||'POST.devad.io upload'; settings.youtube_privacy=ytPrivacy(rv(row,['youtube privacy','privacy'])); settings.youtube_category=Number(rv(row,['youtube category','category'])||22); return settings;}
-  if(target.key==='pinterest'){if(type!=='image') return null; settings.post_type='image'; settings.pinterest_title=rv(row,['pinterest title'])||title||'POST.devad.io pin'; settings.pinterest_link=l||''; const board=rv(row,['pinterest board id','board id'])||cfg.pinterest_board_id; settings.pinterest_board=board; settings.pinterest_board_id=board; return settings;}
+  if(target.key==='youtube'){if(type!=='video') return null; settings.post_type='video'; settings.youtube_title=rv(row,['youtube title'])||title||String(content||'').slice(0,95)||'Devad.io/POST upload'; settings.youtube_privacy=ytPrivacy(rv(row,['youtube privacy','privacy'])); settings.youtube_category=Number(rv(row,['youtube category','category'])||22); return settings;}
+  if(target.key==='pinterest'){if(type!=='image') return null; settings.post_type='image'; settings.pinterest_title=rv(row,['pinterest title'])||title||'Devad.io/POST pin'; settings.pinterest_link=l||''; const board=rv(row,['pinterest board id','board id'])||cfg.pinterest_board_id; settings.pinterest_board=board; settings.pinterest_board_id=board; return settings;}
   if(target.key==='google_business_profile'){if(type==='video'||type==='carousel') return null; settings.post_type=type==='text'?'text':'image'; if(l){settings.gbp_action='LEARN_MORE'; settings.gbp_link=l;} return settings;}
   if(target.key==='tumblr'){if(type==='carousel') return null; settings.post_type=type; return settings;}
   settings.post_type=type; return settings;
 }
 function addStory(key,type,cfg){if(type!=='image'&&type!=='video') return false; if(key==='facebook') return yes(cfg.facebook_plus_story,false); if(key==='instagram') return yes(cfg.instagram_plus_story,false); return false;}
 const cfg=$('add-HERE-your-token-and-ids').item.json; const raw=$('Fetch PostApi Accounts').item.json||{}; const accounts=Array.isArray(raw.data)?raw.data:(Array.isArray(raw.body?.data)?raw.body.data:[]); const accountMap=new Map(accounts.map(a=>[a.id,a]));
-const row=$input.first().json; const src=row.sourceRow||{}; const mediaUrls=Array.isArray(row.uploadedMediaUrls)?row.uploadedMediaUrls.filter(Boolean):(Array.isArray(row.mediaUrls)?row.mediaUrls.filter(Boolean):[]); const type=row.postType||row.postTypeHint||(mediaUrls.length?'image':'text'); const title=row.title||rv(src,['title']); const promo=row.promoLink||rv(src,['promotional link','link']); const base=row.captionBase||rv(src,['social media summary (caption)','caption','summary']);
+const row=$input.first().json; const src=row.sourceRow||{}; const uploadedMedia=Array.isArray(row.uploadedMedia)?row.uploadedMedia.filter(item=>item&&item.id):[]; const mediaIds=Array.isArray(row.mediaIds)?row.mediaIds.filter(Boolean):uploadedMedia.map(item=>item.id).filter(Boolean); const type=row.postType||row.postTypeHint||(mediaIds.length?'image':'text'); const title=row.title||rv(src,['title']); const promo=row.promoLink||rv(src,['promotional link','link']); const base=row.captionBase||rv(src,['social media summary (caption)','caption','summary']);
 const targets=choose(src,cfg,type,accountMap,accounts); const feedPosts=[]; const storyPosts=[]; const selectedTargets=[];
-for(const target of targets){const content=caption(base,promo,promoMode(target.key,src,cfg)); const settings=settingsFor(target,src,type,promo,title,content,cfg); if(!settings) continue; const post={integration:{id:target.integrationId},value:[{content}],media:mediaUrls,settings}; feedPosts.push(post); selectedTargets.push({key:target.key,id:target.integrationId,provider:target.account.provider,category:target.account.category}); if(addStory(target.key,type,cfg)){const story=JSON.parse(JSON.stringify(post)); story.settings.post_type='story'; if(target.key==='facebook') story.settings.fb_type='story'; if(target.key==='instagram') story.settings.ig_type='story'; storyPosts.push(story);}}
+for(const target of targets){const content=caption(base,promo,promoMode(target.key,src,cfg)); const settings=settingsFor(target,src,type,promo,title,content,cfg); if(!settings) continue; const post={integration:{id:target.integrationId},value:[{content}],media_ids:mediaIds,settings}; feedPosts.push(post); selectedTargets.push({key:target.key,id:target.integrationId,provider:target.account.provider,category:target.account.category}); if(addStory(target.key,type,cfg)){const story=JSON.parse(JSON.stringify(post)); story.settings.post_type='story'; if(target.key==='facebook') story.settings.fb_type='story'; if(target.key==='instagram') story.settings.ig_type='story'; storyPosts.push(story);}}
 if(!feedPosts.length) return [];
 const feedPostApiBody=row.scheduleAt?{type:'schedule',date:row.scheduleAt,posts:feedPosts}:{posts:feedPosts};
 const storyPostApiBody=storyPosts.length?(row.scheduleAt?{type:'schedule',date:row.scheduleAt,posts:storyPosts}:{posts:storyPosts}):null;
-return [{json:{...row,postType:type,mediaUrls,selectedTargets,feedPostApiBody,storyPostApiBody,webhookBody:{source:'n8n-post-devad-sheet',row_number:row.rowNumber,title,caption:base,promotional_link:promo,media:mediaUrls,post_type:type,channels:selectedTargets,feed_post_api_body:feedPostApiBody,story_post_api_body:storyPostApiBody}}}];`,
+return [{json:{...row,postType:type,mediaIds,selectedTargets,feedPostApiBody,storyPostApiBody,webhookBody:{source:'n8n-post-devad-sheet',row_number:row.rowNumber,title,caption:base,promotional_link:promo,media_ids:mediaIds,post_type:type,channels:selectedTargets,feed_post_api_body:feedPostApiBody,story_post_api_body:storyPostApiBody}}}];`,
     },
   },
   output: [{
@@ -619,13 +622,18 @@ const postFeedNode = node({
   type: 'n8n-nodes-base.httpRequest',
   version: 4.4,
   config: {
-    name: 'Post Feed To POST.devad.io',
+    name: 'Post Feed To Devad.io/POST',
     position: [3280, 40],
     parameters: {
       method: 'POST',
       url: expr('{{ $("add-HERE-your-token-and-ids").item.json.base_url + "/posts" }}'),
-      sendQuery: true,
-      queryParameters: { parameters: [{ name: 'api_token', value: expr('{{ $("add-HERE-your-token-and-ids").item.json.post_devad_io_token }}') }] },
+      sendHeaders: true,
+      headerParameters: {
+        parameters: [
+          { name: 'Accept', value: 'application/json' },
+          { name: 'Authorization', value: expr('{{ "Bearer " + $("add-HERE-your-token-and-ids").item.json.devad_post_api_key }}') },
+        ],
+      },
       sendBody: true,
       specifyBody: 'json',
       jsonBody: expr('{{ $("Build PostApi Payload").item.json.feedPostApiBody }}'),
@@ -652,13 +660,18 @@ const postStoryNode = node({
   type: 'n8n-nodes-base.httpRequest',
   version: 4.4,
   config: {
-    name: 'Post Story To POST.devad.io',
+    name: 'Post Story To Devad.io/POST',
     position: [3800, -40],
     parameters: {
       method: 'POST',
       url: expr('{{ $("add-HERE-your-token-and-ids").item.json.base_url + "/posts" }}'),
-      sendQuery: true,
-      queryParameters: { parameters: [{ name: 'api_token', value: expr('{{ $("add-HERE-your-token-and-ids").item.json.post_devad_io_token }}') }] },
+      sendHeaders: true,
+      headerParameters: {
+        parameters: [
+          { name: 'Accept', value: 'application/json' },
+          { name: 'Authorization', value: expr('{{ "Bearer " + $("add-HERE-your-token-and-ids").item.json.devad_post_api_key }}') },
+        ],
+      },
       sendBody: true,
       specifyBody: 'json',
       jsonBody: expr('{{ $("Build PostApi Payload").item.json.storyPostApiBody }}'),
@@ -685,13 +698,13 @@ const buildSheetUpdateNode = node({
       mode: 'runOnceForAllItems',
       language: 'javaScript',
       jsCode: `function compact(v){return typeof v==='string' ? v : JSON.stringify(v||{});}
-const row=$('Build PostApi Payload').item.json; const feed=$('Post Feed To POST.devad.io').item.json; let story=null; try{story=$('Post Story To POST.devad.io').item.json;}catch(e){story=null;}
+const row=$('Build PostApi Payload').item.json; const feed=$('Post Feed To Devad.io/POST').item.json; let story=null; try{story=$('Post Story To Devad.io/POST').item.json;}catch(e){story=null;}
 const okMark=String.fromCharCode(9989); const doneMark=String.fromCharCode(55357,57314)+' Done';
 let log=okMark+' Posted successfully: '+new Date().toLocaleString(); log+=' | Channels: '+(Array.isArray(row.selectedTargets)?row.selectedTargets.map(t=>t.key).join(', '):''); log+=' | Feed response: '+compact(feed); if(story) log+=' | Story response: '+compact(story);
 return [{json:{row_number:String(row.rowNumber),'Action?':doneMark,log}}];`,
     },
   },
-  output: [{ row_number: '2', 'Action?': '🟢 Done', log: '✅ Posted successfully' }],
+  output: [{ row_number: '2', 'Action?': '?? Done', log: '? Posted successfully' }],
 });
 
 const updateSheetNode = node({
@@ -756,7 +769,7 @@ const directChain = buildDirectMediaNode.to(uploadNeedRouteNode
   .onCase(1, buildPayloadNode.to(afterWebhookChain))
 );
 
-export default workflow('KSP2fJsRJkghbBnX', 'CODEX - POST.devad.io - Sheet To Social Full')
+export default workflow('KSP2fJsRJkghbBnX', 'CODEX - Devad.io/POST - Sheet To Social Full')
   .add(overviewNote)
   .add(credentialsNote)
   .add(manualTriggerNode)
