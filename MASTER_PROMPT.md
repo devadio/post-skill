@@ -29,7 +29,7 @@ Provider workflow:
 1. Identify the selected provider, channel, and variant.
 2. Check the provider capability allowlist.
 3. Check media MIME, count, ratio, size, and duration for that variant.
-4. If X/Twitter evidence is needed, capture source queries, post URLs or IDs, timestamps, short quotes, media notes, and the approval note before drafting.
+4. If X/Twitter evidence is needed, capture source query, profile, or monitor name, post URLs or IDs, timestamps, short quotes, media notes, and the approval note before drafting.
 5. Build only the provider-specific payload that CORE supports.
 6. Reject unsupported combinations early. Never coerce unknown media into image_url or video_url.
 

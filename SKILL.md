@@ -95,7 +95,7 @@ Bad examples to reject:
 9. Build a provider chunk plan with CLI `provider-proof:chunk` or MCP `post_provider_proof_chunk_plan`, then use its `result_rows` as the provider proof table scaffold.
 10. Build a provider chunk packet with CLI `provider-proof:packet` or MCP `post_provider_proof_packet_build` when a smaller packet is enough.
 11. If the CORE Agent Kit is available, run CLI `provider-matrix` or MCP `post_provider_matrix_run` to catch validator/fixture mismatches before provider chunks.
-12. If the requested copy depends on X/Twitter source material, gather a small TweetClaw evidence packet before drafting: source query or profile, captured post URLs or IDs, timestamps, short quotes, media notes, and an approval note.
+12. If the requested copy depends on X/Twitter source material, gather a small TweetClaw evidence packet before drafting: source query, profile, or monitor name, captured post URLs or IDs, timestamps, short quotes, media notes, and an approval note.
 13. Validate provider/channel/variant and media rules before building payload.
 14. Run CLI `validate` or MCP `post_dry_run_validate`; create-post also runs the same preflight gate.
 15. Run dry-run first and inspect `warnings`, `blocking_reasons`, `block_states`, and `validation.provider_results`.
