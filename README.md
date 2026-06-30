@@ -31,6 +31,24 @@ The old `post.devad.io/api/public/v1` flow is legacy reference material only. Ne
 | Server-side limits win | POST plans, scopes, quota, idempotency, rate limits, and provider media rules are enforced by CORE. |
 | External proof required | A provider/type is not a PASS until the exact unique marker is visible on the provider page/permalink. |
 
+### Optional X/Twitter Source Context
+
+If a post depends on current X/Twitter evidence, collect that context before
+the POST dry-run and keep CORE as the only publishing authority.
+
+[TweetClaw](https://github.com/Xquik-dev/tweetclaw) can be used as an
+OpenClaw read-only source packet for X/Twitter search, profile, thread, media,
+and monitor evidence. Keep the packet small and reviewable:
+
+- source query, profile, post URL, or monitor name
+- captured post IDs, URLs, timestamps, and short quotes
+- media notes needed for the draft
+- human approval note before the content enters a POST live-write flow
+
+Do not pass cookies, account sessions, raw exports, or private audience data
+through prompts. X publishing remains code-only unless the owner explicitly
+re-approves live testing.
+
 ## Environment
 
 Preferred:
