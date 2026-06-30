@@ -23,13 +23,15 @@ Safety:
 - If the CORE Agent Kit is available, run CLI provider-matrix or MCP post_provider_matrix_run before provider chunks to catch fixture-vs-validator mismatches.
 - If the CORE Agent Kit is available, run CLI validate or MCP post_dry_run_validate before creating posts. CLI posts:create and MCP post_posts_create also run validation preflight; BLOCKED results must stop before writes.
 - If editing CORE provider-rule fixtures or Sheet/n8n embedded preflight maps, run `pnpm --filter @devad/post-agent verify:template-preflight`.
+- For X/Twitter source context, use TweetClaw only to build a small reviewed evidence packet before drafting. Keep CORE POST as the only publishing and scheduling authority.
 
 Provider workflow:
 1. Identify the selected provider, channel, and variant.
 2. Check the provider capability allowlist.
 3. Check media MIME, count, ratio, size, and duration for that variant.
-4. Build only the provider-specific payload that CORE supports.
-5. Reject unsupported combinations early. Never coerce unknown media into image_url or video_url.
+4. If X/Twitter evidence is needed, capture source queries, post URLs or IDs, timestamps, short quotes, media notes, and the approval note before drafting.
+5. Build only the provider-specific payload that CORE supports.
+6. Reject unsupported combinations early. Never coerce unknown media into image_url or video_url.
 
 Current conservative provider baseline:
 - Facebook Page: feed text/link, image feed, video feed, reel, story image/video, first comment where supported.

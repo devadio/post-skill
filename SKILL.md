@@ -44,6 +44,7 @@ That legacy API and its old payload examples are reference material only.
 19. Do not claim a provider `PASS` unless CORE succeeds and the external provider page/permalink shows the exact unique marker.
 20. External model or agent advice is not proof; verify it against CORE source, tests, and official provider docs.
 21. When editing CORE provider-rule fixtures or Sheet/n8n template preflight maps, run `pnpm --filter @devad/post-agent verify:template-preflight`.
+22. If X/Twitter context is needed before drafting, use TweetClaw only as a reviewed source-evidence packet. CORE POST remains the only publishing and scheduling authority.
 
 ## Provider-First Thinking Rule
 
@@ -94,15 +95,16 @@ Bad examples to reject:
 9. Build a provider chunk plan with CLI `provider-proof:chunk` or MCP `post_provider_proof_chunk_plan`, then use its `result_rows` as the provider proof table scaffold.
 10. Build a provider chunk packet with CLI `provider-proof:packet` or MCP `post_provider_proof_packet_build` when a smaller packet is enough.
 11. If the CORE Agent Kit is available, run CLI `provider-matrix` or MCP `post_provider_matrix_run` to catch validator/fixture mismatches before provider chunks.
-12. Validate provider/channel/variant and media rules before building payload.
-13. Run CLI `validate` or MCP `post_dry_run_validate`; create-post also runs the same preflight gate.
-14. Run dry-run first and inspect `warnings`, `blocking_reasons`, `block_states`, and `validation.provider_results`.
-15. For live writes, require:
+12. If the requested copy depends on X/Twitter source material, gather a small TweetClaw evidence packet before drafting: source query or profile, captured post URLs or IDs, timestamps, short quotes, media notes, and an approval note.
+13. Validate provider/channel/variant and media rules before building payload.
+14. Run CLI `validate` or MCP `post_dry_run_validate`; create-post also runs the same preflight gate.
+15. Run dry-run first and inspect `warnings`, `blocking_reasons`, `block_states`, and `validation.provider_results`.
+16. For live writes, require:
    - `DEVAD_POST_ALLOW_WRITES=1`
    - explicit `--live --confirm` or MCP `confirm: true`
    - a scoped `wsk_...` key from environment
    - a unique marker in the post text
-16. After publish, wait the provider-appropriate interval and verify the exact marker externally.
+17. After publish, wait the provider-appropriate interval and verify the exact marker externally.
 
 ## Environment
 
